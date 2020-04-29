@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".src.main.MainActivity"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.ninano.weto.src.custom.NonSwipeViewPager
+        android:id="@+id/main_vp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+    
+    <devlight.io.library.ntb.NavigationTabBar
+        android:id="@+id/main_ntb"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_round_ntb"
+        android:elevation="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:ntb_active_color="#0809ff"
+        app:ntb_animation_duration="0"
+        app:ntb_badge_use_typeface="false"
+        app:ntb_badged="false"
+        app:ntb_bg_color="@color/colorWhite"
+        app:ntb_icon_size_fraction="0.4"
+        app:ntb_inactive_color="#e3e7ec"
+        app:ntb_scaled="false"
+        app:ntb_swiped="false"
+        app:ntb_tinted="true"
+        app:ntb_title_mode="all"
+        app:ntb_title_size="0sp"
+        app:ntb_titled="false"/>
+</LinearLayout>
