@@ -6,10 +6,109 @@
     tools:context=".src.main.todo_group.ToDoGroupFragment"
     android:background="@color/colorWhite">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginTop="17dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
+            <TextView
+                android:id="@+id/todo_group_fragment_tv_date"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#38454c"
+                android:lineSpacingExtra="9sp"
+                android:text="7월 14일 (화)"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"/>
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_settings"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/todo_group_fragment_layout_frame"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_round_search"
+            android:layout_marginBottom="15dp">
+            <ImageView
+                android:id="@+id/todo_group_fragment_iv_search"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/ic_search"/>
+            <EditText
+                android:id="@+id/todo_group_fragment_edt"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="39dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:backgroundTint="#00000000"
+                android:textSize="12sp"
+                android:textColor="#657884"
+                android:lineSpacingExtra="6sp"
+                android:theme="@style/EditTextStyle"/>
+            <ImageView
+                android:id="@+id/todo_group_fragment_iv_x_circle"
+                android:visibility="gone"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_x_circle"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="2dp" />
+        </FrameLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todo_group_fragment_rv_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="18dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f5f6fa"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="38dp">
+        <ImageView
+            android:id="@+id/todo_group_fragment_iv_drag"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="#657884" />
+    </LinearLayout>
 
 </FrameLayout>
