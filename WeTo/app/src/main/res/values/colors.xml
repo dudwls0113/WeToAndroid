@@ -6,4 +6,17 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorGray">#e3e7ec</color>
     <color name="colorBlack">#38454c</color>
+    <color name="colorGroup1">#ff3d00</color>
+    <color name="colorGroup2">#f51d7e</color>
+    <color name="colorGroup3">#a200f2</color>
+    <color name="colorGroup4">#651dff</color>
+    <color name="colorGroup5">#2979ff</color>
+    <color name="colorGroup6">#009dff</color>
+    <color name="colorGroup7">#00bcd4</color>
+    <color name="colorGroup8">#00bfa5</color>
+    <color name="colorGroup9">#64dd17</color>
+    <color name="colorGroup10">#ffab00</color>
+    <color name="colorGroup11">#ff6f00</color>
+    <color name="colorGroup12">#915039</color>
+    <color name="colorGroup13">#657884</color>
 </resources>

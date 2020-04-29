@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ninano.weto">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,33 +18,26 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.ninano.weto.src.todo_add.AddPersonalToDoActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name="com.ninano.weto.src.todo_add.AddPersonalToDoActivity"/>
         <activity android:name="com.ninano.weto.src.wifi_search.WifiSearchActivity" />
         <activity android:name="com.ninano.weto.src.main.MainActivity">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
         </activity>
 
         <activity android:name="com.ninano.weto.db.RoomDBActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
-
-        <service android:name="com.ninano.weto.src.MyService" />
-
-        <receiver android:name="com.ninano.weto.src.WifiReceiver">
-            <intent-filter android:priority="100">
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name="com.ninano.weto.src.WifiService"

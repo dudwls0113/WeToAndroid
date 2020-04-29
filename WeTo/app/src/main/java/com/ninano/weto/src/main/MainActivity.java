@@ -1,28 +1,19 @@
 package com.ninano.weto.src.main;
 
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
-import com.ninano.weto.src.WifiReceiver;
 import com.ninano.weto.src.custom.NonSwipeViewPager;
 import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
 import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
-import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
-import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 import org.jetbrains.annotations.NotNull;
