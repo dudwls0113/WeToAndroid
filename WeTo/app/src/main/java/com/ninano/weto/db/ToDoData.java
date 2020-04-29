@@ -48,9 +48,17 @@ public class ToDoData {
         this.repeatType = repeatType;
         this.repeatDayOfWeek = repeatDayOfWeek;
         this.repeatDay = repeatDay;
+        this.date = date;
         this.time = time;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public int getTodoDataNo() {
         return todoDataNo;

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RoomDBActivity extends AppCompatActivity {
 
-    EditText mEditTextTitle, mEditTextContent, mEditTextIcon, mEditTextType, mEditTextIsGroup, mEditTextLocationTitle, mEditTextLatitude, mEditTextLongitude;
+    EditText mEditTextTitle, mEditTextContent, mEditTextIcon, mEditTextType, mEditTextLocationTitle, mEditTextLatitude, mEditTextLongitude;
     TextView mTextView;
     Button mBtn;
     Context mContext;
@@ -66,7 +66,7 @@ public class RoomDBActivity extends AppCompatActivity {
                 new InsertAsyncTask(db.todoDao())
                         .execute(new ToDo(title, content, icon, type),
                                 new ToDoData(0, "title", 10.3, 10.3, 100, "ssid", 'Y', 1,
-                                        1, "1 2", 30, "10:30"));
+                                        1, "1 2", 30, "10:30", "10:30"));
             }
         });
     }
