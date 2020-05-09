@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -26,12 +27,16 @@ public class GroupDetailActivity extends BaseActivity {
     private ArrayList<GroupMemberData> mMemberData = new ArrayList<>();
     private GroupMemberListAdapter mGroupMemberListAdapter;
 
+    private float density;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
         mContext = this;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        density = displayMetrics.density;
         init();
         setGroupMemberTempData();
     }
@@ -40,10 +45,18 @@ public class GroupDetailActivity extends BaseActivity {
         mRequestManager = Glide.with(mContext);
 
         mRecyclerViewMember = findViewById(R.id.group_detail_rv_member);
-        mGroupMemberListAdapter = new GroupMemberListAdapter(mContext, mMemberData, mRequestManager, new GroupMemberListAdapter.ItemClickListener() {
+        mGroupMemberListAdapter = new GroupMemberListAdapter(mContext, mMemberData, mRequestManager,density, new GroupMemberListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
+                if (pos==mMemberData.size()-1){
+                    GroupInviteDialog groupInviteDialog = new GroupInviteDialog(mContext, new GroupInviteDialog.InviteClickLIstener() {
+                        @Override
+                        public void inviteClick() {
 
+                        }
+                    });
+                    groupInviteDialog.show();
+                }
             }
         });
 
