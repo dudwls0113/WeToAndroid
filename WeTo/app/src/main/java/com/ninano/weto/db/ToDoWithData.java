@@ -7,7 +7,7 @@ public class ToDoWithData {
     private String title;
     private String content;
     private int icon;
-    private char type;
+    private int type;
     private String status;
     private String locationName;
     private double latitude;
@@ -53,11 +53,11 @@ public class ToDoWithData {
         this.icon = icon;
     }
 
-    public char getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(char type) {
+    public void setType(int type) {
         this.type = type;
     }
 

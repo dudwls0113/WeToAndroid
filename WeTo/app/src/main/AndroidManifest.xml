@@ -20,27 +20,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.ninano.weto.src.todo_add.AddPersonalToDoActivity"/>
-        <activity android:name="com.ninano.weto.src.wifi_search.WifiSearchActivity" />
-        <activity android:name="com.ninano.weto.src.main.MainActivity">
-                        <intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"></activity>
+        <activity android:name=".src.map_select.MapSelectActivity" />
+        <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
+        <activity android:name=".src.wifi_search.WifiSearchActivity" />
+        <activity android:name=".src.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                            <category android:name="android.intent.category.LAUNCHER" />
-                        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity android:name=".db.RoomDBActivity">
 
-        <activity android:name="com.ninano.weto.db.RoomDBActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
 
         <service
-            android:name="com.ninano.weto.src.WifiService"
+            android:name=".src.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <meta-data

@@ -18,7 +18,7 @@ public abstract class ToDoDao {
     abstract LiveData<List<ToDo>> getAll();
 
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo ORDER BY Todo.ordered")
-    abstract LiveData<List<ToDoWithData>> getTodoList();
+    public abstract LiveData<List<ToDoWithData>> getTodoList();
 
     @Transaction
     public void insertTodo(ToDo todo, ToDoData toDoData) {

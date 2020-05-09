@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.models.LikeLocationData;
 
@@ -27,7 +29,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     private Switch mSwitchTime, mSwitchGps;
     private boolean isSwitchTime, isSwitchGps;
-    private LinearLayout mLinearHiddenTime, mLinearHiddenGps;
+    private LinearLayout mLinearHiddenTime, mLinearHiddenGps, mLinearMap;
 
     private RecyclerView mRecyclerViewLike;
     private LIkeLocationListAdapter mLIkeLocationListAdapter;
@@ -42,7 +44,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setTempLikeLocationData();
     }
 
-    void init(){
+    void init() {
         mTextViewTimeNoRepeat = findViewById(R.id.add_personal_todo_tv_no_repeat);
         isSelectedNoRepeat = true;
         mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
@@ -51,6 +53,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
+        mLinearMap = findViewById(R.id.add_personal_todo_layout_gps);
 
         mSwitchTime = findViewById(R.id.add_personal_todo_switch_time);
         mSwitchGps = findViewById(R.id.add_personal_todo_switch_gps);
@@ -62,10 +65,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mLIkeLocationListAdapter = new LIkeLocationListAdapter(mContext, mDataArrayList, new LIkeLocationListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
-                for(int i=0; i<mDataArrayList.size(); i++){
+                for (int i = 0; i < mDataArrayList.size(); i++) {
                     mDataArrayList.get(i).setSelected(false);
                 }
-                if (pos != mDataArrayList.size()-1){
+                if (pos != mDataArrayList.size() - 1) {
                     mDataArrayList.get(pos).setSelected(true);
                 } else {
                     // 즐겨찾기 장소 추가화면
@@ -76,7 +79,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mRecyclerViewLike.setAdapter(mLIkeLocationListAdapter);
     }
 
-    private void showTimeLayout(){
+    private void showTimeLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(0, 500);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
@@ -91,7 +94,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         anim1.start();
     }
 
-    private void hideTimeLayout(){
+    private void hideTimeLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(500, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
@@ -106,7 +109,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         anim1.start();
     }
 
-    private void showGpsLayout(){
+    private void showGpsLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(0, 600);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
@@ -123,7 +126,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mLIkeLocationListAdapter.notifyDataSetChanged();
     }
 
-    private void hideGpsLayout(){
+    private void hideGpsLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(600, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
@@ -138,8 +141,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
         anim1.start();
     }
 
-    public void customOnClick(View v){
-        switch (v.getId()){
+    public void customOnClick(View v) {
+        switch (v.getId()) {
             case R.id.add_personal_todo_tv_no_repeat:
                 isSelectedNoRepeat = true;
                 mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
@@ -197,13 +200,13 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#ffffff"));
                 break;
             case R.id.add_personal_todo_switch_time:
-                if (isSwitchTime){ // expand 상태
+                if (isSwitchTime) { // expand 상태
                     hideTimeLayout();
                     isSwitchTime = false;
                 } else { // not expand 상태
                     showTimeLayout();
                     isSwitchTime = true;
-                    if (isSwitchGps){
+                    if (isSwitchGps) {
                         hideGpsLayout();
                         isSwitchGps = false;
                         mSwitchGps.setChecked(false);
@@ -211,23 +214,28 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
                 break;
             case R.id.add_personal_todo_switch_gps:
-                if (isSwitchGps){
+                if (isSwitchGps) {
                     hideGpsLayout();
                     isSwitchGps = false;
                 } else {
                     showGpsLayout();
                     isSwitchGps = true;
-                    if (isSwitchTime){
+                    if (isSwitchTime) {
                         hideTimeLayout();
                         isSwitchTime = false;
                         mSwitchTime.setChecked(false);
                     }
                 }
                 break;
+
+            case R.id.add_personal_todo_layout_gps:
+                // 지도 선 화면
+                Intent intent =new Intent(mContext, MapSelectActivity.class);
+                startActivity(intent);
         }
     }
 
-    void setTempLikeLocationData(){
+    void setTempLikeLocationData() {
         mDataArrayList.add(new LikeLocationData("집", "청라1동", false, false));
         mDataArrayList.add(new LikeLocationData("회사", "청라1동", false, false));
         mDataArrayList.add(new LikeLocationData("사무실", "청라1동", false, false));

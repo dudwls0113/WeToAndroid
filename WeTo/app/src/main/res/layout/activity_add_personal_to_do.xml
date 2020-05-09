@@ -271,10 +271,12 @@
                         android:layout_height="33dp"
                         android:layout_marginBottom="15dp"/>
                     <LinearLayout
+                        android:id="@+id/add_personal_todo_layout_gps"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
                         android:orientation="horizontal"
                         android:background="@drawable/bg_round_edit"
+                        android:onClick="customOnClick"
                         android:layout_marginBottom="15dp">
                         <ImageView
                             android:layout_width="32dp"

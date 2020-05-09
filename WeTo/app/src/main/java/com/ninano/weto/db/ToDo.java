@@ -12,11 +12,11 @@ public class ToDo {
     private String title;
     private String content;
     private int icon;
-    private char type;
+    private int type;
     private String status;
     private int ordered;
 
-    public ToDo(String title, String content, int icon, char type) {
+    public ToDo(String title, String content, int icon, int type) {
         this.title = title;
         this.content = content;
         this.icon = icon;
@@ -50,7 +50,7 @@ public class ToDo {
         this.icon = icon;
     }
 
-    public void setType(char type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -82,7 +82,7 @@ public class ToDo {
         return icon;
     }
 
-    public char getType() {
+    public int getType() {
         return type;
     }
 
