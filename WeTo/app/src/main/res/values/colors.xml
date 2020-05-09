@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#ffffff</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="colorWhiteGray">#e3e7ec</color>
+    <color name="colorBackGray">#f5f6fa</color>
+    <color name="colorSearchGray">#b0bec5</color>
+
     <color name="colorGray">#e3e7ec</color>
     <color name="colorBlack">#38454c</color>
     <color name="colorGroup1">#ff3d00</color>
@@ -19,4 +23,7 @@
     <color name="colorGroup11">#ff6f00</color>
     <color name="colorGroup12">#915039</color>
     <color name="colorGroup13">#657884</color>
+
+    <color name="colorMapGpsTransBlue">#1a0809ff</color>
+
 </resources>

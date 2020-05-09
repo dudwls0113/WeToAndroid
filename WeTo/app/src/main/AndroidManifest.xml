@@ -30,22 +30,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"/>
+        <activity android:name=".src.map_select.MapSelectActivity" />
+        <activity android:name=".db.RoomDBActivity">
 
-        <activity android:name="com.ninano.weto.db.RoomDBActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
 
         <service
             android:name=".src.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".src.CellularService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:name=".src.CellularService"/>
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="6ffkrts5vi" />
     </application>
 
 </manifest>
