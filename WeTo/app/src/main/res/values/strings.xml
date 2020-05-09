@@ -9,6 +9,7 @@
     <string name="todo_gps_noti_time">알림 받을 시간대를 설정하세요.</string>
     <string name="todo_important">중요한 일정으로 설정하기</string>
     <string name="todo_memo">메모</string>
+    <string name="loading">로딩중입니다.</string>
     <string name="dialog_group_title">그룹 기능을\n사용하기 위해 로그인 해주세요.</string>
     <string name="dialog_group_subtitle">별도의 회원가입 과정 없이\n카카오톡 연동 로그인을 하실 수 있습니다.</string>
     <string name="wifi_search_title">근처에서 연결되는 Wi-fi를 이용\n하여 더욱 정확한 위치 등록하기</string>

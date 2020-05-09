@@ -7,70 +7,72 @@
     android:orientation="vertical"
     tools:context=".src.map_select.MapSelectActivity">
 
-    <ScrollView
+    <!--    <ScrollView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="77dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="77dp"
+            <ImageButton
+                android:id="@+id/activity_keyword_search_btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:background="@color/colorWhite"
-                android:orientation="horizontal">
+                android:onClick="customOnClick"
+                android:padding="20dp"
+                android:src="@drawable/btn_back" />
 
-                <ImageButton
-                    android:id="@+id/activity_keyword_search_btn_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/colorWhite"
-                    android:padding="20dp"
-                    android:src="@drawable/btn_back" />
-
-                <EditText
-                    android:id="@+id/activity_keyword_search_et_keyword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="@string/map_select_search"
-                    android:maxLines="1"
-                    android:onClick="customOnClick"
-                    android:padding="20dp"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/activity_keyword_map_btn_remove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@null"
-                    android:padding="20dp"
-                    android:onClick="customOnClick"
-                    android:src="@drawable/btn_remove" />
-            </LinearLayout>
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/activity_keyword_map_rv_history"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content" />-->
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activity_keyword_map_rv_result"
+            <EditText
+                android:id="@+id/activity_keyword_search_et_keyword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/list_location"
-                tools:itemCount="3"/>
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/map_select_search"
+                android:inputType="textPersonName"
+                android:onClick="customOnClick"
+                android:padding="20dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
+            <ImageButton
+                android:id="@+id/activity_keyword_map_btn_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:onClick="customOnClick"
+                android:padding="20dp"
+                android:src="@drawable/btn_remove" />
         </LinearLayout>
-    </ScrollView>
+
+        <!--            <androidx.recyclerview.widget.RecyclerView-->
+        <!--                android:id="@+id/activity_keyword_map_rv_history"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_keyword_map_rv_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/list_location" />
+
+    </LinearLayout>
+    <!--    </ScrollView>-->
 </LinearLayout>
