@@ -23,13 +23,22 @@
         <activity android:name=".src.group_detail.GroupDetailActivity"></activity>
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
-        <activity android:name=".src.main.MainActivity">
+        <activity android:name="com.ninano.weto.src.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.ninano.weto.db.RoomDBActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
 
         <service
             android:name=".src.WifiService"
