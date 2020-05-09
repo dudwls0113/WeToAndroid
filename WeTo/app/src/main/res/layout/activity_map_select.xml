@@ -133,7 +133,7 @@
                 android:layout_marginTop="15dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="자주 가는 장소로 등록하기"
+                android:text="이 장소 선택"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginHorizontal="16dp"

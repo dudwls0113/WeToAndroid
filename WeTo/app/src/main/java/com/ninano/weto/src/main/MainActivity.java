@@ -70,13 +70,9 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
     private NavigationTabBar mNavigationTabBar;
     private ArrayList<NavigationTabBar.Model> mNavigationTabBarModels;
 
-    private GeofencingClient geofencingClient;
 
     private int MY_PERMISSIONS_REQ_ACCESS_FINE_LOCATION = 100;
     private int MY_PERMISSIONS_REQ_ACCESS_BACKGROUND_LOCATION = 101;
-
-    ArrayList<Geofence> geofenceList = new ArrayList<>();
-    AppDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,94 +82,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         AutoPermissions.Companion.loadAllPermissions(this, 100);
         checkPermission();
         init();
-        geofencingClient = LocationServices.getGeofencingClient(this);
-        geofenceList.add(getGeofence(1, "사무실", new Pair<>(37.477198, 126.883828), (float) 300, 3000));
-        addGeofences();
-        setDatabase();
-
-    }
-
-    private void setDatabase() {
-        mDatabase = AppDatabase.getAppDatabase(this);
-
-        //UI 갱신 (라이브 데이터를 이용하여 자동으로)
-        mDatabase.todoDao().getTodoList().observe(this, new Observer<List<ToDoWithData>>() {
-            @Override
-            public void onChanged(List<ToDoWithData> todoList) {
-//                mTextView.setText(todoList.toString());
-//                geofenceList.add(getGeofence(3, "가디역", new Pair<>(37.477198, 126.883828), (float) 100.0, 10000));
-//                addGeofences();
-            }
-        });
-    }
-
-    //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private static class InsertAsyncTask extends AsyncTask<Object, Void, Void> {
-        private ToDoDao mTodoDao;
-
-        InsertAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
-        }
-
-        @Override
-        protected Void doInBackground(Object... toDos) {
-            mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            return null;
-        }
-    }
-
-
-    private void addGeofences() {
-        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                showCustomToast("add Success");
-
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showCustomToast("add Fail");
-                Log.d("에러", e.toString());
-
-                // ...
-            }
-        });
-//        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-//        geofencingClient.removeGeofences(new List<String>())
-    }
-
-    private PendingIntent geofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        PendingIntent geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return geofencePendingIntent;
-    }
-
-    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        // Geofence 이벤트는 진입시 부터 처리할 때
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(list);  // Geofence 리스트 추가
-        return builder.build();
-    }
-
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-        int GEOFENCE_TRANSITION;
-        if (type == 1) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == 2) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-        } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-        }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
     }
 
     void init() {

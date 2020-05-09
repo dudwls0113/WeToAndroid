@@ -27,6 +27,8 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.CircleOverlay;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.ZoomControlView;
@@ -56,6 +58,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     private CircleOverlay mCircleOverlay = new CircleOverlay();
     private Double longitude, latitude;
     private LinearLayout mLayoutWifi, mLayoutLocation;
+    private LocationResponse.Location mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +138,13 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                 break;
             case R.id.activity_map_select_btn_back:
                 finish();
+                break;
             case R.id.activity_map_select_layout_location_btn:
+                Intent intent2 = new Intent();
+                intent2.putExtra("location", mLocation);
+                setResult(100, intent2);
+                finish();
+                break;
 
         }
     }
@@ -147,22 +156,32 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         if (requestCode == 100) {
             if (resultCode == 100) {
                 //성공적으로 location  받음
-                getLocationAndSetMap((LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location")));
+                mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                getLocationAndSetMap(mLocation);
             } else {
 
             }
         }
     }
 
-    @SuppressLint("ResourceAsColor")
     private void getLocationAndSetMap(LocationResponse.Location location) {
+        Log.d("좌표", location.getLatitude() + " " + location.getLongitude());
         CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.VISIBLE);
         mLayoutWifi.setVisibility(View.GONE);
         mTextViewTitle.setText(location.getPlaceName());
+        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocationTitle.setText(location.getPlaceName());
         mTextViewLocationAddress.setText(location.getAddressName());
+
+        Marker marker = new Marker();
+        marker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
+        marker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
+        marker.setIconTintColor(getResources().getColor(R.color.colorMarker));
+        marker.setWidth(100);
+        marker.setHeight(130);
+        marker.setMap(naverMap);
     }
 
     public void onMapReady(@NonNull NaverMap naverMap2) {
