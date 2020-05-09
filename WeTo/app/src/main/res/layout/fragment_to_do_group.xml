@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/todo_group_fragment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".src.main.todo_group.ToDoGroupFragment"
     android:background="@color/colorWhite">
 
@@ -30,8 +32,8 @@
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"/>
             <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_settings"
                 android:padding="10dp"
                 android:layout_gravity="center_vertical"/>
@@ -93,6 +95,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#f5f6fa"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todo_group_fragment_rv_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginBottom="22dp"
+                    android:layout_marginTop="7dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="11dp"
+                    android:paddingBottom="9dp"
+                    android:paddingStart="11dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="44dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bg_round_confirm_button">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_chevron_down_blue"
+                        android:layout_marginEnd="9dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:textSize="12sp"
+                        android:textColor="#0809ff"
+                        android:lineSpacingExtra="6sp"
+                        android:textStyle="bold"
+                        android:text="완료된 항목"/>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -108,7 +144,21 @@
             android:id="@+id/todo_group_fragment_iv_drag"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="#657884" />
+            android:background="@drawable/bg_round_float_button_gray"
+            android:src="@drawable/ic_float_drag"
+            android:padding="13dp" />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="1dp"/>
+        <ImageView
+            android:id="@+id/todo_group_fragment_iv_add_and_drag_confirm"
+            android:visibility="gone"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_round_float_button_blue"
+            android:src="@drawable/ic_float_plus"
+            android:padding="13dp" />
     </LinearLayout>
 
 </FrameLayout>

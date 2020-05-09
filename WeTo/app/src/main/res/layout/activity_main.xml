@@ -22,7 +22,7 @@
         android:background="@drawable/bg_round_ntb"
         android:elevation="20dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="12dp"
         app:ntb_active_color="#0809ff"
         app:ntb_animation_duration="0"
         app:ntb_badge_use_typeface="false"

@@ -20,9 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.ninano.weto.src.todo_add.AddPersonalToDoActivity"/>
-        <activity android:name="com.ninano.weto.src.wifi_search.WifiSearchActivity" />
-        <activity android:name="com.ninano.weto.src.main.MainActivity">
+        <activity android:name=".src.group_detail.GroupDetailActivity"></activity>
+        <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
+        <activity android:name=".src.wifi_search.WifiSearchActivity" />
+        <activity android:name=".src.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +32,10 @@
         </activity>
 
         <service
-            android:name="com.ninano.weto.src.WifiService"
+            android:name=".src.WifiService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".src.CellularService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
