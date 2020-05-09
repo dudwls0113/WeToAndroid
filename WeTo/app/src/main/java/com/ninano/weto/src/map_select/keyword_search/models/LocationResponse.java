@@ -2,6 +2,7 @@ package com.ninano.weto.src.map_select.keyword_search.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class LocationResponse {
@@ -29,7 +30,7 @@ public class LocationResponse {
         }
     }
 
-    public class Location{
+    public class Location implements Serializable{
         @SerializedName("address_name")
         private String addressName;
 

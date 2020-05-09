@@ -1,5 +1,8 @@
 package com.ninano.weto.src.map_select.keyword_search;
 
+import android.util.Log;
+
+import com.ninano.weto.config.KakaoTokenInterceptor;
 import com.ninano.weto.config.XAccessTokenInterceptor;
 import com.ninano.weto.src.map_select.keyword_search.interfaces.KeywordMapSearchActivityView;
 import com.ninano.weto.src.map_select.keyword_search.interfaces.KeywordMapSearchRetrofitInterface;
@@ -30,7 +33,7 @@ class KeywordMapSearchService {
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(new XAccessTokenInterceptor()) // JWT 자동 헤더 전송
+                .addNetworkInterceptor(new KakaoTokenInterceptor()) // 카카오
                 .build();
 
         retrofit = new Retrofit.Builder()
@@ -49,14 +52,24 @@ class KeywordMapSearchService {
             @Override
             public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
                 final LocationResponse locationResponse = response.body();
+//                Log.e("에러", locationResponse.toString());
+//                Log.e("에러", response.message());
+//                Log.e("에러", response.headers().toString());
+
                 if (locationResponse == null) {
+//                    Log.e("에러", "nulllll");
                     keywordMapSearchActivityView.validateFailure(null);
                     return;
+                } else {
+                    Log.e("에러", "success");
+
+                    keywordMapSearchActivityView.validateSuccess(locationResponse.getLocations());
                 }
             }
 
             @Override
             public void onFailure(Call<LocationResponse> call, Throwable t) {
+                Log.e("에러", t.toString());
                 keywordMapSearchActivityView.validateFailure(null);
             }
         });

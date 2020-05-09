@@ -9,6 +9,7 @@
     <string name="todo_gps_noti_time">알림 받을 시간대를 설정하세요.</string>
     <string name="todo_important">중요한 일정으로 설정하기</string>
     <string name="todo_memo">메모</string>
+    <string name="loading">로딩중입니다.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
