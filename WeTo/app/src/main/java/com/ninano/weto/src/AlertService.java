@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
@@ -31,8 +32,10 @@ public class AlertService extends Service {
         wifiManager = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
         connectivityManager = (ConnectivityManager)getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (connectivityManager != null && connectivityManager.getActiveNetwork() != null) {
-                Network network = connectivityManager.getActiveNetwork();
+            if (connectivityManager != null ){
+                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                if (capabilities!=null){
+                }
             }
         }
     }

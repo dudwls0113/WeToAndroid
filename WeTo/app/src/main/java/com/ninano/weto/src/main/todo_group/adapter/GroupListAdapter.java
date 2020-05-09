@@ -138,6 +138,12 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
             mTextViewMember = itemView.findViewById(R.id.list_group_tv_member);
             mTextViewCount = itemView.findViewById(R.id.list_group_tv_count);
             mLinearFront = itemView.findViewById(R.id.list_group_layout_front);
+            mLinearFront.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickListener.itemClick(getAdapterPosition());
+                }
+            });
             mFrameBack = itemView.findViewById(R.id.list_group_layout_item);
         }
     }

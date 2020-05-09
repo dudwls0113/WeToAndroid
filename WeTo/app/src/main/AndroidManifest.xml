@@ -20,17 +20,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"></activity>
-        <activity android:name=".src.map_select.MapSelectActivity" />
+        <activity android:name=".src.group_detail.GroupDetailActivity"></activity>
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
-        <activity android:name=".src.main.MainActivity">
+        <activity android:name="com.ninano.weto.src.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"/>
+        <activity android:name=".src.map_select.MapSelectActivity" />
         <activity android:name=".db.RoomDBActivity">
 
             <!-- <intent-filter> -->
@@ -44,7 +45,9 @@
         <service
             android:name=".src.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
+        <service
+            android:name=".src.CellularService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="6ffkrts5vi" />

@@ -1,14 +1,19 @@
 package com.ninano.weto.src.main.todo_personal;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -21,6 +26,7 @@ import android.widget.TextView;
 
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseFragment;
+import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalListAdapter;
 import com.ninano.weto.src.main.todo_personal.models.ToDoPersonalData;
@@ -31,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 public class ToDoPersonalFragment extends BaseFragment {
@@ -66,6 +73,27 @@ public class ToDoPersonalFragment extends BaseFragment {
     @Override
     public void setComponentView(View v) {
         mTextViewDate = v.findViewById(R.id.todo_personal_fragment_tv_date);
+        mTextViewDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                if (jobScheduler != null) {
+                    jobScheduler.cancelAll();
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    if (jobScheduler != null) {
+                        jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                                .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+                                .build());
+                    }
+//                    jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, WifiService.class))
+//                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+//                            .setOverrideDeadline(0)
+//                            .build());
+                }
+            }
+        });
         getCurrentTime();
 
         mFrameLayout = v.findViewById(R.id.todo_personal_fragment_layout_frame);
@@ -89,6 +117,17 @@ public class ToDoPersonalFragment extends BaseFragment {
         // editText 검색시 isSearchMode 원래대로
 
         mRecyclerView = v.findViewById(R.id.todo_personal_fragment_rv);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext){
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         mToDoPersonalListAdapter = new ToDoPersonalListAdapter(mContext, mData, new ToDoPersonalListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
@@ -119,7 +158,8 @@ public class ToDoPersonalFragment extends BaseFragment {
                     }
                     isEditMode = false;
                     mImageViewDrag.setVisibility(View.GONE);
-                    mImageViewAddAndDragConfirm.setBackgroundColor(Color.parseColor("#657884"));
+                    mImageViewAddAndDragConfirm.setBackgroundResource(R.drawable.bg_round_float_button_gray);
+                    mImageViewAddAndDragConfirm.setImageResource(R.drawable.ic_float_check);
                     mToDoPersonalListAdapter.notifyDataSetChanged();
                 }
             }
@@ -133,7 +173,8 @@ public class ToDoPersonalFragment extends BaseFragment {
                     }
                     isEditMode = true;
                     mImageViewDrag.setVisibility(View.VISIBLE);
-                    mImageViewAddAndDragConfirm.setBackgroundColor(Color.parseColor("#0809ff"));
+                    mImageViewAddAndDragConfirm.setBackgroundResource(R.drawable.bg_round_float_button_blue);
+                    mImageViewAddAndDragConfirm.setImageResource(R.drawable.ic_float_plus);
                     mToDoPersonalListAdapter.notifyDataSetChanged();
                 } else {
                     // 할일 추가 화면

@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="77dp"
+        android:elevation="10dp"
         android:background="@color/colorWhite">
 
         <ImageButton
@@ -36,10 +37,112 @@
 
     </LinearLayout>
 
-    <com.naver.maps.map.MapView
-        android:id="@+id/map_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:navermap_zoom="12" />
+        android:layout_height="match_parent">
+
+        <com.naver.maps.map.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:navermap_zoom="12" />
+
+        <com.naver.maps.map.widget.ZoomControlView
+            android:id="@+id/zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:id="@+id/activity_map_select_layout_wifi"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_round_dialog"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal"
+            android:elevation="10dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_wifi_4"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="21dp"
+                android:layout_marginEnd="21dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="#38454c"
+                android:lineSpacingExtra="6sp"
+                android:layout_gravity="center"
+                android:text="@string/wifi_search_title"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right_wifi"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="21dp"
+                android:layout_marginEnd="21dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_map_select_layout_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_round_dialog"
+            android:layout_marginTop="18dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activity_map_select_layout_location_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="무슨약국"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginTop="15dp"/>
+
+            <TextView
+                android:id="@+id/activity_map_select_layout_location_tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/colorGray"
+                android:lineSpacingExtra="6sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="7dp"
+                tools:text="서울특별시 종로구 종로 203" />
+
+            <Button
+                android:id="@+id/activity_map_select_layout_location_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="자주 가는 장소로 등록하기"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:textColor="@color/colorGroup13"
+                android:background="@drawable/bg_round_white_gray_button"
+                android:onClick="customOnClick"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

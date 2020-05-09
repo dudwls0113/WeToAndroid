@@ -14,6 +14,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naver.maps.geometry.LatLng;
@@ -35,24 +36,26 @@ import com.ninano.weto.src.main.map.GpsTracker;
 import com.ninano.weto.src.map_select.keyword_search.KeywordMapSearchActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
+import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class MapSelectActivity extends BaseActivity implements OnMapReadyCallback {
 
-    Context mContext;
-    ZoomControlView zoomControlView;
+    private Context mContext;
+    private ZoomControlView zoomControlView;
     private MapView mapView;
-    NaverMap naverMap;
+    private NaverMap naverMap;
 
-    TextView mTextViewTitle;
+    private TextView mTextViewTitle, mTextViewLocationTitle, mTextViewLocationAddress;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
-    ArrayList<PathOverlay> pathOverlays = new ArrayList<>();
-    CircleOverlay mCircleOverlay = new CircleOverlay();
-    Double longitude, latitude;
+    private ArrayList<PathOverlay> pathOverlays = new ArrayList<>();
+    private CircleOverlay mCircleOverlay = new CircleOverlay();
+    private Double longitude, latitude;
+    private LinearLayout mLayoutWifi, mLayoutLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +63,28 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_map_select);
         mContext = this;
         mapView = findViewById(R.id.map_view);
+        zoomControlView = findViewById(R.id.zoom);
+        mLayoutWifi = findViewById(R.id.activity_map_select_layout_wifi);
+        mLayoutWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                startActivity(intent);
+            }
+        });
         mapView.onCreate(savedInstanceState);
         mTextViewTitle = findViewById(R.id.activity_map_select_tv_title);
+        mTextViewLocationTitle = findViewById(R.id.activity_map_select_layout_location_tv_title);
+        mTextViewLocationAddress = findViewById(R.id.activity_map_select_layout_location_tv_address);
+        mLayoutLocation = findViewById(R.id.activity_map_select_layout_location);
+
+        mapView.getMapAsync(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mapView.onStart();
-        mapView.getMapAsync(this);
     }
 
     @Override
@@ -119,6 +135,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                 break;
             case R.id.activity_map_select_btn_back:
                 finish();
+            case R.id.activity_map_select_layout_location_btn:
+
         }
     }
 
@@ -138,11 +156,13 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
 
     @SuppressLint("ResourceAsColor")
     private void getLocationAndSetMap(LocationResponse.Location location) {
+        CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
+        naverMap.setCameraPosition(cameraPosition);
+        mLayoutLocation.setVisibility(View.VISIBLE);
+        mLayoutWifi.setVisibility(View.GONE);
         mTextViewTitle.setText(location.getPlaceName());
-        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
-        naverMap.moveCamera(cameraUpdate);
-
+        mTextViewLocationTitle.setText(location.getPlaceName());
+        mTextViewLocationAddress.setText(location.getAddressName());
     }
 
     public void onMapReady(@NonNull NaverMap naverMap2) {

@@ -22,7 +22,7 @@
         android:background="@drawable/bg_round_ntb"
         android:elevation="20dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="12dp"
         app:ntb_active_color="#0809ff"
         app:ntb_animation_duration="0"
         app:ntb_badge_use_typeface="false"
@@ -36,10 +36,4 @@
         app:ntb_title_mode="all"
         app:ntb_title_size="0sp"
         app:ntb_titled="false"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
 </FrameLayout>

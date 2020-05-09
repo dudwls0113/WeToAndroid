@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="312dp"
+    android:layout_height="366dp"
+    android:background="@drawable/bg_round_dialog">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_round_group_4"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/ic_group_on"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_marginBottom="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="9sp"
+        android:gravity="center_horizontal"
+        android:text="@string/dialog_group_title"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="13dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center_horizontal"
+        android:text="@string/dialog_group_subtitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="55dp"/>
+    <Button
+        android:id="@+id/dialog_group_login_btn_login"
+        android:layout_width="252dp"
+        android:layout_height="45dp"
+        android:text="카카오톡으로 로그인하기"
+        android:textSize="15sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="8sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_round_group_default"
+        android:stateListAnimator="@null"/>
+
+
+
+
+</LinearLayout>
