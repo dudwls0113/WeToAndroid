@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
@@ -30,6 +31,7 @@ import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.map.GpsTracker;
 import com.ninano.weto.src.map_select.keyword_search.KeywordMapSearchActivity;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
+import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     ArrayList<PathOverlay> pathOverlays = new ArrayList<>();
     CircleOverlay mCircleOverlay = new CircleOverlay();
 
+    private LinearLayout mLayoutWifi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,15 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_map_select);
         mContext = this;
         mapView = findViewById(R.id.map_view);
+        zoomControlView = findViewById(R.id.zoom);
+        mLayoutWifi = findViewById(R.id.activity_map_select_layout_wifi);
+        mLayoutWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                startActivity(intent);
+            }
+        });
         mapView.onCreate(savedInstanceState);
     }
     @Override

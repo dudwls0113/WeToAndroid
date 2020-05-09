@@ -11,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationSource locationSource;
     ArrayList<PathOverlay> pathOverlays = new ArrayList<>();
     CircleOverlay mCircleOverlay = new CircleOverlay();
+    float density;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +53,9 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_map, container, false);
         mContext = getContext();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        density = displayMetrics.density;
         setComponentView(view);
         return view;
     }
@@ -184,6 +190,9 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);
+        uiSettings.setScaleBarEnabled(false);
+        uiSettings.setLogoGravity(Gravity.TOP);
+        uiSettings.setLogoMargin((int)(12*density), (int)(12*density), 0, 0);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
         naverMap.setLightness(0.3f);

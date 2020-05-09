@@ -36,10 +36,4 @@
         app:ntb_title_mode="all"
         app:ntb_title_size="0sp"
         app:ntb_titled="false"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
 </FrameLayout>

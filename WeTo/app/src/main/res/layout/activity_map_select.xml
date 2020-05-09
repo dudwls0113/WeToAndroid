@@ -34,10 +34,58 @@
 
     </LinearLayout>
 
-    <com.naver.maps.map.MapView
-        android:id="@+id/map_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:navermap_zoom="12" />
+        android:layout_height="match_parent">
+        <com.naver.maps.map.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:navermap_zoom="12" />
+
+        <com.naver.maps.map.widget.ZoomControlView
+            android:id="@+id/zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:id="@+id/activity_map_select_layout_wifi"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_round_dialog"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_wifi_4"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="21dp"
+                android:layout_marginEnd="21dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="#38454c"
+                android:lineSpacingExtra="6sp"
+                android:layout_gravity="center"
+                android:text="@string/wifi_search_title"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right_wifi"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="21dp"
+                android:layout_marginEnd="21dp"/>
+
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

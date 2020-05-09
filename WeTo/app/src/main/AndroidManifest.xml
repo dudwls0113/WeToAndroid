@@ -46,7 +46,8 @@
             android:name=".src.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".src.CellularService"/>
+            android:name=".src.CellularService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="6ffkrts5vi" />

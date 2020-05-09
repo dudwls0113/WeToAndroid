@@ -221,17 +221,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         mNavigationTabBar.setViewPager(mViewPager, 1);
         mNavigationTabBar.setBadgeTitleColor(Color.WHITE);
         mNavigationTabBar.setIsSwiped(true);
-
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new InsertAsyncTask(mDatabase.todoDao())
-                        .execute(new ToDo("일정 이름", "일정 내용", 10, 1),
-                                new ToDoData(0, "위치이름(가디역)", 37.480414, 126.883104, 200, "ssid_no", 'N', 1,
-                                        1, "1 2", 30, "10:30", "10:30"));
-            }
-        });
-
     }
 
     private void checkPermission() {
