@@ -1,5 +1,6 @@
 package com.ninano.weto.src.main.todo_personal;
 
+import android.animation.ValueAnimator;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ClipData;
@@ -16,12 +17,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ninano.weto.R;
@@ -59,41 +62,57 @@ public class ToDoPersonalFragment extends BaseFragment {
     private ImageView mImageViewDrag, mImageViewAddAndDragConfirm;
     private boolean isEditMode = true;
 
+    private LinearLayout mLInearHiddenDone;
+    private RecyclerView mRecyclerViewDone;
+    private ToDoPersonalListAdapter mToDoPersonalDoneListAdapter;
+    private ArrayList<ToDoPersonalData> mDoneData = new ArrayList<>();
+    private ItemTouchHelper mDoneItemTouchHelper;
+
+    private LinearLayout mLInearExpand;
+    private boolean isExpandable;
+    private TextView mTextViewExpand;
+    private ImageView mImageViewExpand;
+    private float density;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_to_do_personal, container, false);
         mContext = getContext();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        density = displayMetrics.density;
         setComponentView(v);
         setToDoTempData();
+        setToDoDoneTempData();
         return v;
     }
 
     @Override
     public void setComponentView(View v) {
         mTextViewDate = v.findViewById(R.id.todo_personal_fragment_tv_date);
-        mTextViewDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                if (jobScheduler != null) {
-                    jobScheduler.cancelAll();
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    if (jobScheduler != null) {
-                        jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                                .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                .build());
-                    }
-//                    jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, WifiService.class))
-//                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-//                            .setOverrideDeadline(0)
-//                            .build());
-                }
-            }
-        });
+//        mTextViewDate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+//                if (jobScheduler != null) {
+//                    jobScheduler.cancelAll();
+//                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                    if (jobScheduler != null) {
+//                        jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+//                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+//                                .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+//                                .build());
+//                    }
+////                    jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, WifiService.class))
+////                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+////                            .setOverrideDeadline(0)
+////                            .build());
+//                }
+//            }
+//        });
         getCurrentTime();
 
         mFrameLayout = v.findViewById(R.id.todo_personal_fragment_layout_frame);
@@ -184,6 +203,59 @@ public class ToDoPersonalFragment extends BaseFragment {
             }
         });
 
+        mLInearHiddenDone = v.findViewById(R.id.todo_personal_fragment_layout_hidden_done);
+        mRecyclerViewDone = v.findViewById(R.id.todo_personal_fragment_rv_done);
+
+        ToDoPersonalItemTouchHelperCallback mDoneCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoPersonalDoneListAdapter, mContext);
+        mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
+        mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
+
+        mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext){
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
+        mToDoPersonalDoneListAdapter = new ToDoPersonalListAdapter(mContext, mDoneData, new ToDoPersonalListAdapter.ItemClickListener() {
+            @Override
+            public void itemClick(int pos) {
+
+            }
+
+            @Override
+            public void onStartDrag(ToDoPersonalListAdapter.CustomViewHolder holder) {
+                mDoneItemTouchHelper.startDrag(holder);
+            }
+        });
+
+        mRecyclerViewDone.setAdapter(mToDoPersonalDoneListAdapter);
+
+        mTextViewExpand = v.findViewById(R.id.todo_personal_tv_expand);
+        mImageViewExpand = v.findViewById(R.id.todo_personal_iv_expand);
+
+        mLInearExpand = v.findViewById(R.id.todo_personal_fragment_layout_expandable);
+        mLInearExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isExpandable){
+                    hideDoneLayout();
+                    mTextViewExpand.setText("완료된 항목");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_down_blue);
+                    isExpandable = false;
+                } else {
+                    showDoneLayout();
+                    mTextViewExpand.setText("접기");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_up);
+                    isExpandable = true;
+                }
+            }
+        });
     }
 
     private void getCurrentTime(){
@@ -199,5 +271,45 @@ public class ToDoPersonalFragment extends BaseFragment {
         mData.add(new ToDoPersonalData(1, "우산 챙기기", "집, 매일, 아침 8시", 1, 0));
 
         mToDoPersonalListAdapter.notifyDataSetChanged();
+    }
+
+    void setToDoDoneTempData(){
+        mDoneData.add(new ToDoPersonalData(1, "밥 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
+        mDoneData.add(new ToDoPersonalData(1, "볼펜 사기", "집, 매일, 아침 8시", 1, 0));
+        mDoneData.add(new ToDoPersonalData(1, "콜라 사기", "집, 매일, 아침 8시", 1, 0));
+        mDoneData.add(new ToDoPersonalData(1, "마스크 챙기기", "집, 매일, 아침 8시", 1, 0));
+
+        mToDoPersonalDoneListAdapter.notifyDataSetChanged();
+
+    }
+
+    private void showDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, (int)(66*density*mDoneData.size() + 15*density));
+        anim1.setDuration(500);
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Integer value = (Integer) valueAnimator.getAnimatedValue();
+                mLInearHiddenDone.getLayoutParams().height = value.intValue();
+                mLInearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
+    }
+
+    private void hideDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt((int)(66*density*mDoneData.size()+ 15*density), 0);
+        anim1.setDuration(500); // duration 5 seconds
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                mLInearHiddenDone.getLayoutParams().height = value.intValue();
+                mLInearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
     }
 }

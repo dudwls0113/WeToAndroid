@@ -88,6 +88,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
         mLinearMap = findViewById(R.id.add_personal_todo_layout_gps);
+        mTextViewLocation = findViewById(R.id.add_personal_todo_tv_location);
 
         mSwitchTime = findViewById(R.id.add_personal_todo_switch_time);
         mSwitchGps = findViewById(R.id.add_personal_todo_switch_gps);

@@ -24,10 +24,12 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
     private Context mContext;
     private ArrayList<GroupData> mData;
     private ItemClickListener mItemClickListener;
+    private float mDensity;
 
-    public GroupListAdapter(Context context, ArrayList<GroupData> arrayList, ItemClickListener itemClickListener){
+    public GroupListAdapter(Context context, ArrayList<GroupData> arrayList, float density, ItemClickListener itemClickListener){
         mContext = context;
         mData = arrayList;
+        mDensity = density;
         mItemClickListener = itemClickListener;
     }
 
@@ -45,6 +47,25 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+        if (position==0){
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mFrameBack.getLayoutParams();
+            params.leftMargin = (int)(24*mDensity);
+            holder.mFrameBack.setLayoutParams(params);
+        } else{
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mFrameBack.getLayoutParams();
+            params.leftMargin = 0;
+            holder.mFrameBack.setLayoutParams(params);
+        }
+
+        if (position==mData.size()-1){
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mFrameBack.getLayoutParams();
+            params.rightMargin = (int)(24*mDensity);
+            holder.mFrameBack.setLayoutParams(params);
+        } else{
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mFrameBack.getLayoutParams();
+            params.rightMargin = (int)(12*mDensity);
+            holder.mFrameBack.setLayoutParams(params);
+        }
 
         if (mData.get(position).isLast()){
             holder.mLinearFront.setVisibility(View.GONE);

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,12 +29,14 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
     private ArrayList<GroupMemberData> mData;
     private ItemClickListener mItemClickListener;
     private RequestManager mRequestManager;
+    private float mDensity;
 
-    public GroupMemberListAdapter(Context context, ArrayList<GroupMemberData> arrayList, RequestManager requestManager, ItemClickListener itemClickListener){
+    public GroupMemberListAdapter(Context context, ArrayList<GroupMemberData> arrayList, RequestManager requestManager, float density, ItemClickListener itemClickListener){
         mContext = context;
         mData = arrayList;
         mRequestManager = requestManager;
         mItemClickListener = itemClickListener;
+        mDensity = density;
     }
 
     public interface ItemClickListener{
@@ -49,6 +52,15 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+        if (position==0){
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mLinearItem.getLayoutParams();
+            params.leftMargin = (int)(24*mDensity);
+            holder.mLinearItem.setLayoutParams(params);
+        } else {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mLinearItem.getLayoutParams();
+            params.leftMargin = 0;
+            holder.mLinearItem.setLayoutParams(params);
+        }
         if(mData.get(position).isLast()){
             holder.mTextViewName.setText("추가하기");
             ShapeDrawable oval = new ShapeDrawable(new OvalShape());
@@ -81,6 +93,7 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout mLinearItem;
         ImageView mImageViewProfile;
         TextView mTextViewName;
 
@@ -88,6 +101,13 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
             super(itemView);
             mImageViewProfile = itemView.findViewById(R.id.list_group_member_iv_profile);
             mTextViewName = itemView.findViewById(R.id.list_group_member_tv_name);
+            mLinearItem = itemView.findViewById(R.id.list_group_member_layout_item);
+            mLinearItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickListener.itemClick(getAdapterPosition());
+                }
+            });
         }
     }
 }

@@ -12,9 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +69,8 @@ public class ToDoGroupFragment extends BaseFragment {
     private FrameLayout mLayoutView;
     private GroupLoginDialog mGroupLoginDialog;
 
+    private float density;
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser){
@@ -86,6 +91,9 @@ public class ToDoGroupFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_to_do_group, container, false);
         isEditMode = true;
         mContext = getContext();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        density = displayMetrics.density;
         mGroupLoginDialog = new GroupLoginDialog(mContext, new GroupLoginDialog.LoginClickLIstener() {
             @Override
             public void loginClick() {
@@ -95,7 +103,7 @@ public class ToDoGroupFragment extends BaseFragment {
                 editor.apply();
             }
         });
-        mGroupLoginDialog.setCancelable(false);
+//        mGroupLoginDialog.setCancelable(false);
         setComponentView(v);
         setGroupTempData();
         setToDoTempData();
@@ -129,7 +137,7 @@ public class ToDoGroupFragment extends BaseFragment {
         });
         // editText 검색시 isSearchMode 원래대로
         mRecyclerViewGroup = v.findViewById(R.id.todo_group_fragment_rv_group);
-        mGroupListAdapter = new GroupListAdapter(mContext, mData, new GroupListAdapter.ItemClickListener() {
+        mGroupListAdapter = new GroupListAdapter(mContext, mData, density, new GroupListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
                 Intent intent = new Intent(mContext, GroupDetailActivity.class);
@@ -139,6 +147,8 @@ public class ToDoGroupFragment extends BaseFragment {
 
 //        PagerSnapHelper snapHelper = new PagerSnapHelper();
 //        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
