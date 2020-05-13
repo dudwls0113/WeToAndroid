@@ -77,13 +77,9 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
     private NavigationTabBar mNavigationTabBar;
     private ArrayList<NavigationTabBar.Model> mNavigationTabBarModels;
 
-    private GeofencingClient geofencingClient;
 
     private int MY_PERMISSIONS_REQ_ACCESS_FINE_LOCATION = 100;
     private int MY_PERMISSIONS_REQ_ACCESS_BACKGROUND_LOCATION = 101;
-
-    ArrayList<Geofence> geofenceList = new ArrayList<>();
-    AppDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +91,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         AutoPermissions.Companion.loadAllPermissions(this, 100);
         checkPermission();
         init();
-        geofencingClient = LocationServices.getGeofencingClient(this);
-        geofenceList.add(getGeofence(1, "사무실", new Pair<>(37.477198, 126.883828), (float) 300, 3000));
-        addGeofences();
-        setDatabase();
         getAppKeyHash();
     }
 
@@ -118,19 +110,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         }
     }
 
-    private void setDatabase() {
-        mDatabase = AppDatabase.getAppDatabase(this);
-
-        //UI 갱신 (라이브 데이터를 이용하여 자동으로)
-        mDatabase.todoDao().getTodoList().observe(this, new Observer<List<ToDoWithData>>() {
-            @Override
-            public void onChanged(List<ToDoWithData> todoList) {
-//                mTextView.setText(todoList.toString());
-//                geofenceList.add(getGeofence(3, "가디역", new Pair<>(37.477198, 126.883828), (float) 100.0, 10000));
-//                addGeofences();
-            }
-        });
-    }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
     private static class InsertAsyncTask extends AsyncTask<Object, Void, Void> {
@@ -147,26 +126,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         }
     }
 
-
-    private void addGeofences() {
-        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                showCustomToast("add Success");
-
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showCustomToast("add Fail");
-                Log.d("에러", e.toString());
-
-                // ...
-            }
-        });
-//        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-//        geofencingClient.removeGeofences(new List<String>())
-    }
 
     private PendingIntent geofencePendingIntent() {
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);

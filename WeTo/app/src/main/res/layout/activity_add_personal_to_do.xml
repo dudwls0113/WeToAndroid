@@ -286,6 +286,7 @@
                             android:src="@drawable/ic_navigation"
                             android:layout_gravity="center_vertical"/>
                         <TextView
+                            android:id="@+id/add_personal_todo_tv_location"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_gravity="center_vertical"

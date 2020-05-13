@@ -27,7 +27,6 @@ public abstract class ToDoDao {
         insertLocation(toDoData);
     }
 
-
     @Insert
     abstract long insert(ToDo todo);
 
