@@ -1,6 +1,7 @@
 package com.ninano.weto.src.main;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 
@@ -8,11 +9,14 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -23,6 +27,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.kakao.auth.Session;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.RoomDBActivity;
@@ -43,6 +48,7 @@ import com.pedro.library.AutoPermissionsListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +57,7 @@ import devlight.io.library.ntb.NavigationTabBar;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class MainActivity extends BaseActivity implements AutoPermissionsListener {
 
@@ -82,6 +89,8 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 카카오 로그인 확인
+        Session.getCurrentSession().checkAndImplicitOpen();
         mContext = this;
         AutoPermissions.Companion.loadAllPermissions(this, 100);
         checkPermission();
@@ -90,7 +99,23 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         geofenceList.add(getGeofence(1, "사무실", new Pair<>(37.477198, 126.883828), (float) 300, 3000));
         addGeofences();
         setDatabase();
+        getAppKeyHash();
+    }
 
+    private void getAppKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                Log.e("Hash key", something);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+//            Log.e("name not found", e.toString());
+        }
     }
 
     private void setDatabase() {
@@ -266,5 +291,13 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
     @Override
     public void onGranted(int i, @NotNull String[] strings) {
 //        showCustomToast("권한 허용");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

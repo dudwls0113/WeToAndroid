@@ -21,13 +21,27 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kakao.auth.AuthType;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.ApiErrorCode;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.usermgmt.response.model.User;
+import com.kakao.util.exception.KakaoException;
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseFragment;
+import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.main.todo_group.adapter.GroupListAdapter;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
@@ -67,22 +81,14 @@ public class ToDoGroupFragment extends BaseFragment {
     private boolean isEditMode = true;
 
     private FrameLayout mLayoutView;
-    private GroupLoginDialog mGroupLoginDialog;
+    private RelativeLayout mLayoutLogin;
+    private LinearLayout mLayoutButton;
+    private Button mButtonLogin;
 
     private float density;
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser){
-            // 서버 들어가면 밸리데이션 필요
-            boolean isLogin = sSharedPreferences.getBoolean("login", false);
-            if(!isLogin) {
-                mLayoutView.setVisibility(View.GONE);
-                mGroupLoginDialog.show();
-            }
-        }
-        super.setUserVisibleHint(isVisibleToUser);
-    }
+    //카카오 로그인
+    private ISessionCallback mKakaoCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,19 +100,18 @@ public class ToDoGroupFragment extends BaseFragment {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
-        mGroupLoginDialog = new GroupLoginDialog(mContext, new GroupLoginDialog.LoginClickLIstener() {
-            @Override
-            public void loginClick() {
-                mLayoutView.setVisibility(View.VISIBLE);
-                SharedPreferences.Editor editor = sSharedPreferences.edit();
-                editor.putBoolean("login", true);
-                editor.apply();
-            }
-        });
-//        mGroupLoginDialog.setCancelable(false);
         setComponentView(v);
+        boolean isLogin = sSharedPreferences.getBoolean("kakaoLogin", false);
+        if (isLogin){ // 로그인 되어있으면
+            mLayoutButton.setVisibility(View.VISIBLE);
+            mLayoutLogin.setVisibility(View.GONE);
+        } else {
+            mLayoutButton.setVisibility(View.GONE);
+            mLayoutLogin.setVisibility(View.VISIBLE);
+        }
         setGroupTempData();
         setToDoTempData();
+        setConfigureKakao();
         return v;
     }
 
@@ -147,8 +152,8 @@ public class ToDoGroupFragment extends BaseFragment {
 
 //        PagerSnapHelper snapHelper = new PagerSnapHelper();
 //        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
+//        SnapHelper snapHelper = new StartSnapHelper();
+//        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -219,12 +224,65 @@ public class ToDoGroupFragment extends BaseFragment {
                 }
             }
         });
+
+        mLayoutLogin = v.findViewById(R.id.todo_group_fragment_layout_login);
+        mLayoutButton = v.findViewById(R.id.todo_group_fragment_layout_button);
+        mButtonLogin = v.findViewById(R.id.dialog_group_login_btn_login);
+
+        mButtonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, getActivity());
+            }
+        });
     }
 
     private void getCurrentTime(){
         Date currentTime = Calendar.getInstance().getTime();
         String cur_date = new SimpleDateFormat("MM월 dd일 (EE)", Locale.getDefault()).format(currentTime);
         mTextViewDate.setText(cur_date);
+    }
+
+    private void setConfigureKakao(){
+        mKakaoCallback = new ISessionCallback() {
+            @Override
+            public void onSessionOpened() {
+                UserManagement.getInstance().me(new MeV2ResponseCallback() {
+                    @Override
+                    public void onFailure(ErrorResult errorResult) {
+                        int result = errorResult.getErrorCode();
+                        if (result== ApiErrorCode.CLIENT_ERROR_CODE){
+                            showCustomToast(mContext, getString(R.string.network_error));
+                        } else {
+                            showCustomToast(mContext, errorResult.getErrorMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSessionClosed(ErrorResult errorResult) {
+                        showCustomToast(mContext, "세션이 종료되었습니다.\n다시 시도해주세요.");
+                    }
+
+                    @Override
+                    public void onSuccess(MeV2Response result) {
+                        String nickName = result.getKakaoAccount().getProfile().getNickname();
+                        String profileUrl = result.getKakaoAccount().getProfile().getProfileImageUrl();
+                        System.out.println("성공: " + nickName + ", " + profileUrl);
+                        mLayoutButton.setVisibility(View.VISIBLE);
+                        mLayoutLogin.setVisibility(View.GONE);
+                        SharedPreferences.Editor editor = sSharedPreferences.edit();
+                        editor.putBoolean("kakaoLogin", true);
+                        editor.apply();
+                    }
+                });
+            }
+
+            @Override
+            public void onSessionOpenFailed(KakaoException exception) {
+                showCustomToast(mContext, "세션이 열지못했습니다.\n다시 시도해주세요.");
+            }
+        };
+        Session.getCurrentSession().addCallback(mKakaoCallback);
     }
 
     void setGroupTempData(){
@@ -258,5 +316,11 @@ public class ToDoGroupFragment extends BaseFragment {
         mGroupListData.add(new ToDoGroupData(1, "우산 챙기기", "집, 매일, 아침 8시", "나",1, 0));
 
         mToDoGroupListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Session.getCurrentSession().removeCallback(mKakaoCallback);
     }
 }

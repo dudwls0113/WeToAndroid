@@ -112,13 +112,13 @@
                     android:id="@+id/todo_personal_fragment_layout_expandable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="11dp"
+                    android:paddingTop="9dp"
                     android:paddingBottom="9dp"
                     android:paddingStart="11dp"
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="44dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_round_confirm_button">
+                    android:background="@drawable/bg_expand_button">
                     <ImageView
                         android:id="@+id/todo_personal_iv_expand"
                         android:layout_width="wrap_content"

@@ -3,6 +3,7 @@ package com.ninano.weto.src.group_detail;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_detail.adpater.GroupMemberListAdapter;
 import com.ninano.weto.src.group_detail.models.GroupMemberData;
 
