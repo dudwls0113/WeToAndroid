@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.kakao.auth.KakaoSDK;
 import com.ninano.weto.config.XAccessTokenInterceptor;
 
 import java.text.SimpleDateFormat;
@@ -61,6 +62,7 @@ public class ApplicationClass extends Application {
         return instance;
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -69,9 +71,18 @@ public class ApplicationClass extends Application {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
 
+        applicationClass = this;
+        KakaoSDK.init(new KakaoSDKAdapter());
+
         if (sSharedPreferences == null) {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        applicationClass = null;
     }
 
     public static Retrofit getRetrofit() {

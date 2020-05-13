@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">WeTo</string>
+    <string name="kakao_app_key">1924ea890a9d3dc1786add9ec27cb511</string>
+    <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
     <string name="add_todo_title">새로운 할 일</string>
     <string name="add_todo_name_hint">새로운 할 일을 입력하세요.</string>
     <string name="todo_time">특정 시각에 알리기</string>
