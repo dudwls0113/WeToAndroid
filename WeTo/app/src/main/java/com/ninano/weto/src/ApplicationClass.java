@@ -54,19 +54,17 @@ public class ApplicationClass extends Application {
     public static final int EVENING = 300;        //오후
     public static final int NIGHT = 400;          //밤
 
-    private static volatile ApplicationClass instance = null;
-
+    private static ApplicationClass applicationClass;
     public static ApplicationClass getApplicationClassContext() {
-        if (instance == null)
-            throw new IllegalStateException("Error of ApplicationClass");
-        return instance;
+        if (applicationClass == null)
+            throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
+        return applicationClass;
     }
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         if (sSharedPreferences == null) {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
@@ -82,7 +80,7 @@ public class ApplicationClass extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        applicationClass = null;
+        applicationClass=null;
     }
 
     public static Retrofit getRetrofit() {
