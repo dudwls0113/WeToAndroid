@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"/>
+        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity" />
         <activity android:name=".src.map_select.MapSelectActivity" />
         <activity android:name=".db.RoomDBActivity">
 
@@ -47,7 +47,10 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".src.CellularService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".src.receiver.GeofenceBroadcastReceiver" />
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="6ffkrts5vi" />

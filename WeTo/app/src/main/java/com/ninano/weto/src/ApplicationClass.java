@@ -40,10 +40,34 @@ public class ApplicationClass extends Application {
     // Retrofit 인스턴스
     public static Retrofit retrofit;
 
+    public static final int NONE = 55;             // 정보없는 일정
+    public static final int TIME = 66;             // 시간일정
+    public static final int LOCATION = 77;         // 위치일정
+
+    public static final int AT_START = 11;         // 출발
+    public static final int AT_ARRIVE = 22;        // 도착
+    public static final int AT_NEAR = 33;          // 근처
+
+    public static final int ALWAYS = 100;         //항상
+    public static final int MORNING = 200;        //아침
+    public static final int EVENING = 300;        //오후
+    public static final int NIGHT = 400;          //밤
+
+    private static volatile ApplicationClass instance = null;
+
+    public static ApplicationClass getApplicationClassContext() {
+        if (instance == null)
+            throw new IllegalStateException("Error of ApplicationClass");
+        return instance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
+        if (sSharedPreferences == null) {
+            sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        }
 
         if (sSharedPreferences == null) {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);

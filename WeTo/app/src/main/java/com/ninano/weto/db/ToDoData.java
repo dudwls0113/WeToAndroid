@@ -18,6 +18,8 @@ public class ToDoData {
 
     private double longitude;
 
+    private int locationMode;
+
     private int radius;
 
     private String ssid;
@@ -36,11 +38,20 @@ public class ToDoData {
 
     private String time;
 
-    public ToDoData(int todoNo, String locationName, double latitude, double longitude, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time) {
-        this.todoNo = todoNo;
+    public int getLocationMode() {
+        return locationMode;
+    }
+
+    public void setLocationMode(int locationMode) {
+        this.locationMode = locationMode;
+    }
+
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time) {
+        this.order = 0;
         this.locationName = locationName;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.locationMode = locationMode;
         this.radius = radius;
         this.ssid = ssid;
         this.isWiFi = isWiFi;

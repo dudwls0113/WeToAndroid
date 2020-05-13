@@ -4,260 +4,290 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
+    android:orientation="vertical"
     tools:context=".src.todo_add.AddPersonalToDoActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="#38454c"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
             android:lineSpacingExtra="9sp"
             android:text="@string/add_todo_title"
-            android:textStyle="bold"
-            android:layout_marginStart="24dp"
-            android:layout_gravity="center_vertical"/>
+            android:textColor="#38454c"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/add_personal_todo_iv_back"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_x"
-            android:padding="10dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="29dp"/>
+            android:layout_marginEnd="29dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_x" />
     </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="96dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="26dp"
-                    android:layout_marginTop="96dp">
+                    android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="42dp"
                         android:layout_height="48dp"
-                        android:background="#e5e5ff"
-                        android:layout_marginEnd="21dp"/>
+                        android:layout_marginEnd="21dp"
+                        android:background="#e5e5ff" />
+
                     <EditText
+                        android:id="@+id/add_personal_todo_et_title"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="48dp"
+                        android:layout_weight="1"
                         android:background="@drawable/bg_round_edit"
-                        android:textSize="16sp"
-                        android:textColorHint="#e3e7ec"
-                        android:lineSpacingExtra="8sp"
                         android:hint="@string/add_todo_name_hint"
-                        android:textColor="#38454c"
+                        android:lineSpacingExtra="8sp"
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
                         android:singleLine="true"
+                        android:textColor="#38454c"
+                        android:textColorHint="#e3e7ec"
+                        android:textSize="16sp"
                         android:theme="@style/EditTextStyle" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="9dp">
+                    android:layout_marginBottom="9dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="#38454c"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_time"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"/>
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
                     <Switch
                         android:id="@+id/add_personal_todo_switch_time"
-                        android:onClick="customOnClick"
                         android:layout_width="wrap_content"
                         android:layout_height="41dp"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:track="@drawable/switch_track_selector"
-                        android:thumb="@drawable/switch_thumb"
                         android:checked="false"
+                        android:gravity="center_vertical"
+                        android:onClick="customOnClick"
                         android:switchMinWidth="0dp"
                         android:textOff=""
                         android:textOn=""
-                        android:thumbTextPadding="15dp"/>
+                        android:thumb="@drawable/switch_thumb"
+                        android:thumbTextPadding="15dp"
+                        android:track="@drawable/switch_track_selector" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/add_personal_todo_layout_hidden_time"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:orientation="vertical"
                     android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp">
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="15dp">
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/add_personal_todo_tv_no_repeat"
-                            android:onClick="customOnClick"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_on"
-                            android:textSize="12sp"
-                            android:lineSpacingExtra="6sp"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="#ffffff"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
                             android:text="반복안함"
-                            android:layout_marginEnd="12dp"/>
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/add_personal_todo_tv_day_repeat"
-                            android:onClick="customOnClick"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
-                            android:textSize="12sp"
-                            android:lineSpacingExtra="6sp"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="#657884"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
                             android:text="매일"
-                            android:layout_marginEnd="12dp"/>
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/add_personal_todo_tv_week_repeat"
-                            android:onClick="customOnClick"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
-                            android:textSize="12sp"
-                            android:lineSpacingExtra="6sp"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="#657884"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
                             android:text="매주"
-                            android:layout_marginEnd="12dp"/>
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/add_personal_todo_tv_month_repeat"
-                            android:onClick="customOnClick"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
-                            android:textSize="12sp"
-                            android:lineSpacingExtra="6sp"
                             android:gravity="center"
-                            android:textStyle="bold"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="매월"
                             android:textColor="#657884"
-                            android:text="매월" />
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/add_personal_todo_layout_hidden_time_date"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/bg_round_edit"
-                        android:layout_marginBottom="15dp">
+                        android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:textSize="12sp"
-                            android:textColor="#e3e7ec"
                             android:lineSpacingExtra="6sp"
                             android:text="@string/todo_time_date"
-                            android:layout_marginStart="15dp"/>
+                            android:textColor="#e3e7ec"
+                            android:textSize="12sp" />
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="26dp"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_chevron_down"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="15.5dp" />
+                            android:layout_marginEnd="15.5dp"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_chevron_down" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/add_personal_todo_layout_hidden_time_time"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="30dp"
                         android:background="@drawable/bg_round_edit"
-                        android:layout_marginBottom="30dp">
+                        android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:textSize="12sp"
-                            android:textColor="#e3e7ec"
                             android:lineSpacingExtra="6sp"
                             android:text="@string/todo_time_time"
-                            android:layout_marginStart="15dp"/>
+                            android:textColor="#e3e7ec"
+                            android:textSize="12sp" />
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="26dp"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_chevron_down"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="15.5dp"/>
+                            android:layout_marginEnd="15.5dp"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_chevron_down" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="9dp">
+                    android:layout_marginBottom="9dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="#38454c"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_gps"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"/>
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
                     <Switch
                         android:id="@+id/add_personal_todo_switch_gps"
-                        android:onClick="customOnClick"
                         android:layout_width="wrap_content"
                         android:layout_height="41dp"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:track="@drawable/switch_track_selector"
-                        android:thumb="@drawable/switch_thumb"
                         android:checked="false"
+                        android:gravity="center_vertical"
+                        android:onClick="customOnClick"
                         android:switchMinWidth="0dp"
                         android:textOff=""
                         android:textOn=""
-                        android:thumbTextPadding="15dp"/>
+                        android:thumb="@drawable/switch_thumb"
+                        android:thumbTextPadding="15dp"
+                        android:track="@drawable/switch_track_selector" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/add_personal_todo_layout_hidden_gps"
                     android:layout_width="match_parent"
@@ -265,185 +295,276 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:orientation="vertical">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/add_personal_todo_rv_like"
                         android:layout_width="match_parent"
                         android:layout_height="33dp"
-                        android:layout_marginBottom="15dp"/>
+                        android:layout_marginBottom="15dp" />
+
                     <LinearLayout
                         android:id="@+id/add_personal_todo_layout_gps"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/bg_round_edit"
                         android:onClick="customOnClick"
-                        android:layout_marginBottom="15dp">
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:padding="10dp"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginStart="5dp"
-                            android:src="@drawable/ic_navigation"
-                            android:layout_gravity="center_vertical"/>
+                            android:padding="10dp"
+                            android:src="@drawable/ic_navigation" />
+
                         <TextView
                             android:id="@+id/add_personal_todo_tv_location"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="#e3e7ec"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
                             android:lineSpacingExtra="6sp"
-                            android:text="장소를 선택하세요."/>
+                            android:text="장소를 선택하세요."
+                            android:textColor="#e3e7ec"
+                            android:textSize="12sp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="15dp">
-                        <TextView
-                            android:id="@+id/add_personal_todo_layout_hidden_gps_start"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="33dp"
-                            android:textSize="12sp"
-                            android:textColor="#ffffff"
-                            android:lineSpacingExtra="6sp"
-                            android:gravity="center"
-                            android:text="출발할 때"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_round_button_on"
-                            android:layout_marginEnd="12dp"/>
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal">
                         <TextView
                             android:id="@+id/add_personal_todo_layout_hidden_gps_arrive"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
-                            android:textSize="12sp"
-                            android:textColor="#657884"
-                            android:lineSpacingExtra="6sp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_round_button_on"
                             android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
                             android:text="도착할 때"
-                            android:textStyle="bold"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/add_personal_todo_layout_hidden_gps_start"
+                            android:layout_width="0dp"
+                            android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
-                            android:layout_marginEnd="12dp"/>
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="출발할 때"
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+
                         <TextView
                             android:id="@+id/add_personal_todo_layout_hidden_gps_near"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="33dp"
-                            android:textSize="12sp"
-                            android:textColor="#657884"
-                            android:lineSpacingExtra="6sp"
-                            android:gravity="center"
-                            android:textStyle="bold"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
-                            android:text="근처에서" />
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="근처에서"
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/add_personal_todo_layout_hidden_gps_time"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/bg_round_edit"
-                        android:layout_marginBottom="30dp">
+                        android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:textSize="12sp"
-                            android:textColor="#e3e7ec"
                             android:lineSpacingExtra="6sp"
                             android:text="@string/todo_gps_noti_time"
-                            android:layout_marginStart="15dp"/>
+                            android:textColor="#e3e7ec"
+                            android:textSize="12sp" />
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="26dp"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_chevron_down"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="15.5dp"/>
+                            android:layout_marginEnd="15.5dp"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_chevron_down" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/add_personal_todo_btn_always"
+                            android:layout_width="0dp"
+                            android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_round_button_on"
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="@string/activity_todo_add_always"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/add_personal_todo_btn_morning"
+                            android:layout_width="0dp"
+                            android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_round_button_off"
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="@string/activity_todo_add_morning"
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/add_personal_todo_btn_evening"
+                            android:layout_width="0dp"
+                            android:layout_height="33dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_round_button_off"
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="@string/activity_todo_add_evening"
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/add_personal_todo_btn_night"
+                            android:layout_width="0dp"
+                            android:layout_height="33dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_round_button_off"
+                            android:gravity="center"
+                            android:lineSpacingExtra="6sp"
+                            android:onClick="customOnClick"
+                            android:text="@string/activity_todo_add_night"
+                            android:textColor="#657884"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="#38454c"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_important"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"/>
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
                     <Switch
                         android:id="@+id/add_personal_todo_switch_improtant"
-                        android:onClick="customOnClick"
                         android:layout_width="wrap_content"
                         android:layout_height="41dp"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:track="@drawable/switch_track_selector"
-                        android:thumb="@drawable/switch_thumb"
                         android:checked="false"
+                        android:gravity="center_vertical"
+                        android:onClick="customOnClick"
                         android:switchMinWidth="0dp"
                         android:textOff=""
                         android:textOn=""
-                        android:thumbTextPadding="15dp"/>
+                        android:thumb="@drawable/switch_thumb"
+                        android:thumbTextPadding="15dp"
+                        android:track="@drawable/switch_track_selector" />
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="#38454c"
-                    android:lineSpacingExtra="8sp"
-                    android:textStyle="bold"
-                    android:text="@string/todo_memo"
                     android:layout_marginStart="24dp"
-                    android:layout_marginBottom="15dp"/>
+                    android:layout_marginBottom="15dp"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/todo_memo"
+                    android:textColor="#38454c"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <EditText
+                    android:id="@+id/add_personal_todo_et_memo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/bg_round_edit"
-                    android:minHeight="72dp"
-                    android:hint="메모를 입력하세요."
-                    android:textSize="12sp"
-                    android:textColorHint="#e3e7ec"
-                    android:textColor="#38454c"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingTop="9dp"
-                    android:paddingBottom="9dp"
-                    android:gravity="top"
-                    android:lineSpacingExtra="6sp"
                     android:layout_marginBottom="36dp"
-                    android:theme="@style/EditTextStyle"/>
+                    android:background="@drawable/bg_round_edit"
+                    android:gravity="top"
+                    android:hint="메모를 입력하세요."
+                    android:lineSpacingExtra="6sp"
+                    android:minHeight="72dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="9dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="9dp"
+                    android:textColor="#38454c"
+                    android:textColorHint="#e3e7ec"
+                    android:textSize="12sp"
+                    android:theme="@style/EditTextStyle" />
             </LinearLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginBottom="30dp"
-                android:text="추가하기"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#0809ff"
-                android:lineSpacingExtra="8sp"
-                android:gravity="center"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="@drawable/bg_round_confirm_button"/>
         </LinearLayout>
-    </ScrollView>
 
+    </ScrollView>
+    <Button
+        android:id="@+id/add_personal_todo_btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/bg_round_confirm_button"
+        android:gravity="center"
+        android:lineSpacingExtra="8sp"
+        android:text="추가하기"
+        android:textColor="#0809ff"
+        android:textSize="16sp"
+        android:onClick="customOnClick"
+        android:textStyle="bold" />
 </LinearLayout>
