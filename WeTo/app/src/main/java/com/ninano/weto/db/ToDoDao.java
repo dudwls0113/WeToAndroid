@@ -26,6 +26,12 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and Todo.todoNo = :todoNo")
     public abstract List<ToDoWithData> getTodoWithTodoNo(int todoNo);
 
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi")
+    public abstract List<ToDoWithData> getTodoWithWifi(char isWifi);
+
+    @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi")
+    public abstract int getTodoWithWifiCount(char isWifi);
+
     @Transaction
     public int insertTodo(ToDo todo, ToDoData toDoData) {
         int todoNo = (int) insert(todo);

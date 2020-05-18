@@ -72,7 +72,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 111);
             }
         });
         mapView.onCreate(savedInstanceState);
@@ -160,6 +160,17 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                 getLocationAndSetMap(mLocation);
             } else {
 
+            }
+        } else if (requestCode==111){
+            if (resultCode == 111){
+                Intent intent = new Intent();
+                intent.putExtra("ssid", data.getStringExtra("ssid"));
+                intent.putExtra("bssid",data.getStringExtra("bssid"));
+                intent.putExtra("connected", data.getBooleanExtra("connected", false));
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                setResult(111, intent);
+                finish();
             }
         }
     }

@@ -2,6 +2,7 @@
     <string name="app_name">WeTo</string>
     <string name="kakao_app_key">1924ea890a9d3dc1786add9ec27cb511</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
+    <string name="insert_todo_error">일정 추가 실패</string>
     <string name="add_todo_title">새로운 할 일</string>
     <string name="add_todo_name_hint">새로운 할 일을 입력하세요.</string>
     <string name="todo_time">특정 시각에 알리기</string>
@@ -24,4 +25,7 @@
     <string name="activity_todo_add_morning">6~12시</string>
     <string name="activity_todo_add_evening">12시~21시</string>
     <string name="activity_todo_add_night">21시~06시</string>
+
+    <string name="group_invite_deny">거절하기</string>
+    <string name="group_invite_deny_title">정말 거절하시겠습니까?</string>
 </resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="312dp"
+    android:layout_height="258dp"
+    android:background="@drawable/bg_round_dialog">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="9sp"
+        android:gravity="center"
+        android:text="@string/group_invite_deny_title"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="36dp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/dialog_deny_invite_btn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_round_group_4"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="16sp"
+        android:textColor="#0809ff"
+        android:lineSpacingExtra="8sp"
+        android:gravity="center"
+        android:text="@string/group_invite_deny"
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"/>
+    <Button
+        android:id="@+id/dialog_deny_invite_btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_round_confirm_button"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="16sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="8sp"
+        android:gravity="center"
+        android:text="@string/group_invite_deny"
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"/>
+
+
+
+</LinearLayout>
