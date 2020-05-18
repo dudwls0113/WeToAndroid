@@ -30,7 +30,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.kakao.auth.Session;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.RoomDBActivity;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
@@ -91,7 +90,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         System.out.println(Session.getCurrentSession().getTokenInfo().getAccessToken());
         mContext = this;
         AutoPermissions.Companion.loadAllPermissions(this, 100);
-        checkPermission();
+//        checkPermission();
         init();
         getAppKeyHash();
     }

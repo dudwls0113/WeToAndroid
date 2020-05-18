@@ -10,6 +10,7 @@ public class ToDoWithData {
     private int type;
     private String status;
     private String locationName;
+    private int locationMode;
     private double latitude;
     private double longitude;
     private int radius;
@@ -55,6 +56,14 @@ public class ToDoWithData {
 
     public int getType() {
         return type;
+    }
+
+    public int getLocationMode() {
+        return locationMode;
+    }
+
+    public void setLocationMode(int locationMode) {
+        this.locationMode = locationMode;
     }
 
     public void setType(int type) {

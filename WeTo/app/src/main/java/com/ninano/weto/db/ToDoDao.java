@@ -20,11 +20,18 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getTodoList();
 
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo ORDER BY Todo.ordered")
+    public abstract List<ToDoWithData> getTodoListNoLive();
+
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and Todo.todoNo = :todoNo")
+    public abstract List<ToDoWithData> getTodoWithTodoNo(int todoNo);
+
     @Transaction
-    public void insertTodo(ToDo todo, ToDoData toDoData) {
+    public int insertTodo(ToDo todo, ToDoData toDoData) {
         int todoNo = (int) insert(todo);
         toDoData.setTodoNo(todoNo);
         insertLocation(toDoData);
+        return todoNo;
     }
 
     @Insert
@@ -38,6 +45,5 @@ public abstract class ToDoDao {
 
     @Delete
     abstract void delete(ToDo todo);
-
 
 }

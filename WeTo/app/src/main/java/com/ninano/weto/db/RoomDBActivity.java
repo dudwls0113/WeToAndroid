@@ -63,10 +63,10 @@ public class RoomDBActivity extends AppCompatActivity {
                 char type = mEditTextType.getText().toString().charAt(0);
 //                char isGroup = mEditTextIsGroup.getText().toString().charAt(0);
 
-                new InsertAsyncTask(db.todoDao())
-                        .execute(new ToDo(title, content, icon, type),
-                                new ToDoData(0, "title", 10.3, 10.3, 100, "ssid", 'Y', 1,
-                                        1, "1 2", 30, "10:30", "10:30"));
+//                new InsertAsyncTask(db.todoDao())
+//                        .execute(new ToDo(title, content, icon, type),
+//                                new ToDoData("title", 10.3, 10.3, 100, "ssid", 'Y', 1,
+//                                        1, "1 2", 30, "10:30", "10:30"));
             }
         });
     }

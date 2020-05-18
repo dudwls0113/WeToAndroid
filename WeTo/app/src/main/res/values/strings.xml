@@ -20,4 +20,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="map_select_search">장소, 주소 검색</string>
+    <string name="activity_todo_add_always">항상</string>
+    <string name="activity_todo_add_morning">6~12시</string>
+    <string name="activity_todo_add_evening">12시~21시</string>
+    <string name="activity_todo_add_night">21시~06시</string>
 </resources>
