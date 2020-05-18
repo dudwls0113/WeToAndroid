@@ -38,6 +38,16 @@ public class ToDoData {
 
     private String time;
 
+    private String isGroup;
+
+    public String getIsGroup() {
+        return isGroup;
+    }
+
+    public void setIsGroup(String isGroup) {
+        this.isGroup = isGroup;
+    }
+
     public int getLocationMode() {
         return locationMode;
     }
@@ -61,6 +71,7 @@ public class ToDoData {
         this.repeatDay = repeatDay;
         this.date = date;
         this.time = time;
+        this.isGroup = "N";
     }
 
     public String getDate() {

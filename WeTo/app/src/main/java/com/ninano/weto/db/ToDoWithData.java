@@ -21,6 +21,7 @@ public class ToDoWithData {
     private int repeatDayOfWeek;
     private int repeatDay;
     private int time;
+    private String isGroup;
 
     public int getTodoNo() {
         return todoNo;
@@ -166,10 +167,21 @@ public class ToDoWithData {
         this.time = time;
     }
 
+    public String getIsGroup() {
+        return isGroup;
+    }
+
+    public void setIsGroup(String isGroup) {
+        this.isGroup = isGroup;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return this.title + " " + content + " " + icon + " " + type + " " + status + " " +
-                " " + locationName + " " + latitude + " " + longitude + " " + "\n";
+        return "todoNo: " + todoNo + " title: " + title + " icon: " + icon + " type: " + type + " status: " + status +
+                " locationName: " + locationName + " latitude: " + latitude + " longitude: " + longitude +
+                " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
+                " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay + "time" + time +
+                "isGroup: " + isGroup + "\n";
     }
 }

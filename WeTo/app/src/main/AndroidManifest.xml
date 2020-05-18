@@ -21,13 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".src.test.TestActivity"></activity>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-        <activity android:name=".src.group_detail.GroupDetailActivity"/>
+
+        <activity android:name=".src.group_detail.GroupDetailActivity" />
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
-        <activity android:name="com.ninano.weto.src.main.MainActivity">
+        <activity android:name=".src.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
