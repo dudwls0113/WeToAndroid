@@ -46,6 +46,8 @@
             <!-- </intent-filter> -->
         </activity>
 
+        <receiver android:name=".src.receiver.AlarmBroadcastReceiver"/>
+
         <service
             android:name=".src.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />

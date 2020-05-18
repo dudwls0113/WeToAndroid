@@ -1,11 +1,13 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -35,11 +37,13 @@ import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
+import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
 import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.models.LikeLocationData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,6 +71,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
     ArrayList<Geofence> geofenceList = new ArrayList<>();
     AppDatabase mDatabase;
 
+    private AlarmManager mAlarmManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +82,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setTempLikeLocationData();
         initGeoFence();
 //        addGeofencesToClient();
+        registerAlarm();
     }
 
     void init() {
@@ -393,6 +400,21 @@ public class AddPersonalToDoActivity extends BaseActivity {
             } else {
 
             }
+        }
+    }
+
+    void registerAlarm(){
+        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 3);
+        calendar.set(Calendar.MINUTE, 53);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        mAlarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        if (mAlarmManager != null) {
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         }
     }
 }
