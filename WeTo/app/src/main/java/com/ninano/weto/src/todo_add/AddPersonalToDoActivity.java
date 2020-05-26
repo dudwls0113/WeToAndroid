@@ -1,16 +1,25 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -34,8 +43,11 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.CellularService;
+import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
+import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
 import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.models.LikeLocationData;
@@ -43,8 +55,11 @@ import com.ninano.weto.src.todo_add.models.LikeLocationData;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
@@ -59,6 +74,7 @@ import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class AddPersonalToDoActivity extends BaseActivity {
 
@@ -86,12 +102,17 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private boolean mIsLocationSelected;
     private int mTodoCategory, mLocationMode, mLocationTime, mLadius;
     private char mWifiMode = 'N';
-    private String mWifiSsid = "";
+    private String mWifiBssid = "";
+    private String mImportantMode = "N";
 
     public static float dpUnit;             // dp단위 값
     ArrayList<Geofence> geofenceList = new ArrayList<>();
     AppDatabase mDatabase;
 
+    private AlarmManager mAlarmManager;
+
+    private Double longitude, latitude;
+    private boolean mWifiConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +123,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setTempLikeLocationData();
         initGeoFence();
 //        addGeofencesToClient();
+        registerAlarm();
     }
 
     void init() {
@@ -155,7 +177,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
         mLocationTime = AT_START;
-        mWifiMode = 'Y';
+//        mWifiMode = 'Y';
         mLadius = 300;
 
         /* Set Constant */
@@ -239,8 +261,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private void insertToRoomDB() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory);
         ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
-                Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude()), mLocationMode, mLadius,
-                mWifiSsid, mWifiMode, mLocationTime, 0, "", 0, "", "");
+                longitude, latitude, mLocationMode, mLadius,
+                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", mImportantMode);
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -253,7 +275,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private class InsertAsyncTask extends AsyncTask<Object, Void, Void> {
+    private class InsertAsyncTask extends AsyncTask<Object, Void, Integer> {
         private ToDoDao mTodoDao;
 
         InsertAsyncTask(ToDoDao mTodoDao) {
@@ -261,16 +283,84 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
 
         @Override
-        protected Void doInBackground(Object... toDos) {
+        protected Integer doInBackground(Object... toDos) {
             int todoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = "+todoNo);
+            Log.d("추가된 todoNo", " = " + todoNo);
 
             if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
-                ToDoData toDoData = (ToDoData) toDos[1];
-                geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
+                if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
+                    return 1;
+                } else {
+                    ToDoData toDoData = (ToDoData) toDos[1];
+                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
+                    addGeofencesToClient();
+                }
             }
-            addGeofencesToClient();
+
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (integer == 1) {
+                System.out.println("실행???!!!!");
+                if (mWifiMode == 'Y') {
+                    try {
+                        Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
+                        System.out.println("카운트: " + count);
+                        if (count == 1) {
+                            JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                            if (jobScheduler != null) {
+                                jobScheduler.cancelAll();
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                if (jobScheduler != null) {
+                                    if (mWifiConnected) {
+                                        System.out.println("현재 연결 와이파이");
+                                        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                        final WifiInfo wifiInfo;
+                                        if (wifiManager != null) {
+                                            wifiInfo = wifiManager.getConnectionInfo();
+                                            SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sf.edit();
+                                            editor.putString("recentWifi", wifiInfo.getBSSID());
+                                            editor.putBoolean("firstWifiNoti", true);
+                                            editor.apply();
+                                        }
+                                    }
+                                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+                                            .build());
+                                    jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
+                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+                                            .build());
+                                }
+                            }
+                        } else {
+                            System.out.println("카운트 아님");
+                            if (mWifiConnected) {
+                                System.out.println("현재 연결 와이파이2");
+                                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                final WifiInfo wifiInfo;
+                                if (wifiManager != null) {
+                                    wifiInfo = wifiManager.getConnectionInfo();
+                                    SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sf.edit();
+                                    editor.putString("recentWifi", wifiInfo.getBSSID());
+                                    editor.putBoolean("firstWifiNoti", true);
+                                    editor.apply();
+                                }
+                            }
+                        }
+                    } catch (ExecutionException | InterruptedException e) {
+                        showCustomToast(getString(R.string.insert_todo_error));
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -467,6 +557,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 //추가버튼
                 if (validateBeforeAdd()) {
                     insertToRoomDB();
+                    showCustomToast("일정이 등록되었습니다.");
+                    finish();
                 }
                 break;
         }
@@ -555,6 +647,13 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mTextViewLocation.setText(mLocation.getPlaceName());
     }
 
+    void setWifiInfo(String ssid) {
+        mIsLocationSelected = true;
+        mWifiMode = 'Y';
+        mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
+        mTextViewLocation.setText(ssid);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -563,11 +662,46 @@ public class AddPersonalToDoActivity extends BaseActivity {
             if (resultCode == 100) {
                 //성공적으로 location  받음
                 mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                longitude = Double.parseDouble(mLocation.getLongitude());
+                latitude = Double.parseDouble(mLocation.getLatitude());
                 setLocationInfo();
 //                getLocationAndSetMap(mLocation);
-            } else {
-
+            } else if (resultCode == 111) {
+                mWifiBssid = data.getStringExtra("bssid");
+                longitude = data.getDoubleExtra("longitude", 0);
+                latitude = data.getDoubleExtra("latitude", 0);
+                mWifiConnected = data.getBooleanExtra("connected", false);
+                setWifiInfo(data.getStringExtra("ssid"));
             }
+        }
+    }
+
+    void registerAlarm() {
+        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 3);
+        calendar.set(Calendar.MINUTE, 53);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (mAlarmManager != null) {
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+    }
+
+    private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
+        private ToDoDao mTodoDao;
+
+        CountWifiAsyncTask(ToDoDao mTodoDao) {
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected Integer doInBackground(Character... characters) {
+            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0]);
+            return count;
         }
     }
 }

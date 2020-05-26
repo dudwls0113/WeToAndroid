@@ -46,6 +46,7 @@ public class WifiSearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_search);
         mContext = this;
+        showProgressDialog();
         init();
     }
 
@@ -89,41 +90,46 @@ public class WifiSearchActivity extends BaseActivity {
         mWifiListAdapter = new WifiListAdapter(mContext, mWifiData, new WifiListAdapter.WifiClickListener() {
             @Override
             public void wifiClick(int pos) {
-                boolean isUseWifi = sSharedPreferences.getBoolean("useWifi",false); // jobScheduler는 한번만 돌리고 디비 값을 가져와서 비교함
-                if(!isUseWifi){
-                    SharedPreferences.Editor editor = sSharedPreferences.edit();
-                    editor.putBoolean("useWifi", true);
-                    editor.apply();
-                    JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                    if (jobScheduler != null) {
-                        jobScheduler.cancelAll();
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        if (jobScheduler != null) {
-                            if (mWifiData.get(pos).isConnected()){
-                                System.out.println("연결되어 있는 와이파이");
-                                SharedPreferences.Editor editor1 = sSharedPreferences.edit();
-                                editor1.putBoolean("firstWifiNoti", true);
-                                editor1.apply();
-                            }
-                            System.out.println(currentWifiBSSID);
-                            jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-                                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                                    .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                    .build());
-                            jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, CellularService.class))
-                                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-                                    .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                    .build());
-                        }
-                    }
-                    finish();
-                } else {
-                    // db에 와이파이 정보만 추가
-                    SharedPreferences.Editor editor = sSharedPreferences.edit();
-                    editor.putBoolean("useWifi", false);
-                    editor.apply();
-                }
+                Intent intent = new Intent();
+                intent.putExtra("bssid", mWifiData.get(pos).getBssid());
+                intent.putExtra("ssid", mWifiData.get(pos).getSsid());
+                intent.putExtra("connected", mWifiData.get(pos).isConnected());
+                setResult(111, intent);
+                finish();
+//                boolean isUseWifi = sSharedPreferences.getBoolean("useWifi",false); // jobScheduler는 한번만 돌리고 디비 값을 가져와서 비교함
+//                if(!isUseWifi){
+//                    SharedPreferences.Editor editor = sSharedPreferences.edit();
+//                    editor.putBoolean("useWifi", true);
+//                    editor.apply();
+//                    JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+//                    if (jobScheduler != null) {
+//                        jobScheduler.cancelAll();
+//                    }
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                        if (jobScheduler != null) {
+//                            if (mWifiData.get(pos).isConnected()){
+//                                System.out.println("연결되어 있는 와이파이");
+//                                SharedPreferences.Editor editor1 = sSharedPreferences.edit();
+//                                editor1.putBoolean("firstWifiNoti", true);
+//                                editor1.apply();
+//                            }
+//                            System.out.println(currentWifiBSSID);
+//                            jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+//                                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+//                                    .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+//                                    .build());
+//                            jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, CellularService.class))
+//                                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+//                                    .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+//                                    .build());
+//                        }
+//                    }
+//                } else {
+//                    // db에 와이파이 정보만 추가
+//                    SharedPreferences.Editor editor = sSharedPreferences.edit();
+//                    editor.putBoolean("useWifi", false);
+//                    editor.apply();
+//                }
 
             }
         });
@@ -148,11 +154,13 @@ public class WifiSearchActivity extends BaseActivity {
         }
         mWifiListAdapter.notifyDataSetChanged();
         unRegisterReceiver();
+        hideProgressDialog();
     }
 
     private void scanFailure(){
         showCustomToast("와이파이 검색에 실패하였습니다.");
         unRegisterReceiver();
+        hideProgressDialog();
     }
 
     @Override

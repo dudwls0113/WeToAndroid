@@ -45,7 +45,7 @@ public class ApplicationClass extends Application {
     public static final int TIME = 66;             // 시간일정
     public static final int LOCATION = 77;         // 위치일정
 
-    public static final int AT_START = 11;         // 출발
+    public static final int AT_START = 11;         // 출~발
     public static final int AT_ARRIVE = 22;        // 도착
     public static final int AT_NEAR = 33;          // 근처
 

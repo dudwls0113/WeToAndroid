@@ -1,5 +1,7 @@
 package com.ninano.weto.src.map_select.keyword_search.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -30,9 +32,64 @@ public class LocationResponse {
         }
     }
 
-    public class Location implements Serializable{
+    public static class Location implements Serializable{
         @SerializedName("address_name")
         private String addressName;
+
+        public Location(String addressName, String placeName, String longitude, String latitude) {
+            this.addressName = addressName;
+            this.placeName = placeName;
+            this.longitude = longitude;
+            this.latitude = latitude;
+        }
+
+        public Location() {
+
+        }
+
+        public void setAddressName(String addressName) {
+            this.addressName = addressName;
+        }
+
+        public void setCategoryName(String categoryName) {
+            this.categoryName = categoryName;
+        }
+
+        public void setCategoryGroupName(String categoryGroupName) {
+            this.categoryGroupName = categoryGroupName;
+        }
+
+        public void setDistanceStr(String distanceStr) {
+            this.distanceStr = distanceStr;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public void setPlaceName(String placeName) {
+            this.placeName = placeName;
+        }
+
+        public void setPlaceUrl(String placeUrl) {
+            this.placeUrl = placeUrl;
+        }
+
+        public void setRoadAddressName(String roadAddressName) {
+            this.roadAddressName = roadAddressName;
+        }
+
+        public void setLongitude(String longitude) {
+            this.longitude = longitude;
+        }
+
+        public void setLatitude(String latitude) {
+            this.latitude = latitude;
+        }
 
         @SerializedName("category_name")
         private String categoryName;
@@ -107,6 +164,12 @@ public class LocationResponse {
         public String getCategoryGroupName() {
             return categoryGroupName;
         }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return placeName+" =" + distanceStr;
+        }
     }
 
     @SerializedName("meta")
@@ -122,4 +185,5 @@ public class LocationResponse {
     public ArrayList<Location> getLocations() {
         return locations;
     }
+
 }

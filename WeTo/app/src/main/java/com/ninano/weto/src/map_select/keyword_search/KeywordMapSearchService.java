@@ -6,6 +6,7 @@ import com.ninano.weto.config.KakaoTokenInterceptor;
 import com.ninano.weto.config.XAccessTokenInterceptor;
 import com.ninano.weto.src.map_select.keyword_search.interfaces.KeywordMapSearchActivityView;
 import com.ninano.weto.src.map_select.keyword_search.interfaces.KeywordMapSearchRetrofitInterface;
+import com.ninano.weto.src.map_select.keyword_search.models.AddressResponse;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 
 import java.util.concurrent.TimeUnit;
@@ -48,20 +49,16 @@ class KeywordMapSearchService {
     //sort: distance 또는 accuracy, 기본 accuracy
     void getKeywordLocation(String keyword, double longitude, double latitude, String sort) {
         final KeywordMapSearchRetrofitInterface mainRetrofitInterface = getKakaoRenulltrofit().create(KeywordMapSearchRetrofitInterface.class);
-        mainRetrofitInterface.getKeywordLocation(keyword, longitude, latitude, sort).enqueue(new Callback<LocationResponse>() {
+        mainRetrofitInterface.getKeywordLocation(keyword, latitude, longitude, sort).enqueue(new Callback<LocationResponse>() {
             @Override
             public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
                 final LocationResponse locationResponse = response.body();
-//                Log.e("에러", locationResponse.toString());
-//                Log.e("에러", response.message());
-//                Log.e("에러", response.headers().toString());
-
                 if (locationResponse == null) {
 //                    Log.e("에러", "nulllll");
                     keywordMapSearchActivityView.validateFailure(null);
                     return;
                 } else {
-                    Log.e("에러", "success");
+                    Log.e("에러", response.toString());
 
                     keywordMapSearchActivityView.validateSuccess(locationResponse.getLocations());
                 }
@@ -74,6 +71,4 @@ class KeywordMapSearchService {
             }
         });
     }
-
-
 }
