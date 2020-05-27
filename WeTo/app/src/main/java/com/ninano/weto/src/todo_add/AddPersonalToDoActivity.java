@@ -1,6 +1,7 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,13 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -25,10 +29,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -44,6 +50,7 @@ import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.CellularService;
+import com.ninano.weto.src.DeviceBootReceiver;
 import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
@@ -54,9 +61,12 @@ import com.ninano.weto.src.todo_add.models.LikeLocationData;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +89,8 @@ import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 public class AddPersonalToDoActivity extends BaseActivity {
 
     private Context mContext;
-    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewLocation;
+    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewLocation,
+            mTextViewDate, mTextViewTime;
     private EditText mEditTextTitle, mEditTextMemo;
     private boolean isSelectedNoRepeat, isSelectedDayRepeat, isSelectedWeekRepeat, isSelectedMonthRepeat;
 
@@ -114,6 +125,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private Double longitude, latitude;
     private boolean mWifiConnected;
 
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private TimePickerDialog.OnTimeSetListener timeSetListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +137,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setTempLikeLocationData();
         initGeoFence();
 //        addGeofencesToClient();
-        registerAlarm();
+//        registerAlarm();
     }
 
     void init() {
@@ -132,6 +146,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
         mTextViewTimeWeekRepeat = findViewById(R.id.add_personal_todo_tv_week_repeat);
         mTextViewTimeMonthRepeat = findViewById(R.id.add_personal_todo_tv_month_repeat);
+
+        mTextViewDate = findViewById(R.id.add_personal_todo_tv_date);
+        mTextViewTime = findViewById(R.id.add_personal_todo_tv_time);
 
         mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
@@ -552,7 +569,14 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 Intent intent = new Intent(mContext, MapSelectActivity.class);
                 startActivityForResult(intent, 100);
                 break;
-
+            case R.id.add_personal_todo_layout_hidden_time_date:
+                // 날짜선택
+                setDate();
+                break;
+            case R.id.add_personal_todo_layout_hidden_time_time:
+                //시간선택
+                setTime();
+                break;
             case R.id.add_personal_todo_btn_done:
                 //추가버튼
                 if (validateBeforeAdd()) {
@@ -562,6 +586,35 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    void setDate() {
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
+                mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        };
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.getDefault());
+        DatePickerDialog dialog = new DatePickerDialog(this, R.style.DatePickerTheme, dateSetListener, Integer.parseInt(yearFormat.format(currentTime)), Integer.parseInt(monthFormat.format(currentTime)) - 1, Integer.parseInt(dayFormat.format(currentTime)));
+        dialog.show();
+    }
+
+    void setTime() {
+        timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                mTextViewTime.setText(i + "시 " + i1 + "분");
+                mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+        };
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, R.style.DatePickerTheme, timeSetListener, 06, 00, true);
+        timePickerDialog.show();
     }
 
     void setLocationModeView(TextView selectedView) {
@@ -677,18 +730,34 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void registerAlarm() {
-        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
-
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 3);
-        calendar.set(Calendar.MINUTE, 53);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 5);
+        calendar.set(Calendar.MINUTE, 06);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (calendar.before(Calendar.getInstance())) {
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+        PackageManager pm = this.getPackageManager();
+        ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+
+        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
         if (mAlarmManager != null) {
             mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         }
+
+        //부팅후 재실행
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
