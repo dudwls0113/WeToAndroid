@@ -28,15 +28,35 @@ public class ToDoData {
 
     private int timeSlot;
 
-    private int repeatType;
+    private int repeatType; //매일, 매주, 매월
 
-    private String repeatDayOfWeek;
+    private String repeatDayOfWeek; //1,2  1,5,7
 
-    private int repeatDay;
+    private int repeatDay;// 23
 
     private String date;
 
     private String time;
+
+    private String isGroup;
+
+    private String isImportant;
+
+    public String getIsImportant() {
+        return isImportant;
+    }
+
+    public void setIsImportant(String isImportant) {
+        this.isImportant = isImportant;
+    }
+
+    public String getIsGroup() {
+        return isGroup;
+    }
+
+    public void setIsGroup(String isGroup) {
+        this.isGroup = isGroup;
+    }
 
     public int getLocationMode() {
         return locationMode;
@@ -46,7 +66,7 @@ public class ToDoData {
         this.locationMode = locationMode;
     }
 
-    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time) {
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, String isImportant) {
         this.order = 0;
         this.locationName = locationName;
         this.latitude = latitude;
@@ -61,6 +81,8 @@ public class ToDoData {
         this.repeatDay = repeatDay;
         this.date = date;
         this.time = time;
+        this.isGroup = "N";
+        this.isImportant = isImportant;
     }
 
     public String getDate() {

@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".src.main.MainActivity"
     android:background="@color/colorWhite"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".src.main.MainActivity">
 
     <com.ninano.weto.src.custom.NonSwipeViewPager
         android:id="@+id/main_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="40dp" />
-    
+
     <devlight.io.library.ntb.NavigationTabBar
         android:id="@+id/main_ntb"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_gravity="bottom"
         android:background="@drawable/bg_round_ntb"
         android:elevation="20dp"
         android:paddingTop="8dp"
@@ -35,5 +35,5 @@
         app:ntb_tinted="true"
         app:ntb_title_mode="all"
         app:ntb_title_size="0sp"
-        app:ntb_titled="false"/>
+        app:ntb_titled="false" />
 </FrameLayout>

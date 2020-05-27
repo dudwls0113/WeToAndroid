@@ -33,6 +33,7 @@ import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalListAdapter;
 import com.ninano.weto.src.main.todo_personal.models.ToDoPersonalData;
+import com.ninano.weto.src.test.TestActivity;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
 import java.text.SimpleDateFormat;
@@ -59,7 +60,7 @@ public class ToDoPersonalFragment extends BaseFragment {
     private ArrayList<ToDoPersonalData> mData = new ArrayList<>();
     private ItemTouchHelper mItemTouchHelper;
 
-    private ImageView mImageViewDrag, mImageViewAddAndDragConfirm;
+    private ImageView mImageViewDrag, mImageViewAddAndDragConfirm, mImageViewSetting;
     private boolean isEditMode = true;
 
     private LinearLayout mLInearHiddenDone;
@@ -119,6 +120,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         mImageViewSearch = v.findViewById(R.id.todo_personal_fragment_iv_search);
         mImageViewXCircle = v.findViewById(R.id.todo_personal_fragment_iv_x_circle);
         mEditTextSearch = v.findViewById(R.id.todo_personal_fragment_edt);
+        mImageViewSetting = v.findViewById(R.id.todo_personal_fragment_iv_setting);
 
         mFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,8 +135,16 @@ public class ToDoPersonalFragment extends BaseFragment {
                 }
             }
         });
-        // editText 검색시 isSearchMode 원래대로
 
+        mImageViewSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(mContext, TestActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // editText 검색시 isSearchMode 원래대로
         mRecyclerView = v.findViewById(R.id.todo_personal_fragment_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext){
             @Override

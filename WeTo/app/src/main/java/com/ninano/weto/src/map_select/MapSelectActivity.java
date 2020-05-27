@@ -36,14 +36,16 @@ import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.map.GpsTracker;
 import com.ninano.weto.src.map_select.keyword_search.KeywordMapSearchActivity;
+import com.ninano.weto.src.map_select.keyword_search.models.AddressResponse;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
+import com.ninano.weto.src.map_select.models.MapSelectActivityView;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MapSelectActivity extends BaseActivity implements OnMapReadyCallback {
+public class MapSelectActivity extends BaseActivity implements OnMapReadyCallback, MapSelectActivityView {
 
     private Context mContext;
     private ZoomControlView zoomControlView;
@@ -59,6 +61,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     private Double longitude, latitude;
     private LinearLayout mLayoutWifi, mLayoutLocation;
     private LocationResponse.Location mLocation;
+    private MapSelectService mapSelectService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mLayoutLocation = findViewById(R.id.activity_map_select_layout_location);
 
         mapView.getMapAsync(this);
+        mapSelectService = new MapSelectService(this);
     }
 
     @Override
@@ -161,11 +165,11 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             } else {
 
             }
-        } else if (requestCode==111){
-            if (resultCode == 111){
+        } else if (requestCode == 111) {
+            if (resultCode == 111) {
                 Intent intent = new Intent();
                 intent.putExtra("ssid", data.getStringExtra("ssid"));
-                intent.putExtra("bssid",data.getStringExtra("bssid"));
+                intent.putExtra("bssid", data.getStringExtra("bssid"));
                 intent.putExtra("connected", data.getBooleanExtra("connected", false));
                 intent.putExtra("longitude", longitude);
                 intent.putExtra("latitude", latitude);
@@ -220,32 +224,36 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         naverMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                showCustomToast(pointF + "");
+                mLocation = new LocationResponse.Location();
+                mLocation.setLatitude(String.valueOf(latLng.latitude));
+                mLocation.setLongitude(String.valueOf(latLng.longitude));
+                mapSelectService.getAddressFromXy(latLng.latitude, latLng.longitude);
             }
         });
-
         naverMap.setLocationSource(locationSource);
-
         GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
             @Override
             public void onLocationChanged(Location location) {
-
             }
         });
-
         CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
         naverMap.setCameraPosition(cameraPosition);
-
-
-//        zoomControlView.setMap(naverMap);
-
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
         naverMap.setLightness(0.3f);
-
     }
 
+    @Override
+    public void validateSuccess(AddressResponse.Address address) {
+        Log.d("좌표", mLocation.getLatitude() + mLocation.getLatitude());
+        mLocation = new LocationResponse.Location(address.getNormalAddress().getAddressName(), address.getNormalAddress().getAddressName(), mLocation.getLongitude(), mLocation.getLatitude());
+        getLocationAndSetMap(mLocation);
+    }
+
+    @Override
+    public void validateFailure(String message) {
+//        hideProgressDialog();
+    }
 }

@@ -3,6 +3,7 @@ package com.ninano.weto.src.map_select.keyword_search;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -59,7 +61,7 @@ public class KeywordMapSearchActivity extends BaseActivity implements KeywordMap
                 intent.putExtra("location", mLocationList.get(pos));
                 setResult(100, intent);
                 finish();
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
             }
         });
         mRecyclerViewResult.setAdapter(mLocationListAdapter);
@@ -91,6 +93,14 @@ public class KeywordMapSearchActivity extends BaseActivity implements KeywordMap
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mEditTextKeyword.requestFocus();
+//        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputMethodManager.show
     }
 
     private void tryGetLocationSearch() {
@@ -129,7 +139,7 @@ public class KeywordMapSearchActivity extends BaseActivity implements KeywordMap
         mLocationList.clear();
 
         for (int i = 0; i < arrayList.size(); i++) {
-            Log.d("확인", arrayList.get(i).getAddressName());
+            Log.d("확인", arrayList.get(i).toString());
         }
 
         mLocationList.addAll(arrayList);

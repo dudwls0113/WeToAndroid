@@ -90,7 +90,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     private Context mContext;
     private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewLocation,
-                    mTextViewDate, mTextViewTime;
+            mTextViewDate, mTextViewTime;
     private EditText mEditTextTitle, mEditTextMemo;
     private boolean isSelectedNoRepeat, isSelectedDayRepeat, isSelectedWeekRepeat, isSelectedMonthRepeat;
 
@@ -114,6 +114,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private int mTodoCategory, mLocationMode, mLocationTime, mLadius;
     private char mWifiMode = 'N';
     private String mWifiBssid = "";
+    private String mImportantMode = "N";
 
     public static float dpUnit;             // dp단위 값
     ArrayList<Geofence> geofenceList = new ArrayList<>();
@@ -278,7 +279,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory);
         ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
                 longitude, latitude, mLocationMode, mLadius,
-                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "");
+                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", mImportantMode);
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -301,10 +302,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
         @Override
         protected Integer doInBackground(Object... toDos) {
             int todoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = "+todoNo);
+            Log.d("추가된 todoNo", " = " + todoNo);
 
             if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
-                if (((ToDoData) toDos[1]).getIsWiFi()=='Y'){
+                if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
@@ -319,20 +320,20 @@ public class AddPersonalToDoActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (integer==1){
+            if (integer == 1) {
                 System.out.println("실행???!!!!");
-                if (mWifiMode=='Y'){
+                if (mWifiMode == 'Y') {
                     try {
                         Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
                         System.out.println("카운트: " + count);
-                        if(count == 1 ){
-                            JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                        if (count == 1) {
+                            JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
                             if (jobScheduler != null) {
                                 jobScheduler.cancelAll();
                             }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                                 if (jobScheduler != null) {
-                                    if (mWifiConnected){
+                                    if (mWifiConnected) {
                                         System.out.println("현재 연결 와이파이");
                                         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                                         final WifiInfo wifiInfo;
@@ -355,10 +356,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
                                             .build());
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             System.out.println("카운트 아님");
-                            if (mWifiConnected){
+                            if (mWifiConnected) {
                                 System.out.println("현재 연결 와이파이2");
                                 WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                                 final WifiInfo wifiInfo;
@@ -588,11 +588,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void setDate(){
+    void setDate() {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                mTextViewDate.setText(i + "년 " + (i1+1) + "월 " + i2 + "일");
+                mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
                 mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
             }
         };
@@ -600,11 +600,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
         SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
         SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.getDefault());
-        DatePickerDialog dialog = new DatePickerDialog(this, R.style.DatePickerTheme ,dateSetListener, Integer.parseInt(yearFormat.format(currentTime)), Integer.parseInt(monthFormat.format(currentTime))-1, Integer.parseInt(dayFormat.format(currentTime)));
+        DatePickerDialog dialog = new DatePickerDialog(this, R.style.DatePickerTheme, dateSetListener, Integer.parseInt(yearFormat.format(currentTime)), Integer.parseInt(monthFormat.format(currentTime)) - 1, Integer.parseInt(dayFormat.format(currentTime)));
         dialog.show();
     }
 
-    void setTime(){
+    void setTime() {
         timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
@@ -700,7 +700,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mTextViewLocation.setText(mLocation.getPlaceName());
     }
 
-    void setWifiInfo(String ssid){
+    void setWifiInfo(String ssid) {
         mIsLocationSelected = true;
         mWifiMode = 'Y';
         mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
@@ -719,7 +719,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 latitude = Double.parseDouble(mLocation.getLatitude());
                 setLocationInfo();
 //                getLocationAndSetMap(mLocation);
-            } else if (resultCode==111){
+            } else if (resultCode == 111) {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);
                 latitude = data.getDoubleExtra("latitude", 0);
@@ -729,14 +729,16 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void registerAlarm(){
+    void registerAlarm() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 5);
         calendar.set(Calendar.MINUTE, 06);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        if (calendar.before(Calendar.getInstance())){
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (calendar.before(Calendar.getInstance())) {
             calendar.add(Calendar.DATE, 1);
         }
 
@@ -746,7 +748,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mAlarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if (mAlarmManager != null) {
             mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);

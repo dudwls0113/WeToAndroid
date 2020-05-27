@@ -23,8 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.group_invite.GroupInviteActivity"/>
-
+        <activity android:name=".src.test.TestActivity" />
+        <activity android:name=".src.group_invite.GroupInviteActivity" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
@@ -39,7 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".src.map_select.keyword_search.KeywordMapSearchActivity" />
+        <activity
+            android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"
+            android:windowSoftInputMode="stateVisible"></activity>
         <activity android:name=".src.map_select.MapSelectActivity" />
         <activity android:name=".db.RoomDBActivity">
 
