@@ -27,6 +27,9 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.kakao.auth.Session;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
@@ -34,6 +37,7 @@ import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
+import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.NonSwipeViewPager;
@@ -93,6 +97,15 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 //        checkPermission();
         init();
         getAppKeyHash();
+        FirebaseApp.initializeApp(this);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,
+                new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        ApplicationClass.fcmToken = instanceIdResult.getToken();
+//                        Log.d("Firebase", "token: " + fcmToken);
+                    }
+                });
     }
 
     private void getAppKeyHash() {

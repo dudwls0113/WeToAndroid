@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "314500135747",
+    "firebase_url": "https://weto-4ffd3.firebaseio.com",
+    "project_id": "weto-4ffd3",
+    "storage_bucket": "weto-4ffd3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314500135747:android:2409b3099121591bef4df6",
+        "android_client_info": {
+          "package_name": "com.ninano.weto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314500135747-70jt6lf98t80f5asln7jk0bhdk7ahqiq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ninano.weto",
+            "certificate_hash": "4f490b43cad47c8caa3eb0ebf8b9542008ab47e0"
+          }
+        },
+        {
+          "client_id": "314500135747-u7isjj68394i6q0o36kgq6rif9b2mj0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIAvce-EWJpdARQokZQhapGuHLQPqaQd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314500135747-u7isjj68394i6q0o36kgq6rif9b2mj0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

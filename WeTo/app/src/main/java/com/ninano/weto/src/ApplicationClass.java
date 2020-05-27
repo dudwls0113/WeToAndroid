@@ -25,7 +25,7 @@ public class ApplicationClass extends Application {
     // 테스트 서버 주소
 //    public static String BASE_URL = "http://www.so-yo.info/";
     // 실서버 주소
-    public static String BASE_URL = "http://52.79.232.21/";
+    public static String BASE_URL = "http://52.78.11.153/";
 
     public static SharedPreferences sSharedPreferences = null;
 
@@ -53,6 +53,8 @@ public class ApplicationClass extends Application {
     public static final int MORNING = 200;        //아침
     public static final int EVENING = 300;        //오후
     public static final int NIGHT = 400;          //밤
+
+    public static String fcmToken = "";
 
     private static ApplicationClass applicationClass;
     public static ApplicationClass getApplicationClassContext() {
