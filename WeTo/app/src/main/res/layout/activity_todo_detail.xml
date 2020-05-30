@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".src.todo_detail.TodoDetailActivity">
+
+    <ImageView
+        android:id="@+id/activity_todo_detail_iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:onClick="customOnClick"
+        android:padding="40dp"
+        android:src="@drawable/btn_close_x" />
+
+    <ImageView
+        android:id="@+id/activity_todo_detail_iv_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorSearchGray" />
+
+    <TextView
+        android:id="@+id/activity_todo_detail_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="18dp"
+        android:lineSpacingExtra="10sp"
+        android:text="일정제목"
+        android:textColor="@color/colorBlack"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/activity_todo_detail_tv_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/todo_detail_category_time"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/activity_todo_detail_tv_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="6sp"
+        android:text="매일, 아침 8시"
+        android:textColor="@color/colorSearchGray"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="21dp"
+        android:lineSpacingExtra="6sp"
+        android:text="메모"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/activity_todo_detail_tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="6sp"
+        android:text="집dsdsdsd\nㅇㄴㅇㄴㅇㄴㅇ"
+        android:gravity="center"
+        android:textColor="@color/colorSearchGray"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/add_personal_todo_btn_done"
+        android:layout_width="100dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_expand_button"
+        android:gravity="center"
+        android:lineSpacingExtra="8sp"
+        android:onClick="customOnClick"
+        android:stateListAnimator="@null"
+        android:text="수정하기"
+        android:textColor="#0809ff"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+</LinearLayout>

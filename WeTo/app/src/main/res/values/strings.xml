@@ -28,4 +28,7 @@
 
     <string name="group_invite_deny">거절하기</string>
     <string name="group_invite_deny_title">정말 거절하시겠습니까?</string>
+    <string name="todo_detail_category_time">특정 시각에 알리기</string>
+    <string name="todo_detail_category_gps">특정 위치에서 알리기</string>
+
 </resources>

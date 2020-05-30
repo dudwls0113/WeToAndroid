@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".src.ApplicationClass"
@@ -21,9 +21,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name=".src.todo_detail.TodoDetailActivity" />
         <activity android:name=".src.test.TestActivity" />
         <activity android:name=".src.group_invite.GroupInviteActivity" />
+        <activity android:name=".src.todo_edit.TodoEditActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
@@ -40,7 +44,7 @@
         </activity>
         <activity
             android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity android:name=".src.map_select.MapSelectActivity" />
         <activity android:name=".db.RoomDBActivity">
 
@@ -62,8 +66,8 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".src.receiver.GeofenceBroadcastReceiver" />
-
-        <receiver android:name=".src.DeviceBootReceiver"
+        <receiver
+            android:name=".src.DeviceBootReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

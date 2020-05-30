@@ -28,7 +28,7 @@ public class ToDoData {
 
     private int repeatType; //매일, 매주, 매월
 
-    private String repeatDayOfWeek; //1,2  1,5,7
+    private String repeatDayOfWeek; //월,화  월,수,금
 
     private int repeatDay;// 23
 
@@ -44,7 +44,7 @@ public class ToDoData {
         this.locationMode = locationMode;
     }
 
-    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, char isImportant) {
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time) {
         this.locationName = locationName;
         this.latitude = latitude;
         this.longitude = longitude;

@@ -2,6 +2,7 @@ package com.ninano.weto.db;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Todo")
@@ -22,19 +23,20 @@ public class ToDo {
     private int serverTodoNo; // 그룹아니면 0
 
     //그룹용 생성자
-    public ToDo(int todoNo, String title, String content, int icon, int type, int ordered, char isImportant, char isGroup, int serverTodoNo) {
+    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo) {
         this.title = title;
         this.content = content;
         this.icon = icon;
         this.type = type;
         this.status = "ACTIVATE";
-        this.ordered = ordered;
+        this.ordered = 0;
         this.isImportant = isImportant;
         this.isGroup = isGroup;
         this.serverTodoNo = serverTodoNo;
     }
 
     //로컬용 생성자
+    @Ignore
     public ToDo(String title, String content, int icon, int type, char isImportant) {
         this.title = title;
         this.content = content;

@@ -40,11 +40,13 @@ import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.User;
 import com.kakao.util.exception.KakaoException;
 import com.ninano.weto.R;
+import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.main.todo_group.adapter.GroupListAdapter;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
+import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupView;
 import com.ninano.weto.src.main.todo_group.models.GroupData;
 import com.ninano.weto.src.main.todo_group.models.ToDoGroupData;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
@@ -57,7 +59,7 @@ import java.util.Locale;
 
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
-public class ToDoGroupFragment extends BaseFragment {
+public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
 
     private Context mContext;
 
@@ -89,6 +91,8 @@ public class ToDoGroupFragment extends BaseFragment {
 
     //카카오 로그인
     private ISessionCallback mKakaoCallback;
+    long kakaoId;
+    String nickName, profileUrl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -265,14 +269,11 @@ public class ToDoGroupFragment extends BaseFragment {
 
                     @Override
                     public void onSuccess(MeV2Response result) {
-                        String nickName = result.getKakaoAccount().getProfile().getNickname();
-                        String profileUrl = result.getKakaoAccount().getProfile().getProfileImageUrl();
+                        kakaoId = result.getId();
+                        nickName = result.getKakaoAccount().getProfile().getNickname();
+                        profileUrl = result.getKakaoAccount().getProfile().getProfileImageUrl();
+                        postIsExistUser(kakaoId);
                         System.out.println("성공: " + nickName + ", " + profileUrl);
-                        mLayoutButton.setVisibility(View.VISIBLE);
-                        mLayoutLogin.setVisibility(View.GONE);
-                        SharedPreferences.Editor editor = sSharedPreferences.edit();
-                        editor.putBoolean("kakaoLogin", true);
-                        editor.apply();
                     }
                 });
             }
@@ -322,5 +323,44 @@ public class ToDoGroupFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         Session.getCurrentSession().removeCallback(mKakaoCallback);
+    }
+
+    private void postIsExistUser(long kakaoId){
+        ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
+        toDoGroupService.postIsExistUser(kakaoId);
+    }
+
+    private void postSignUp(String fcmToken, long kakaoId, String profileUrl, String nickName){
+        System.out.println(fcmToken + ", " + kakaoId + ", " + profileUrl + ", " + nickName);
+        ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
+        toDoGroupService.postSignUp(fcmToken, kakaoId, profileUrl, nickName);
+    }
+
+    @Override
+    public void existUser() {
+        mLayoutButton.setVisibility(View.VISIBLE);
+        mLayoutLogin.setVisibility(View.GONE);
+        SharedPreferences.Editor editor = sSharedPreferences.edit();
+        editor.putBoolean("kakaoLogin", true);
+        editor.apply();
+    }
+
+    @Override
+    public void notExistUser() {
+        postSignUp(ApplicationClass.fcmToken, kakaoId, profileUrl, nickName);
+    }
+
+    @Override
+    public void signUpSuccess() {
+        mLayoutButton.setVisibility(View.VISIBLE);
+        mLayoutLogin.setVisibility(View.GONE);
+        SharedPreferences.Editor editor = sSharedPreferences.edit();
+        editor.putBoolean("kakaoLogin", true);
+        editor.apply();
+    }
+
+    @Override
+    public void validateFailure(String message) {
+        showCustomToast(mContext, message!=null?message : getString(R.string.network_error));
     }
 }

@@ -13,18 +13,33 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ninano.weto.R;
+import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.main.todo_personal.models.ToDoPersonalData;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
+import static com.ninano.weto.src.ApplicationClass.ALWAYS;
+import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
+import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
+import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.EVENING;
+import static com.ninano.weto.src.ApplicationClass.LOCATION;
+import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
+import static com.ninano.weto.src.ApplicationClass.MORNING;
+import static com.ninano.weto.src.ApplicationClass.NIGHT;
+import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
+import static com.ninano.weto.src.ApplicationClass.TIME;
+import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
+
 public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalListAdapter.CustomViewHolder> implements ToDoPersonalItemTouchHelperCallback.OnItemMoveListener{
 
     private Context mContext;
-    private ArrayList<ToDoPersonalData> mData;
+    private ArrayList<ToDoWithData> mData;
     private ItemClickListener mItemClickLIstener;
 
-    public ToDoPersonalListAdapter(Context context, ArrayList<ToDoPersonalData> arrayList, ItemClickListener itemClickLIstener){
+    public ToDoPersonalListAdapter(Context context, ArrayList<ToDoWithData> arrayList, ItemClickListener itemClickLIstener){
         mContext = context;
         mData = arrayList;
         mItemClickLIstener = itemClickLIstener;
@@ -45,6 +60,8 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
     public interface ItemClickListener{
         void itemClick(int pos);
 
+        void editClick(int pos);
+
         void onStartDrag(CustomViewHolder holder);
     }
 
@@ -58,13 +75,66 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
-        holder.mTextViewTitle.setText(mData.get(position).getToDoTitle());
-        holder.mTextViewSubTitle.setText(mData.get(position).getSubTitle());
+        holder.mTextViewTitle.setText(mData.get(position).getTitle());
+        StringBuilder condition = new StringBuilder();
+        switch (mData.get(position).getType()) {
+            case TIME:
+                switch (mData.get(position).getRepeatType()) {
+                    case ALL_DAY:
+                        condition.append("매일, ").append(mData.get(position).getTime());
+                        break;
+                    case WEEK_DAY:
+                        condition.append("매 주 ");
+                        String[] splitArr = mData.get(position).getRepeatDayOfWeek().split(",");
+                        for (String s : splitArr) {
+                            condition.append(s).append("요일 ");
+                        }
+                        condition.append(mData.get(position).getTime());
+                        break;
+                    case MONTH_DAY:
+                        condition.append("매 월 ").append(mData.get(position).getRepeatDay()).append("일, ").append(mData.get(position).getTime());
+                        break;
+                    case ONE_DAY:
+                        condition.append(mData.get(position).getDate()).append(", ").append(mData.get(position).getTime());
+                        break;
+                }
+
+                break;
+            case LOCATION:
+                condition.append(mData.get(position).getLocationName());
+                switch (mData.get(position).getLocationMode()) {
+                    case AT_START:
+                        condition.append("에서 출발 할 때");
+                        break;
+                    case AT_ARRIVE:
+                        condition.append("에 도착 할 때");
+                        break;
+                    case AT_NEAR:
+                        condition.append(" 지나갈 때");
+                        break;
+                }
+                switch (mData.get(position).getTimeSlot()) {
+                    case ALWAYS:
+                        condition.append(" 언제든");
+                        break;
+                    case MORNING:
+                        condition.append(" 아침(06시 ~ 12시)");
+                        break;
+                    case EVENING:
+                        condition.append(" 오후(12시 ~ 21시)");
+                        break;
+                    case NIGHT:
+                        condition.append(" 밤(21시 ~ 06시)");
+                        break;
+                }
+                break;
+        }
+        holder.mTextViewSubTitle.setText(condition);
 
         if (mData.get(position).isEditMode()){
-            holder.mImageViewEdit.setBackgroundResource(R.drawable.ic_edit_2);
+            holder.mImageViewEdit.setImageResource(R.drawable.ic_edit_2);
         } else {
-            holder.mImageViewEdit.setBackgroundResource(R.drawable.ic_drag);
+            holder.mImageViewEdit.setImageResource(R.drawable.ic_drag);
         }
 
         holder.mImageViewEdit.setOnTouchListener(new View.OnTouchListener() {
@@ -101,6 +171,12 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
                 @Override
                 public void onClick(View view) {
                     mItemClickLIstener.itemClick(getAdapterPosition());
+                }
+            });
+            mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickLIstener.editClick(getAdapterPosition());
                 }
             });
         }

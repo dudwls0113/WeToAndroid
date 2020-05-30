@@ -1,9 +1,4 @@
-package com.ninano.weto.src.todo_add;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.ninano.weto.src.todo_edit;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -34,6 +29,10 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -73,20 +72,20 @@ import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
+import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
+import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.EVENING;
+import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
+import static com.ninano.weto.src.ApplicationClass.MORNING;
+import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
-import static com.ninano.weto.src.ApplicationClass.LOCATION;
-import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
-import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
-import static com.ninano.weto.src.ApplicationClass.MORNING;
-import static com.ninano.weto.src.ApplicationClass.EVENING;
-import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 
-public class AddPersonalToDoActivity extends BaseActivity {
+public class TodoEditActivity extends BaseActivity {
 
     private Context mContext;
 
@@ -123,46 +122,120 @@ public class AddPersonalToDoActivity extends BaseActivity {
     AppDatabase mDatabase;
     private GeofencingClient geofencingClient;
     public static float dpUnit;
+    private ToDoWithData mToDoWithData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_personal_to_do);
+        setContentView(R.layout.activity_todo_edit);
         mContext = this;
+
+        Intent intent = getIntent();
+        mToDoWithData = (ToDoWithData) intent.getSerializableExtra("todoData");
+
         init();
         setTempLikeLocationData();
         initGeoFence();
+        initEditMode();
+    }
+
+    void initEditMode() {
+        mEditTextTitle.setText(mToDoWithData.getTitle());
+        switch (mToDoWithData.getType()) {
+            case TIME:
+                mSwitchTime.setChecked(true);
+                mTodoCategory = TIME;
+                showTimeLayout();
+                isSwitchTime = true;
+
+                switch (mToDoWithData.getRepeatType()) {
+                    case ALL_DAY:
+                        setRepeatTimeView(mTextViewTimeNoRepeat);
+                        break;
+                    case WEEK_DAY:
+                        setRepeatTimeView(mTextViewTimeDayRepeat);
+                        break;
+                    case MONTH_DAY:
+                        setRepeatTimeView(mTextViewTimeWeekRepeat);
+                        break;
+                    case ONE_DAY:
+                        setRepeatTimeView(mTextViewTimeMonthRepeat);
+                        break;
+                }
+                break;
+            case LOCATION:
+                mSwitchGps.setChecked(true);
+                mTodoCategory = LOCATION;
+                showGpsLayout();
+                isSwitchGps = true;
+
+                switch (mToDoWithData.getLocationMode()) {
+                    case AT_START:
+                        setLocationModeView(mTextViewStart);
+                        break;
+                    case AT_ARRIVE:
+                        setLocationModeView(mTextViewArrive);
+                        break;
+                    case AT_NEAR:
+                        setLocationModeView(mTextViewNear);
+                        break;
+                }
+                switch (mToDoWithData.getTimeSlot()) {
+                    case ALWAYS:
+                        setLocationTimeView(mTextViewAlways);
+                        break;
+                    case MORNING:
+                        setLocationTimeView(mTextViewMorning);
+                        break;
+                    case EVENING:
+                        setLocationTimeView(mTextViewEvening);
+                        break;
+                    case NIGHT:
+                        setLocationTimeView(mTextViewNight);
+                        break;
+                }
+
+                mTextViewLocation.setText(mToDoWithData.getLocationName());
+
+
+                break;
+
+                //수정하면 UPDATE문으로 덮어쓰기, geo나 wifi, 알람매니저는 어떻게바꾸지?
+                // 1. geo는 원래있던거 지우고 새로등록
+                // 2. wifi는?
+                // 2. 알람매니저는?
+        }
     }
 
     void init() {
-        mTextViewTimeNoRepeat = findViewById(R.id.add_personal_todo_tv_no_repeat);
-        mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
-        mTextViewTimeWeekRepeat = findViewById(R.id.add_personal_todo_tv_week_repeat);
-        mTextViewTimeMonthRepeat = findViewById(R.id.add_personal_todo_tv_month_repeat);
+        mTextViewTimeNoRepeat = findViewById(R.id.activity_todo_edit_todo_tv_no_repeat);
+        mTextViewTimeDayRepeat = findViewById(R.id.activity_todo_edit_todo_tv_day_repeat);
+        mTextViewTimeWeekRepeat = findViewById(R.id.activity_todo_edit_todo_tv_week_repeat);
+        mTextViewTimeMonthRepeat = findViewById(R.id.activity_todo_edit_todo_tv_month_repeat);
 
-        mTextViewDate = findViewById(R.id.add_personal_todo_tv_date);
-        mTextViewTime = findViewById(R.id.add_personal_todo_tv_time);
+        mTextViewDate = findViewById(R.id.activity_todo_edit_todo_tv_date);
+        mTextViewTime = findViewById(R.id.activity_todo_edit_todo_tv_time);
 
-        mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
-        mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
-        mTextViewLocation = findViewById(R.id.add_personal_todo_tv_location);
+        mLinearHiddenTime = findViewById(R.id.activity_todo_edit_todo_layout_hidden_time);
+        mLinearHiddenGps = findViewById(R.id.activity_todo_edit_todo_layout_hidden_gps);
+        mTextViewLocation = findViewById(R.id.activity_todo_edit_todo_tv_location);
 
-        mSwitchTime = findViewById(R.id.add_personal_todo_switch_time);
-        mSwitchGps = findViewById(R.id.add_personal_todo_switch_gps);
+        mSwitchTime = findViewById(R.id.activity_todo_edit_todo_switch_time);
+        mSwitchGps = findViewById(R.id.activity_todo_edit_todo_switch_gps);
 
-        mEditTextTitle = findViewById(R.id.add_personal_todo_et_title);
-        mEditTextMemo = findViewById(R.id.add_personal_todo_et_memo);
+        mEditTextTitle = findViewById(R.id.activity_todo_edit_todo_et_title);
+        mEditTextMemo = findViewById(R.id.activity_todo_edit_todo_et_memo);
 
-        mTextViewStart = findViewById(R.id.add_personal_todo_layout_hidden_gps_start);
-        mTextViewArrive = findViewById(R.id.add_personal_todo_layout_hidden_gps_arrive);
-        mTextViewNear = findViewById(R.id.add_personal_todo_layout_hidden_gps_near);
+        mTextViewStart = findViewById(R.id.activity_todo_edit_todo_layout_hidden_gps_start);
+        mTextViewArrive = findViewById(R.id.activity_todo_edit_todo_layout_hidden_gps_arrive);
+        mTextViewNear = findViewById(R.id.activity_todo_edit_todo_layout_hidden_gps_near);
 
-        mTextViewAlways = findViewById(R.id.add_personal_todo_btn_always);
-        mTextViewMorning = findViewById(R.id.add_personal_todo_btn_morning);
-        mTextViewEvening = findViewById(R.id.add_personal_todo_btn_evening);
-        mTextViewNight = findViewById(R.id.add_personal_todo_btn_night);
+        mTextViewAlways = findViewById(R.id.activity_todo_edit_todo_btn_always);
+        mTextViewMorning = findViewById(R.id.activity_todo_edit_todo_btn_morning);
+        mTextViewEvening = findViewById(R.id.activity_todo_edit_todo_btn_evening);
+        mTextViewNight = findViewById(R.id.activity_todo_edit_todo_btn_night);
 
-        mRecyclerViewMyPlace = findViewById(R.id.add_personal_todo_rv_like);
+        mRecyclerViewMyPlace = findViewById(R.id.activity_todo_edit_todo_rv_like);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerViewMyPlace.setLayoutManager(linearLayoutManager);
@@ -268,7 +341,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             case LOCATION:
                 break;
         }
-        new AddPersonalToDoActivity.InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+        new TodoEditActivity.InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -282,8 +355,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         @Override
         protected Integer doInBackground(Object... toDos) {
             int todoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = " + todoNo);
-
             if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
                 if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
                     return 1;
@@ -440,7 +511,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 setRepeatTimeView(mTextViewTimeMonthRepeat);
                 mRepeatType = MONTH_DAY;
                 break;
-            case R.id.add_personal_todo_switch_time:
+            case R.id.activity_todo_edit_todo_switch_time:
                 if (isSwitchTime) { // expand 상태
                     mTodoCategory = NONE;
                     hideTimeLayout();
@@ -456,7 +527,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     }
                 }
                 break;
-            case R.id.add_personal_todo_switch_gps:
+            case R.id.activity_todo_edit_todo_switch_gps:
                 if (isSwitchGps) {
                     mTodoCategory = NONE;
                     hideGpsLayout();
@@ -473,50 +544,50 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
                 break;
 
-            case R.id.add_personal_todo_layout_hidden_gps_start:
+            case R.id.activity_todo_edit_todo_layout_hidden_gps_start:
                 mLocationMode = AT_START;
                 setLocationModeView(mTextViewStart);
                 break;
-            case R.id.add_personal_todo_layout_hidden_gps_arrive:
+            case R.id.activity_todo_edit_todo_layout_hidden_gps_arrive:
                 mLocationMode = AT_ARRIVE;
                 setLocationModeView(mTextViewArrive);
                 break;
-            case R.id.add_personal_todo_layout_hidden_gps_near:
+            case R.id.activity_todo_edit_todo_layout_hidden_gps_near:
                 mLocationMode = AT_NEAR;
                 setLocationModeView(mTextViewNear);
                 break;
 
-            case R.id.add_personal_todo_btn_always:
+            case R.id.activity_todo_edit_todo_btn_always:
                 mLocationTime = ALWAYS;
                 setLocationTimeView(mTextViewAlways);
                 break;
-            case R.id.add_personal_todo_btn_morning:
+            case R.id.activity_todo_edit_todo_btn_morning:
                 mLocationTime = MORNING;
                 setLocationTimeView(mTextViewMorning);
                 break;
-            case R.id.add_personal_todo_btn_evening:
+            case R.id.activity_todo_edit_todo_btn_evening:
                 mLocationTime = EVENING;
                 setLocationTimeView(mTextViewEvening);
                 break;
-            case R.id.add_personal_todo_btn_night:
+            case R.id.activity_todo_edit_todo_btn_night:
                 mLocationTime = NIGHT;
                 setLocationTimeView(mTextViewNight);
                 break;
 
-            case R.id.add_personal_todo_layout_gps:
+            case R.id.activity_todo_edit_todo_layout_gps:
                 // 지도 선 화면
                 Intent intent = new Intent(mContext, MapSelectActivity.class);
                 startActivityForResult(intent, 100);
                 break;
-            case R.id.add_personal_todo_layout_hidden_time_date:
+            case R.id.activity_todo_edit_todo_layout_hidden_time_date:
                 // 날짜선택
                 setDate();
                 break;
-            case R.id.add_personal_todo_layout_hidden_time_time:
+            case R.id.activity_todo_edit_todo_layout_hidden_time_time:
                 //시간선택
                 setTime();
                 break;
-            case R.id.add_personal_todo_btn_done:
+            case R.id.activity_todo_edit_todo_btn_done:
                 //추가버튼
                 if (validateBeforeAdd()) {
                     insertToRoomDB();
@@ -574,30 +645,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void setLocationTimeView(TextView selectedView) {
-        if (selectedView.equals(mTextViewAlways)) {
-            setVineOnMode(mTextViewAlways);
-            setVineOffMode(mTextViewMorning);
-            setVineOffMode(mTextViewEvening);
-            setVineOffMode(mTextViewNight);
-        } else if (selectedView.equals(mTextViewMorning)) {
-            setVineOffMode(mTextViewAlways);
-            setVineOnMode(mTextViewMorning);
-            setVineOffMode(mTextViewEvening);
-            setVineOffMode(mTextViewNight);
-        } else if (selectedView.equals(mTextViewEvening)) {
-            setVineOffMode(mTextViewAlways);
-            setVineOffMode(mTextViewMorning);
-            setVineOnMode(mTextViewEvening);
-            setVineOffMode(mTextViewNight);
-        } else {
-            setVineOffMode(mTextViewAlways);
-            setVineOffMode(mTextViewMorning);
-            setVineOffMode(mTextViewEvening);
-            setVineOnMode(mTextViewNight);
-        }
-    }
-
     void setRepeatTimeView(TextView selectedView) {
         if (selectedView.equals(mTextViewTimeNoRepeat)) {
             setVineOnMode(mTextViewTimeNoRepeat);
@@ -619,6 +666,30 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewTimeDayRepeat);
             setVineOffMode(mTextViewTimeWeekRepeat);
             setVineOnMode(mTextViewTimeMonthRepeat);
+        }
+    }
+
+    void setLocationTimeView(TextView selectedView) {
+        if (selectedView.equals(mTextViewAlways)) {
+            setVineOnMode(mTextViewAlways);
+            setVineOffMode(mTextViewMorning);
+            setVineOffMode(mTextViewEvening);
+            setVineOffMode(mTextViewNight);
+        } else if (selectedView.equals(mTextViewMorning)) {
+            setVineOffMode(mTextViewAlways);
+            setVineOnMode(mTextViewMorning);
+            setVineOffMode(mTextViewEvening);
+            setVineOffMode(mTextViewNight);
+        } else if (selectedView.equals(mTextViewEvening)) {
+            setVineOffMode(mTextViewAlways);
+            setVineOffMode(mTextViewMorning);
+            setVineOnMode(mTextViewEvening);
+            setVineOffMode(mTextViewNight);
+        } else {
+            setVineOffMode(mTextViewAlways);
+            setVineOffMode(mTextViewMorning);
+            setVineOffMode(mTextViewEvening);
+            setVineOnMode(mTextViewNight);
         }
     }
 
@@ -710,7 +781,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         PackageManager pm = this.getPackageManager();
         ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
 
-        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+        Intent intent = new Intent(TodoEditActivity.this, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 

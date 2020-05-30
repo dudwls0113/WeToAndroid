@@ -50,13 +50,10 @@ class MapSelectService {
         mapSelectRetrofitInterface.getAddressFromXy(latitude, longitude).enqueue(new Callback<AddressResponse>() {
             @Override
             public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                Log.e("에러2", response.toString());
-
                 final AddressResponse addressResponse = response.body();
                 if (addressResponse == null) {
                     mapSelectActivityView.validateFailure(null);
                 } else {
-                    Log.e("에러", "success");
                     mapSelectActivityView.validateSuccess(addressResponse.getLocations().get(0));
                 }
             }
