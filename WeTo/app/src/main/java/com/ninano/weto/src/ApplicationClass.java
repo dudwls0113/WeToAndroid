@@ -54,6 +54,11 @@ public class ApplicationClass extends Application {
     public static final int EVENING = 300;        //오후
     public static final int NIGHT = 400;          //밤
 
+    public static final int ALL_DAY = 1;         //매일
+    public static final int WEEK_DAY = 2;        //매주
+    public static final int MONTH_DAY = 3;        //매월
+    public static final int ONE_DAY = 4;          //특정일
+
     private static ApplicationClass applicationClass;
     public static ApplicationClass getApplicationClassContext() {
         if (applicationClass == null)

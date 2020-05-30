@@ -10,8 +10,6 @@ public class ToDoData {
 
     private int todoNo;
 
-    private int order;
-
     private String locationName;
 
     private double latitude;
@@ -38,26 +36,6 @@ public class ToDoData {
 
     private String time;
 
-    private String isGroup;
-
-    private String isImportant;
-
-    public String getIsImportant() {
-        return isImportant;
-    }
-
-    public void setIsImportant(String isImportant) {
-        this.isImportant = isImportant;
-    }
-
-    public String getIsGroup() {
-        return isGroup;
-    }
-
-    public void setIsGroup(String isGroup) {
-        this.isGroup = isGroup;
-    }
-
     public int getLocationMode() {
         return locationMode;
     }
@@ -66,8 +44,7 @@ public class ToDoData {
         this.locationMode = locationMode;
     }
 
-    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, String isImportant) {
-        this.order = 0;
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, char isImportant) {
         this.locationName = locationName;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -81,8 +58,6 @@ public class ToDoData {
         this.repeatDay = repeatDay;
         this.date = date;
         this.time = time;
-        this.isGroup = "N";
-        this.isImportant = isImportant;
     }
 
     public String getDate() {
@@ -198,16 +173,4 @@ public class ToDoData {
         this.time = time;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-    //    @NonNull
-//    @Override
-//    public String toString() {
-//        return this.title;
-//    }
 }
