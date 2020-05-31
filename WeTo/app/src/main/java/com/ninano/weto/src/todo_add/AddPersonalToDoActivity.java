@@ -1,13 +1,12 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -56,10 +55,8 @@ import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
 import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
-import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
-import com.ninano.weto.src.todo_add.models.LikeLocationData;
-
-import org.w3c.dom.Text;
+import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
+import com.ninano.weto.src.todo_add.models.MyPlace;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,9 +71,12 @@ import java.util.concurrent.TimeUnit;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
+import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.NONE;
+import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
@@ -84,49 +84,45 @@ import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
-import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
+import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 
 public class AddPersonalToDoActivity extends BaseActivity {
 
     private Context mContext;
-    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewLocation,
-            mTextViewDate, mTextViewTime;
+
+    //공통
     private EditText mEditTextTitle, mEditTextMemo;
-    private boolean isSelectedNoRepeat, isSelectedDayRepeat, isSelectedWeekRepeat, isSelectedMonthRepeat;
-
-    //위치 - Location Mode
-    private TextView mTextViewStart, mTextViewArrive, mTextViewNear;
-    //위치 - Location Time
-    private TextView mTextViewAlways, mTextViewMorning, mTextViewEvening, mTextViewNight;
-
+    private int mIcon;
     private Switch mSwitchTime, mSwitchGps;
     private boolean isSwitchTime, isSwitchGps;
-    private LinearLayout mLinearHiddenTime, mLinearHiddenGps, mLinearMap;
+    private char mImportantMode = 'N';
 
-    private RecyclerView mRecyclerViewLike;
-    private LIkeLocationListAdapter mLIkeLocationListAdapter;
-    private ArrayList<LikeLocationData> mDataArrayList = new ArrayList<>();
-    private LocationResponse.Location mLocation;
-    //
-    private GeofencingClient geofencingClient;
+    //Time Mode
+    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewDate, mTextViewTime;
+    private LinearLayout mLinearHiddenTime;
+    private AlarmManager mAlarmManager;
+    private int mRepeatType;
 
-    private boolean mIsLocationSelected;
+    //Location Mode
+    private TextView mTextViewLocation, mTextViewStart, mTextViewArrive, mTextViewNear;
+    private TextView mTextViewAlways, mTextViewMorning, mTextViewEvening, mTextViewNight;
+    private LinearLayout mLinearHiddenGps;
     private int mTodoCategory, mLocationMode, mLocationTime, mLadius;
+    private boolean mIsLocationSelected;
     private char mWifiMode = 'N';
     private String mWifiBssid = "";
-    private String mImportantMode = "N";
-
-    public static float dpUnit;             // dp단위 값
-    ArrayList<Geofence> geofenceList = new ArrayList<>();
-    AppDatabase mDatabase;
-
-    private AlarmManager mAlarmManager;
-
-    private Double longitude, latitude;
     private boolean mWifiConnected;
+    ArrayList<Geofence> geofenceList = new ArrayList<>();
+    private Double longitude, latitude;
 
-    private DatePickerDialog.OnDateSetListener dateSetListener;
-    private TimePickerDialog.OnTimeSetListener timeSetListener;
+    private RecyclerView mRecyclerViewMyPlace;
+    private MyPlaceListAdapter mMyPlaceListAdapter;
+    private ArrayList<MyPlace> mDataArrayList = new ArrayList<>();
+    private LocationResponse.Location mLocation;
+
+    AppDatabase mDatabase;
+    private GeofencingClient geofencingClient;
+    public static float dpUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,13 +132,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
         init();
         setTempLikeLocationData();
         initGeoFence();
-//        addGeofencesToClient();
-//        registerAlarm();
     }
 
     void init() {
         mTextViewTimeNoRepeat = findViewById(R.id.add_personal_todo_tv_no_repeat);
-        isSelectedNoRepeat = true;
         mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
         mTextViewTimeWeekRepeat = findViewById(R.id.add_personal_todo_tv_week_repeat);
         mTextViewTimeMonthRepeat = findViewById(R.id.add_personal_todo_tv_month_repeat);
@@ -152,7 +145,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
-        mLinearMap = findViewById(R.id.add_personal_todo_layout_gps);
         mTextViewLocation = findViewById(R.id.add_personal_todo_tv_location);
 
         mSwitchTime = findViewById(R.id.add_personal_todo_switch_time);
@@ -170,11 +162,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mTextViewEvening = findViewById(R.id.add_personal_todo_btn_evening);
         mTextViewNight = findViewById(R.id.add_personal_todo_btn_night);
 
-        mRecyclerViewLike = findViewById(R.id.add_personal_todo_rv_like);
+        mRecyclerViewMyPlace = findViewById(R.id.add_personal_todo_rv_like);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerViewLike.setLayoutManager(linearLayoutManager);
-        mLIkeLocationListAdapter = new LIkeLocationListAdapter(mContext, mDataArrayList, new LIkeLocationListAdapter.ItemClickListener() {
+        mRecyclerViewMyPlace.setLayoutManager(linearLayoutManager);
+        mMyPlaceListAdapter = new MyPlaceListAdapter(mContext, mDataArrayList, new MyPlaceListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
                 for (int i = 0; i < mDataArrayList.size(); i++) {
@@ -185,15 +177,15 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 } else {
                     // 즐겨찾기 장소 추가화면
                 }
-                mLIkeLocationListAdapter.notifyDataSetChanged();
+                mMyPlaceListAdapter.notifyDataSetChanged();
             }
         });
-        mRecyclerViewLike.setAdapter(mLIkeLocationListAdapter);
+        mRecyclerViewMyPlace.setAdapter(mMyPlaceListAdapter);
 
         mTodoCategory = NONE;
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
-        mLocationTime = AT_START;
+        mLocationTime = ALWAYS;
 //        mWifiMode = 'Y';
         mLadius = 300;
 
@@ -207,16 +199,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     private void setDatabase() {
         mDatabase = AppDatabase.getAppDatabase(this);
-        //UI 갱신 (라이브 데이터를 이용하여 자동으로)
-        mDatabase.todoDao().getTodoList().observe(this, new Observer<List<ToDoWithData>>() {
-            @Override
-            public void onChanged(List<ToDoWithData> todoList) {
-                //목록가져와서 자동으로 처리
-//                mTextView.setText(todoList.toString());
-//                geofenceList.add(getGeofence(3, "가디역", new Pair<>(37.477198, 126.883828), (float) 100.0, 10000));
-//                addGeofences();
-            }
-        });
     }
 
     void initGeoFence() {
@@ -226,7 +208,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
         int GEOFENCE_TRANSITION;
         if (type == AT_ARRIVE) {
-            Log.d("지오 추가 중", "진입 감지");
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
         } else if (type == AT_START) {
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
@@ -245,8 +226,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     private PendingIntent geofencePendingIntent() {
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        PendingIntent geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return geofencePendingIntent;
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
@@ -276,10 +256,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void insertToRoomDB() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory);
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
         ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
                 longitude, latitude, mLocationMode, mLadius,
-                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", mImportantMode);
+                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "");
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -309,7 +289,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
-                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
+                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLongitude(), toDoData.getLatitude()), (float) toDoData.getRadius(), 1000));
                     addGeofencesToClient();
                 }
             }
@@ -320,8 +300,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (integer == 1) {
-                System.out.println("실행???!!!!");
+            if (integer != null && integer == 1) {
                 if (mWifiMode == 'Y') {
                     try {
                         Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
@@ -425,7 +404,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         });
         anim1.start();
         System.out.println(mDataArrayList.size());
-        mLIkeLocationListAdapter.notifyDataSetChanged();
+        mMyPlaceListAdapter.notifyDataSetChanged();
     }
 
     private void hideGpsLayout() {
@@ -445,61 +424,21 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     public void customOnClick(View v) {
         switch (v.getId()) {
-            case R.id.add_personal_todo_tv_no_repeat:
-                isSelectedNoRepeat = true;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#ffffff"));
-                isSelectedDayRepeat = false;
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedWeekRepeat = false;
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedMonthRepeat = false;
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+            case R.id.activity_todo_edit_todo_tv_no_repeat:
+                setRepeatTimeView(mTextViewTimeNoRepeat);
+                mRepeatType = ONE_DAY;
                 break;
-            case R.id.add_personal_todo_tv_day_repeat:
-                isSelectedNoRepeat = false;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedDayRepeat = true;
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#ffffff"));
-                isSelectedWeekRepeat = false;
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedMonthRepeat = false;
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+            case R.id.activity_todo_edit_todo_tv_day_repeat:
+                setRepeatTimeView(mTextViewTimeDayRepeat);
+                mRepeatType = ALL_DAY;
                 break;
-            case R.id.add_personal_todo_tv_week_repeat:
-                isSelectedNoRepeat = false;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedDayRepeat = false;
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedWeekRepeat = true;
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#ffffff"));
-                isSelectedMonthRepeat = false;
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+            case R.id.activity_todo_edit_todo_tv_week_repeat:
+                setRepeatTimeView(mTextViewTimeWeekRepeat);
+                mRepeatType = WEEK_DAY;
                 break;
-            case R.id.add_personal_todo_tv_month_repeat:
-                isSelectedNoRepeat = false;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedDayRepeat = false;
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedWeekRepeat = false;
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                isSelectedMonthRepeat = true;
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#ffffff"));
+            case R.id.activity_todo_edit_todo_tv_month_repeat:
+                setRepeatTimeView(mTextViewTimeMonthRepeat);
+                mRepeatType = MONTH_DAY;
                 break;
             case R.id.add_personal_todo_switch_time:
                 if (isSwitchTime) { // expand 상태
@@ -589,7 +528,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void setDate() {
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                 mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
@@ -605,7 +545,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void setTime() {
-        timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 mTextViewTime.setText(i + "시 " + i1 + "분");
@@ -657,6 +598,30 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
+    void setRepeatTimeView(TextView selectedView) {
+        if (selectedView.equals(mTextViewTimeNoRepeat)) {
+            setVineOnMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else if (selectedView.equals(mTextViewTimeDayRepeat)) {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOnMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else if (selectedView.equals(mTextViewTimeWeekRepeat)) {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOnMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOnMode(mTextViewTimeMonthRepeat);
+        }
+    }
+
     void setVineOnMode(TextView textView) {
         textView.setBackgroundResource(R.drawable.bg_round_button_on);
         textView.setTextColor(Color.parseColor("#ffffff"));
@@ -686,12 +651,12 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void setTempLikeLocationData() {
-        mDataArrayList.add(new LikeLocationData("집", "청라1동", false, false));
-        mDataArrayList.add(new LikeLocationData("회사", "청라1동", false, false));
-        mDataArrayList.add(new LikeLocationData("사무실", "청라1동", false, false));
+        mDataArrayList.add(new MyPlace("집", "청라1동", false, false));
+        mDataArrayList.add(new MyPlace("회사", "청라1동", false, false));
+        mDataArrayList.add(new MyPlace("사무실", "청라1동", false, false));
         //마지막 +
-        mDataArrayList.add(new LikeLocationData("+", "청라1동", false, true));
-        mLIkeLocationListAdapter.notifyDataSetChanged();
+        mDataArrayList.add(new MyPlace("+", "청라1동", false, true));
+        mMyPlaceListAdapter.notifyDataSetChanged();
     }
 
     void setLocationInfo() {
@@ -718,7 +683,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 longitude = Double.parseDouble(mLocation.getLongitude());
                 latitude = Double.parseDouble(mLocation.getLatitude());
                 setLocationInfo();
-//                getLocationAndSetMap(mLocation);
             } else if (resultCode == 111) {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);

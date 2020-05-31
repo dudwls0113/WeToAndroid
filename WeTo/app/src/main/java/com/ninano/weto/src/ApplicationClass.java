@@ -45,14 +45,19 @@ public class ApplicationClass extends Application {
     public static final int TIME = 66;             // 시간일정
     public static final int LOCATION = 77;         // 위치일정
 
-    public static final int AT_START = 11;         // 출~발
+    public static final int AT_START = 11;         // 출발
     public static final int AT_ARRIVE = 22;        // 도착
     public static final int AT_NEAR = 33;          // 근처
 
     public static final int ALWAYS = 100;         //항상
-    public static final int MORNING = 200;        //아침
-    public static final int EVENING = 300;        //오후
-    public static final int NIGHT = 400;          //밤
+    public static final int MORNING = 200;        //아침  6~12
+    public static final int EVENING = 300;        //오후  12~21
+    public static final int NIGHT = 400;          //밤    21~06
+
+    public static final int ALL_DAY = 1;         //매일
+    public static final int WEEK_DAY = 2;        //매주
+    public static final int MONTH_DAY = 3;        //매월
+    public static final int ONE_DAY = 4;          //특정일
 
     public static final int NOREPEAT = 1;         //반복없음
     public static final int DAYREPEAT = 2;        //매일반복

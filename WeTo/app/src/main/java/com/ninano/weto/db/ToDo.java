@@ -2,6 +2,7 @@ package com.ninano.weto.db;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Todo")
@@ -15,14 +16,37 @@ public class ToDo {
     private int type;
     private String status;
     private int ordered;
+    private char isImportant;
 
-    public ToDo(String title, String content, int icon, int type) {
+    //그룹 일정용
+    private char isGroup; // 그룹아니면 N
+    private int serverTodoNo; // 그룹아니면 0
+
+    //그룹용 생성자
+    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo) {
         this.title = title;
         this.content = content;
         this.icon = icon;
         this.type = type;
         this.status = "ACTIVATE";
         this.ordered = 0;
+        this.isImportant = isImportant;
+        this.isGroup = isGroup;
+        this.serverTodoNo = serverTodoNo;
+    }
+
+    //로컬용 생성자
+    @Ignore
+    public ToDo(String title, String content, int icon, int type, char isImportant) {
+        this.title = title;
+        this.content = content;
+        this.icon = icon;
+        this.type = type;
+        this.status = "ACTIVATE";
+        this.ordered = 0;
+        this.isImportant = isImportant;
+        this.isGroup = 'N';
+        this.serverTodoNo = 0;
     }
 
     public void setTodoNo(int todoNo) {
@@ -97,6 +121,31 @@ public class ToDo {
 
     public void setOrdered(int ordered) {
         this.ordered = ordered;
+    }
+
+
+    public char getIsImportant() {
+        return isImportant;
+    }
+
+    public void setIsImportant(char isImportant) {
+        this.isImportant = isImportant;
+    }
+
+    public char getIsGroup() {
+        return isGroup;
+    }
+
+    public void setIsGroup(char isGroup) {
+        this.isGroup = isGroup;
+    }
+
+    public int getServerTodoNo() {
+        return serverTodoNo;
+    }
+
+    public void setServerTodoNo(int serverTodoNo) {
+        this.serverTodoNo = serverTodoNo;
     }
 
     @NonNull

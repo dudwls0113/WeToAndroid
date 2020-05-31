@@ -1,13 +1,13 @@
 package com.ninano.weto.src.todo_add.models;
 
-public class LikeLocationData {
+public class MyPlace {
 
     String name;
     String detailLocation;
     boolean isSelected;
     boolean isLast;
 
-    public LikeLocationData(String name, String detailLocation, boolean isSelected, boolean isLast) {
+    public MyPlace(String name, String detailLocation, boolean isSelected, boolean isLast) {
         this.name = name;
         this.detailLocation = detailLocation;
         this.isSelected = isSelected;

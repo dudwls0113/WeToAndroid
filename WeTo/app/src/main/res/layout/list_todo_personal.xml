@@ -56,7 +56,7 @@
         android:id="@+id/list_todo_personal_iv_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="20dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="25dp"/>
+        android:layout_marginEnd="5dp"/>
 </LinearLayout>

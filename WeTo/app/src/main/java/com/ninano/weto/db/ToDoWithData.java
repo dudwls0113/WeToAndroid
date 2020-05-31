@@ -1,8 +1,11 @@
 package com.ninano.weto.db;
 
 import androidx.annotation.NonNull;
+import androidx.room.Ignore;
 
-public class ToDoWithData {
+import java.io.Serializable;
+
+public class ToDoWithData implements Serializable {
     private int todoNo;
     private String title;
     private String content;
@@ -18,10 +21,31 @@ public class ToDoWithData {
     private char isWiFi;
     private int timeSlot;
     private int repeatType;
-    private int repeatDayOfWeek;
+    private String repeatDayOfWeek;
     private int repeatDay;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     private int time;
-    private String isGroup;
+    private char isGroup;
+
+    @Ignore
+    boolean isEditMode = true;
+
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
 
     public int getTodoNo() {
         return todoNo;
@@ -143,11 +167,11 @@ public class ToDoWithData {
         this.repeatType = repeatType;
     }
 
-    public int getRepeatDayOfWeek() {
+    public String getRepeatDayOfWeek() {
         return repeatDayOfWeek;
     }
 
-    public void setRepeatDayOfWeek(int repeatDayOfWeek) {
+    public void setRepeatDayOfWeek(String repeatDayOfWeek) {
         this.repeatDayOfWeek = repeatDayOfWeek;
     }
 
@@ -167,11 +191,11 @@ public class ToDoWithData {
         this.time = time;
     }
 
-    public String getIsGroup() {
+    public char getIsGroup() {
         return isGroup;
     }
 
-    public void setIsGroup(String isGroup) {
+    public void setIsGroup(char isGroup) {
         this.isGroup = isGroup;
     }
 
@@ -181,7 +205,7 @@ public class ToDoWithData {
         return "todoNo: " + todoNo + " title: " + title + " icon: " + icon + " type: " + type + " status: " + status +
                 " locationName: " + locationName + " latitude: " + latitude + " longitude: " + longitude +
                 " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
-                " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay + "time" + time +
-                "isGroup: " + isGroup + "\n";
+                " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay + " time" + time +
+                " isGroup: " + String.valueOf(isGroup) + "\n";
     }
 }

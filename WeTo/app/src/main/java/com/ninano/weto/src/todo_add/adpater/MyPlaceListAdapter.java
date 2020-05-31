@@ -11,17 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ninano.weto.R;
-import com.ninano.weto.src.todo_add.models.LikeLocationData;
+import com.ninano.weto.src.todo_add.models.MyPlace;
 
 import java.util.ArrayList;
 
-public class LIkeLocationListAdapter extends RecyclerView.Adapter<LIkeLocationListAdapter.CustomViewHolder> {
+public class MyPlaceListAdapter extends RecyclerView.Adapter<MyPlaceListAdapter.CustomViewHolder> {
 
     private Context mContext;
-    private ArrayList<LikeLocationData> mDataArrayList;
+    private ArrayList<MyPlace> mDataArrayList;
     private ItemClickListener mItemClickListener = null;
 
-    public LIkeLocationListAdapter(Context context, ArrayList<LikeLocationData> arrayList, ItemClickListener itemClickListener){
+    public MyPlaceListAdapter(Context context, ArrayList<MyPlace> arrayList, ItemClickListener itemClickListener){
         mContext = context;
         mDataArrayList = arrayList;
         mItemClickListener = itemClickListener;

@@ -1,18 +1,11 @@
 package com.ninano.weto.src.main.todo_personal;
 
 import android.animation.ValueAnimator;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ClipData;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,20 +21,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ninano.weto.R;
+import com.ninano.weto.db.AppDatabase;
+import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseFragment;
-import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalListAdapter;
-import com.ninano.weto.src.main.todo_personal.models.ToDoPersonalData;
+import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.test.TestActivity;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
+import com.ninano.weto.src.todo_detail.TodoDetailActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
+import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 
 
 public class ToDoPersonalFragment extends BaseFragment {
@@ -57,7 +54,7 @@ public class ToDoPersonalFragment extends BaseFragment {
 
     private RecyclerView mRecyclerView;
     private ToDoPersonalListAdapter mToDoPersonalListAdapter;
-    private ArrayList<ToDoPersonalData> mData = new ArrayList<>();
+    private ArrayList<ToDoWithData> mTodoList = new ArrayList<>();
     private ItemTouchHelper mItemTouchHelper;
 
     private ImageView mImageViewDrag, mImageViewAddAndDragConfirm, mImageViewSetting;
@@ -66,7 +63,7 @@ public class ToDoPersonalFragment extends BaseFragment {
     private LinearLayout mLInearHiddenDone;
     private RecyclerView mRecyclerViewDone;
     private ToDoPersonalListAdapter mToDoPersonalDoneListAdapter;
-    private ArrayList<ToDoPersonalData> mDoneData = new ArrayList<>();
+    private ArrayList<ToDoWithData> mDoneTodoList = new ArrayList<>();
     private ItemTouchHelper mDoneItemTouchHelper;
 
     private LinearLayout mLInearExpand;
@@ -74,6 +71,8 @@ public class ToDoPersonalFragment extends BaseFragment {
     private TextView mTextViewExpand;
     private ImageView mImageViewExpand;
     private float density;
+
+    AppDatabase mDatabase;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,35 +84,15 @@ public class ToDoPersonalFragment extends BaseFragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
         setComponentView(v);
-        setToDoTempData();
-        setToDoDoneTempData();
+        setDatabase();
+//        setToDoTempData();
+//        setToDoDoneTempData();
         return v;
     }
 
     @Override
     public void setComponentView(View v) {
         mTextViewDate = v.findViewById(R.id.todo_personal_fragment_tv_date);
-//        mTextViewDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                JobScheduler jobScheduler = (JobScheduler)mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-//                if (jobScheduler != null) {
-//                    jobScheduler.cancelAll();
-//                }
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//                    if (jobScheduler != null) {
-//                        jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-//                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-//                                .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-//                                .build());
-//                    }
-////                    jobScheduler.schedule(new JobInfo.Builder(1,new ComponentName(mContext, WifiService.class))
-////                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-////                            .setOverrideDeadline(0)
-////                            .build());
-//                }
-//            }
-//        });
         getCurrentTime();
 
         mFrameLayout = v.findViewById(R.id.todo_personal_fragment_layout_frame);
@@ -125,7 +104,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         mFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isSearchMode){
+                if (!isSearchMode) {
                     mFrameLayout.setBackgroundResource(R.drawable.bg_round_edit);
                     mImageViewSearch.setVisibility(View.GONE);
                     mEditTextSearch.setVisibility(View.VISIBLE);
@@ -139,14 +118,14 @@ public class ToDoPersonalFragment extends BaseFragment {
         mImageViewSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(mContext, TestActivity.class);
+                Intent intent = new Intent(mContext, TestActivity.class);
                 startActivity(intent);
             }
         });
 
         // editText 검색시 isSearchMode 원래대로
         mRecyclerView = v.findViewById(R.id.todo_personal_fragment_rv);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext){
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext) {
             @Override
             public boolean canScrollHorizontally() {
                 return false;
@@ -157,10 +136,19 @@ public class ToDoPersonalFragment extends BaseFragment {
                 return false;
             }
         });
-        mToDoPersonalListAdapter = new ToDoPersonalListAdapter(mContext, mData, new ToDoPersonalListAdapter.ItemClickListener() {
+        mToDoPersonalListAdapter = new ToDoPersonalListAdapter(mContext, mTodoList, new ToDoPersonalListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
+                Intent intent = new Intent(mContext, TodoDetailActivity.class);
+                intent.putExtra("todoData", mTodoList.get(pos));
+                startActivity(intent);
+            }
 
+            @Override
+            public void editClick(int pos) {
+                Intent intent = new Intent(mContext, com.ninano.weto.src.todo_edit.TodoEditActivity.class);
+                intent.putExtra("todoData", mTodoList.get(pos));
+                startActivity(intent);
             }
 
             @Override
@@ -181,9 +169,9 @@ public class ToDoPersonalFragment extends BaseFragment {
         mImageViewDrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isEditMode){
-                    for(int i=0; i<mData.size(); i++){
-                        mData.get(i).setEditMode(false);
+                if (isEditMode) {
+                    for (int i = 0; i < mTodoList.size(); i++) {
+                        mTodoList.get(i).setEditMode(false);
                     }
                     isEditMode = false;
                     mImageViewDrag.setVisibility(View.GONE);
@@ -196,9 +184,9 @@ public class ToDoPersonalFragment extends BaseFragment {
         mImageViewAddAndDragConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isEditMode){
-                    for(int i=0; i<mData.size(); i++){
-                        mData.get(i).setEditMode(true);
+                if (!isEditMode) {
+                    for (int i = 0; i < mTodoList.size(); i++) {
+                        mTodoList.get(i).setEditMode(true);
                     }
                     isEditMode = true;
                     mImageViewDrag.setVisibility(View.VISIBLE);
@@ -207,7 +195,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                     mToDoPersonalListAdapter.notifyDataSetChanged();
                 } else {
                     // 할일 추가 화면
-                    Intent intent =new Intent(mContext, AddPersonalToDoActivity.class);
+                    Intent intent = new Intent(mContext, AddPersonalToDoActivity.class);
                     startActivity(intent);
                 }
             }
@@ -220,7 +208,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
         mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
 
-        mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext){
+        mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext) {
             @Override
             public boolean canScrollHorizontally() {
                 return false;
@@ -232,9 +220,14 @@ public class ToDoPersonalFragment extends BaseFragment {
             }
         });
 
-        mToDoPersonalDoneListAdapter = new ToDoPersonalListAdapter(mContext, mDoneData, new ToDoPersonalListAdapter.ItemClickListener() {
+        mToDoPersonalDoneListAdapter = new ToDoPersonalListAdapter(mContext, mDoneTodoList, new ToDoPersonalListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
+
+            }
+
+            @Override
+            public void editClick(int pos) {
 
             }
 
@@ -253,7 +246,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         mLInearExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isExpandable){
+                if (isExpandable) {
                     hideDoneLayout();
                     mTextViewExpand.setText("완료된 항목");
                     mImageViewExpand.setImageResource(R.drawable.ic_chevron_down_blue);
@@ -268,33 +261,53 @@ public class ToDoPersonalFragment extends BaseFragment {
         });
     }
 
-    private void getCurrentTime(){
+    private void getCurrentTime() {
         Date currentTime = Calendar.getInstance().getTime();
         String cur_date = new SimpleDateFormat("MM월 dd일 (EE)", Locale.getDefault()).format(currentTime);
         mTextViewDate.setText(cur_date);
     }
 
-    void setToDoTempData(){
-        mData.add(new ToDoPersonalData(1, "비타민 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
-        mData.add(new ToDoPersonalData(1, "형광펜 사기", "집, 매일, 아침 8시", 1, 0));
-        mData.add(new ToDoPersonalData(1, "우유 사기", "집, 매일, 아침 8시", 1, 0));
-        mData.add(new ToDoPersonalData(1, "우산 챙기기", "집, 매일, 아침 8시", 1, 0));
+    private void setDatabase() {
+        mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
+        mDatabase.todoDao().getActivatedTodoList().observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mTodoList.clear();
+                mTodoList.addAll(todoList);
+                mToDoPersonalListAdapter.notifyDataSetChanged();
+            }
+        });
+        mDatabase.todoDao().getDoneTodoList().observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mDoneTodoList.clear();
+                mDoneTodoList.addAll(todoList);
+                mToDoPersonalDoneListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    void setToDoTempData() {
+//        mData.add(new ToDoPersonalData(1, "비타민 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
+//        mData.add(new ToDoPersonalData(1, "형광펜 사기", "집, 매일, 아침 8시", 1, 0));
+//        mData.add(new ToDoPersonalData(1, "우유 사기", "집, 매일, 아침 8시", 1, 0));
+//        mData.add(new ToDoPersonalData(1, "우산 챙기기", "집, 매일, 아침 8시", 1, 0));
 
         mToDoPersonalListAdapter.notifyDataSetChanged();
     }
 
-    void setToDoDoneTempData(){
-        mDoneData.add(new ToDoPersonalData(1, "밥 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
-        mDoneData.add(new ToDoPersonalData(1, "볼펜 사기", "집, 매일, 아침 8시", 1, 0));
-        mDoneData.add(new ToDoPersonalData(1, "콜라 사기", "집, 매일, 아침 8시", 1, 0));
-        mDoneData.add(new ToDoPersonalData(1, "마스크 챙기기", "집, 매일, 아침 8시", 1, 0));
+    void setToDoDoneTempData() {
+//        mDoneData.add(new ToDoPersonalData(1, "밥 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
+//        mDoneData.add(new ToDoPersonalData(1, "볼펜 사기", "집, 매일, 아침 8시", 1, 0));
+//        mDoneData.add(new ToDoPersonalData(1, "콜라 사기", "집, 매일, 아침 8시", 1, 0));
+//        mDoneData.add(new ToDoPersonalData(1, "마스크 챙기기", "집, 매일, 아침 8시", 1, 0));
 
         mToDoPersonalDoneListAdapter.notifyDataSetChanged();
 
     }
 
     private void showDoneLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, (int)(66*density*mDoneData.size() + 15*density));
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, (int) (66 * density * mDoneTodoList.size() + 15 * density));
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -309,7 +322,7 @@ public class ToDoPersonalFragment extends BaseFragment {
     }
 
     private void hideDoneLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt((int)(66*density*mDoneData.size()+ 15*density), 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt((int) (66 * density * mDoneTodoList.size() + 15 * density), 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

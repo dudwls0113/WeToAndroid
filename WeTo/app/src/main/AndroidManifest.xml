@@ -15,7 +15,7 @@
 
     <application
         android:name=".src.ApplicationClass"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -24,11 +24,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".src.todo_add.AddGroupToDoActivity"></activity>
-        <activity android:name=".src.todo_detail.ToDoDetailActivity" />
+<!--        <activity android:name=".src.todo_detail.ToDoDetailActivity" />-->
         <activity android:name=".src.group_add.GroupAddActivity" />
+        <activity android:name=".src.todo_detail.TodoDetailActivity" />
         <activity android:name=".src.test.TestActivity" />
         <activity android:name=".src.group_invite.GroupInviteActivity" />
-
+        <activity android:name=".src.todo_edit.TodoEditActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
