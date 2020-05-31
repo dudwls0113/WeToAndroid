@@ -54,6 +54,10 @@ public class ApplicationClass extends Application {
     public static final int EVENING = 300;        //오후
     public static final int NIGHT = 400;          //밤
 
+    public static final int NOREPEAT = 1;         //반복없음
+    public static final int DAYREPEAT = 2;        //매일반복
+    public static final int WEEKREPEAT = 3;       //매주반복
+    public static final int MONTHREPEAT = 4;      //매달반복
     public static String fcmToken = "";
 
     private static ApplicationClass applicationClass;

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="312dp"
+    android:layout_height="258dp"
+    android:background="@drawable/bg_round_dialog">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="27dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="#38454c"
+            android:lineSpacingExtra="9sp"
+            android:text="@string/dialog_group_todo_add_title"
+            android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/dialog_group_todo_add_iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_x"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/dialog_group_todo_add_btn_todo"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_round_white_gray_button"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="15dp"
+        android:textSize="16sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="8sp"
+        android:gravity="center"
+        android:text="@string/dialog_group_todo_add_todo"
+        android:textStyle="bold"
+        android:stateListAnimator="@null"/>
+
+    <Button
+        android:id="@+id/dialog_group_todo_add_btn_promise"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_round_white_gray_button"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="15dp"
+        android:textSize="16sp"
+        android:textColor="#38454c"
+        android:lineSpacingExtra="8sp"
+        android:gravity="center"
+        android:text="@string/dialog_group_todo_add_promise"
+        android:textStyle="bold"
+        android:stateListAnimator="@null"/>
+
+</LinearLayout>

@@ -43,6 +43,7 @@ import com.ninano.weto.R;
 import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.StartSnapHelper;
+import com.ninano.weto.src.group_add.GroupAddActivity;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.main.todo_group.adapter.GroupListAdapter;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
@@ -57,6 +58,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.ninano.weto.src.ApplicationClass.X_ACCESS_TOKEN;
+import static com.ninano.weto.src.ApplicationClass.fcmToken;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
@@ -106,14 +109,15 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         density = displayMetrics.density;
         setComponentView(v);
         boolean isLogin = sSharedPreferences.getBoolean("kakaoLogin", false);
+        System.out.println("isLogin,  " + isLogin);
         if (isLogin){ // 로그인 되어있으면
             mLayoutButton.setVisibility(View.VISIBLE);
             mLayoutLogin.setVisibility(View.GONE);
+            getGroup();
         } else {
             mLayoutButton.setVisibility(View.GONE);
             mLayoutLogin.setVisibility(View.VISIBLE);
         }
-        setGroupTempData();
         setToDoTempData();
         setConfigureKakao();
         return v;
@@ -150,6 +154,12 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             @Override
             public void itemClick(int pos) {
                 Intent intent = new Intent(mContext, GroupDetailActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void backItemClick(int pos) {
+                Intent intent = new Intent(mContext, GroupAddActivity.class);
                 startActivity(intent);
             }
         });
@@ -265,6 +275,9 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
                     @Override
                     public void onSessionClosed(ErrorResult errorResult) {
                         showCustomToast(mContext, "세션이 종료되었습니다.\n다시 시도해주세요.");
+                        SharedPreferences.Editor editor = sSharedPreferences.edit();
+                        editor.putBoolean("kakaoLogin", false);
+                        editor.apply();
                     }
 
                     @Override
@@ -272,8 +285,11 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
                         kakaoId = result.getId();
                         nickName = result.getKakaoAccount().getProfile().getNickname();
                         profileUrl = result.getKakaoAccount().getProfile().getProfileImageUrl();
+                        SharedPreferences.Editor editor = sSharedPreferences.edit();
+                        editor.putString(X_ACCESS_TOKEN, String.valueOf(kakaoId));
+                        editor.apply();
                         postIsExistUser(kakaoId);
-                        System.out.println("성공: " + nickName + ", " + profileUrl);
+                        System.out.println("성공: " + nickName + ", " + profileUrl + ", " + fcmToken);
                     }
                 });
             }
@@ -281,32 +297,13 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             @Override
             public void onSessionOpenFailed(KakaoException exception) {
                 showCustomToast(mContext, "세션이 열지못했습니다.\n다시 시도해주세요.");
+                SharedPreferences.Editor editor = sSharedPreferences.edit();
+                editor.putBoolean("kakaoLogin", false);
+                editor.apply();
             }
         };
         Session.getCurrentSession().addCallback(mKakaoCallback);
-    }
-
-    void setGroupTempData(){
-        mData.clear();
-        ArrayList<String> temp1 = new ArrayList<>();
-        temp1.add("나");
-        temp1.add("김하나");
-        temp1.add("문영진");
-        mData.add(new GroupData(1,"가족", temp1, 2,1,false));
-        ArrayList<String> temp2 = new ArrayList<>();
-        temp2.add("나");
-        temp2.add("문영진");
-        temp2.add("모영민");
-        mData.add(new GroupData(4,"친구", temp2, 3,0,false));
-        ArrayList<String> temp3 = new ArrayList<>();
-        temp3.add("나");
-        temp3.add("야나");
-        temp3.add("섬머");
-        mData.add(new GroupData(2,"메이커스", temp3, 1,4,false));
-        ArrayList<String> temp4 = new ArrayList<>();
-        mData.add(new GroupData(1,"", temp4, 1,1,true));
-
-        mGroupListAdapter.notifyDataSetChanged();
+        Session.getCurrentSession().checkAndImplicitOpen();
     }
 
     void setToDoTempData(){
@@ -336,6 +333,11 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         toDoGroupService.postSignUp(fcmToken, kakaoId, profileUrl, nickName);
     }
 
+    private void getGroup(){
+        ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
+        toDoGroupService.getGroup();
+    }
+
     @Override
     public void existUser() {
         mLayoutButton.setVisibility(View.VISIBLE);
@@ -357,6 +359,15 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         SharedPreferences.Editor editor = sSharedPreferences.edit();
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
+        getGroup();
+    }
+
+    @Override
+    public void getGroupSuccess(ArrayList<GroupData> arrayList) {
+        mData.clear();
+        mData.addAll(arrayList);
+        mData.add(new GroupData(-1,null,-1,null));
+        mGroupListAdapter.notifyDataSetChanged();
     }
 
     @Override

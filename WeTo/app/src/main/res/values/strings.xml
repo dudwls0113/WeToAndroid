@@ -18,6 +18,7 @@
     <string name="wifi_search_title">근처에서 연결되는 Wi-fi를 이용\n하여 더욱 정확한 위치 등록하기</string>
     <string name="group_invite_title">그룹에 초대하기</string>
     <string name="group_invite_button">카카오톡 친구 초대하기</string>
+    <string name="modify">수정하기</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="map_select_search">장소, 주소 검색</string>
@@ -25,6 +26,13 @@
     <string name="activity_todo_add_morning">6~12시</string>
     <string name="activity_todo_add_evening">12시~21시</string>
     <string name="activity_todo_add_night">21시~06시</string>
+
+    <string name="dialog_group_todo_add_title">새로 만들기</string>
+    <string name="dialog_group_todo_add_todo">할 일 추가하기</string>
+    <string name="dialog_group_todo_add_promise">약속 추가하기</string>
+
+    <string name="todo_group_add_member">해당 멤버 선택하기</string>
+
 
     <string name="group_invite_deny">거절하기</string>
     <string name="group_invite_deny_title">정말 거절하시겠습니까?</string>

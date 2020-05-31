@@ -89,7 +89,9 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 카카오 로그인 확인
-        Session.getCurrentSession().checkAndImplicitOpen();
+//        if(sSharedPreferences.getBoolean("kakaoLogin",false)){
+//            Session.getCurrentSession().checkAndImplicitOpen();
+//        }
         showCustomToast(Session.getCurrentSession().getTokenInfo().getAccessToken());
         System.out.println(Session.getCurrentSession().getTokenInfo().getAccessToken());
         mContext = this;

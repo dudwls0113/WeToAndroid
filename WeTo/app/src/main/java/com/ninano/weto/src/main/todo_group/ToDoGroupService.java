@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ninano.weto.src.DefaultResponse;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupRetrofitInterface;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupView;
+import com.ninano.weto.src.main.todo_group.models.GroupResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,6 +87,28 @@ public class ToDoGroupService {
 
             @Override
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                mToDoGroupView.validateFailure(null);
+            }
+        });
+    }
+
+    void getGroup(){
+        ToDoGroupRetrofitInterface toDoGroupRetrofitInterface = getRetrofit().create(ToDoGroupRetrofitInterface.class);
+        toDoGroupRetrofitInterface.getGroup().enqueue(new Callback<GroupResponse>() {
+            @Override
+            public void onResponse(Call<GroupResponse> call, Response<GroupResponse> response) {
+                final GroupResponse groupResponse = response.body();
+                if(groupResponse==null){
+                    mToDoGroupView.validateFailure(null);
+                } else if(groupResponse.getCode()==100){
+                    mToDoGroupView.getGroupSuccess(groupResponse.getGroupData());
+                } else {
+                    mToDoGroupView.validateFailure(groupResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroupResponse> call, Throwable t) {
                 mToDoGroupView.validateFailure(null);
             }
         });
