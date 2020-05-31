@@ -89,7 +89,7 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
                         for (String s : splitArr) {
                             condition.append(s).append("요일 ");
                         }
-                        condition.append(mData.get(position).getTime());
+                        condition.append(", " + mData.get(position).getTime());
                         break;
                     case MONTH_DAY:
                         condition.append("매 월 ").append(mData.get(position).getRepeatDay()).append("일, ").append(mData.get(position).getTime());
@@ -115,16 +115,16 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
                 }
                 switch (mData.get(position).getTimeSlot()) {
                     case ALWAYS:
-                        condition.append(" 언제든");
+                        condition.append(", 언제든");
                         break;
                     case MORNING:
-                        condition.append(" 아침(06시 ~ 12시)");
+                        condition.append(", 아침(06시 ~ 12시)");
                         break;
                     case EVENING:
-                        condition.append(" 오후(12시 ~ 21시)");
+                        condition.append(", 오후(12시 ~ 21시)");
                         break;
                     case NIGHT:
-                        condition.append(" 밤(21시 ~ 06시)");
+                        condition.append(", 밤(21시 ~ 06시)");
                         break;
                 }
                 break;

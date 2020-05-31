@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class ToDoWithData implements Serializable {
     private int todoNo;
+    private int todoDataNo;
     private String title;
     private String content;
     private int icon;
@@ -33,7 +34,7 @@ public class ToDoWithData implements Serializable {
         this.date = date;
     }
 
-    private int time;
+    private String time;
     private char isGroup;
 
     @Ignore
@@ -183,11 +184,11 @@ public class ToDoWithData implements Serializable {
         this.repeatDay = repeatDay;
     }
 
-    public int getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -202,10 +203,18 @@ public class ToDoWithData implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "todoNo: " + todoNo + " title: " + title + " icon: " + icon + " type: " + type + " status: " + status +
+        return "todoNo: " + todoNo + "todoDataNo: " + todoDataNo + " title: " + title + " icon: " + icon + " type: " + type + " status: " + status +
                 " locationName: " + locationName + " latitude: " + latitude + " longitude: " + longitude +
                 " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
                 " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay + " time" + time +
                 " isGroup: " + String.valueOf(isGroup) + "\n";
+    }
+
+    public int getTodoDataNo() {
+        return todoDataNo;
+    }
+
+    public void setTodoDataNo(int todoDataNo) {
+        this.todoDataNo = todoDataNo;
     }
 }

@@ -332,61 +332,61 @@ public class AddGroupToDoActivity extends BaseActivity {
             super.onPostExecute(integer);
             if (integer == 1) {
                 System.out.println("실행???!!!!");
-                if (mWifiMode == 'Y') {
-                    try {
-                        Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
-                        System.out.println("카운트: " + count);
-                        if (count == 1) {
-                            JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                            if (jobScheduler != null) {
-                                jobScheduler.cancelAll();
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                if (jobScheduler != null) {
-                                    if (mWifiConnected) {
-                                        System.out.println("현재 연결 와이파이");
-                                        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                        final WifiInfo wifiInfo;
-                                        if (wifiManager != null) {
-                                            wifiInfo = wifiManager.getConnectionInfo();
-                                            SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sf.edit();
-                                            editor.putString("recentWifi", wifiInfo.getBSSID());
-                                            editor.putBoolean("firstWifiNoti", true);
-                                            editor.apply();
-                                        }
-                                    }
-                                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                            .build());
-                                    jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
-                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                            .build());
-                                }
-                            }
-                        } else {
-                            System.out.println("카운트 아님");
-                            if (mWifiConnected) {
-                                System.out.println("현재 연결 와이파이2");
-                                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                final WifiInfo wifiInfo;
-                                if (wifiManager != null) {
-                                    wifiInfo = wifiManager.getConnectionInfo();
-                                    SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sf.edit();
-                                    editor.putString("recentWifi", wifiInfo.getBSSID());
-                                    editor.putBoolean("firstWifiNoti", true);
-                                    editor.apply();
-                                }
-                            }
-                        }
-                    } catch (ExecutionException | InterruptedException e) {
-                        showCustomToast(getString(R.string.insert_todo_error));
-                        e.printStackTrace();
-                    }
-                }
+//                if (mWifiMode == 'Y') {
+//                    try {
+//                        Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
+//                        System.out.println("카운트: " + count);
+//                        if (count == 1) {
+//                            JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+//                            if (jobScheduler != null) {
+//                                jobScheduler.cancelAll();
+//                            }
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                                if (jobScheduler != null) {
+//                                    if (mWifiConnected) {
+//                                        System.out.println("현재 연결 와이파이");
+//                                        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//                                        final WifiInfo wifiInfo;
+//                                        if (wifiManager != null) {
+//                                            wifiInfo = wifiManager.getConnectionInfo();
+//                                            SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+//                                            SharedPreferences.Editor editor = sf.edit();
+//                                            editor.putString("recentWifi", wifiInfo.getBSSID());
+//                                            editor.putBoolean("firstWifiNoti", true);
+//                                            editor.apply();
+//                                        }
+//                                    }
+//                                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+//                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+//                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+//                                            .build());
+//                                    jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
+//                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+//                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+//                                            .build());
+//                                }
+//                            }
+//                        } else {
+//                            System.out.println("카운트 아님");
+//                            if (mWifiConnected) {
+//                                System.out.println("현재 연결 와이파이2");
+//                                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//                                final WifiInfo wifiInfo;
+//                                if (wifiManager != null) {
+//                                    wifiInfo = wifiManager.getConnectionInfo();
+//                                    SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+//                                    SharedPreferences.Editor editor = sf.edit();
+//                                    editor.putString("recentWifi", wifiInfo.getBSSID());
+//                                    editor.putBoolean("firstWifiNoti", true);
+//                                    editor.apply();
+//                                }
+//                            }
+//                        }
+//                    } catch (ExecutionException | InterruptedException e) {
+//                        showCustomToast(getString(R.string.insert_todo_error));
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         }
     }
@@ -748,17 +748,17 @@ public class AddGroupToDoActivity extends BaseActivity {
                 PackageManager.DONT_KILL_APP);
     }
 
-    private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
-        private ToDoDao mTodoDao;
-
-        CountWifiAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
-        }
-
-        @Override
-        protected Integer doInBackground(Character... characters) {
-            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0]);
-            return count;
-        }
-    }
+//    private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
+//        private ToDoDao mTodoDao;
+//
+//        CountWifiAsyncTask(ToDoDao mTodoDao) {
+//            this.mTodoDao = mTodoDao;
+//        }
+//
+//        @Override
+//        protected Integer doInBackground(Character... characters) {
+//            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0]);
+//            return count;
+//        }
+//    }
 }

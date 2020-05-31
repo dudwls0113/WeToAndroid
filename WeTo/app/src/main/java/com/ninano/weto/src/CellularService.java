@@ -45,7 +45,7 @@ public class CellularService extends JobService {
 //        Toast.makeText(getApplicationContext(), "와이파이 연결 끊어짐", Toast.LENGTH_LONG).show();
 //        System.out.println("cellular startjob");
         try {
-            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
+            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)11).get();
             SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
             String currentWifiBSSID = sf.getString("recentWifi", "");
             boolean isFirstWifiNoti = sf.getBoolean("firstWifiNoti", false);
@@ -128,7 +128,7 @@ public class CellularService extends JobService {
         }
         @Override
         protected List<ToDoWithData> doInBackground(Character... characters) {
-            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0]);
+            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int)characters[1]);
             return toDoWithData;
         }
     }

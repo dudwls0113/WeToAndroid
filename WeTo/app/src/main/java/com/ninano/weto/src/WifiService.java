@@ -27,6 +27,7 @@ import com.ninano.weto.src.main.MainActivity;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
@@ -43,7 +44,7 @@ public class WifiService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         try {
-            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
+            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)22).get();
             SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
             boolean isFirstWifiNoti = sf.getBoolean("firstWifiNoti", false);
             if (!isFirstWifiNoti) {
@@ -195,7 +196,7 @@ public class WifiService extends JobService {
         }
         @Override
         protected List<ToDoWithData> doInBackground(Character... characters) {
-            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0]);
+            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int)characters[1]);
             return toDoWithData;
         }
     }

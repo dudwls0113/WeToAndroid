@@ -30,6 +30,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -96,12 +97,19 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private Switch mSwitchTime, mSwitchGps;
     private boolean isSwitchTime, isSwitchGps;
     private char mImportantMode = 'N';
+    private int mToDoNo = -1;
 
     //Time Mode
-    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewDate, mTextViewTime;
-    private LinearLayout mLinearHiddenTime;
+    private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewDate, mTextViewTime,
+                    mTextViewSun, mTextViewMon, mTextViewTue, mTextViewWed, mTextViewThu, mTextViewFri, mTextViewSat;
+    private FrameLayout mFrameHiddenTimeDate;
+    private LinearLayout mLinearHiddenTime, mLinearHiddenTimeDate, mLinearHiddenTimeTime, mLinearHiddenTimeWeekRepeat;
     private AlarmManager mAlarmManager;
     private int mRepeatType;
+    private boolean mIsDatePick, mIsTimePick;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String mRepeatDayOfWeek = "일";
+    private int mINTRepeatDayOfWeek = 1;
 
     //Location Mode
     private TextView mTextViewLocation, mTextViewStart, mTextViewArrive, mTextViewNear;
@@ -113,7 +121,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private String mWifiBssid = "";
     private boolean mWifiConnected;
     ArrayList<Geofence> geofenceList = new ArrayList<>();
-    private Double longitude, latitude;
+    private Double longitude = 0.0, latitude=0.0;
 
     private RecyclerView mRecyclerViewMyPlace;
     private MyPlaceListAdapter mMyPlaceListAdapter;
@@ -142,6 +150,19 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         mTextViewDate = findViewById(R.id.add_personal_todo_tv_date);
         mTextViewTime = findViewById(R.id.add_personal_todo_tv_time);
+
+        mTextViewSun = findViewById(R.id.week_repeat_tv_sun);
+        mTextViewMon = findViewById(R.id.week_repeat_tv_mon);
+        mTextViewTue = findViewById(R.id.week_repeat_tv_tue);
+        mTextViewWed = findViewById(R.id.week_repeat_tv_wed);
+        mTextViewThu = findViewById(R.id.week_repeat_tv_thu);
+        mTextViewFri = findViewById(R.id.week_repeat_tv_fri);
+        mTextViewSat = findViewById(R.id.week_repeat_tv_sat);
+
+        mFrameHiddenTimeDate = findViewById(R.id.add_personal_todo_frame_hidden_time_date);
+        mLinearHiddenTimeDate = findViewById(R.id.add_personal_todo_layout_hidden_time_date);
+        mLinearHiddenTimeTime = findViewById(R.id.add_personal_todo_layout_hidden_time_time);
+        mLinearHiddenTimeWeekRepeat = findViewById(R.id.add_personal_todo_layout_hidden_time_date_week_repeat);
 
         mLinearHiddenTime = findViewById(R.id.add_personal_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_personal_todo_layout_hidden_gps);
@@ -183,6 +204,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mRecyclerViewMyPlace.setAdapter(mMyPlaceListAdapter);
 
         mTodoCategory = NONE;
+        mRepeatType = ONE_DAY;
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
         mLocationTime = ALWAYS;
@@ -259,7 +281,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
         ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
                 longitude, latitude, mLocationMode, mLadius,
-                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "");
+                mWifiBssid, mWifiMode, mLocationTime, mRepeatType, mRepeatDayOfWeek, 0, mTextViewDate.getText().toString(), mTextViewTime.getText().toString());
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -281,17 +303,19 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         @Override
         protected Integer doInBackground(Object... toDos) {
-            int todoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = " + todoNo);
+            mToDoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
+            Log.d("추가된 todoNo", " = " + mToDoNo);
 
             if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
                 if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
-                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLongitude(), toDoData.getLatitude()), (float) toDoData.getRadius(), 1000));
+                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(mToDoNo), new Pair<>(toDoData.getLongitude(), toDoData.getLatitude()), (float) toDoData.getRadius(), 1000));
                     addGeofencesToClient();
                 }
+            } else if(((ToDo) toDos[0]).getType() == TIME){
+                return 2;
             }
 
             return null;
@@ -301,67 +325,15 @@ public class AddPersonalToDoActivity extends BaseActivity {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             if (integer != null && integer == 1) {
-                if (mWifiMode == 'Y') {
-                    try {
-                        Integer count = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y').get();
-                        System.out.println("카운트: " + count);
-                        if (count == 1) {
-                            JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                            if (jobScheduler != null) {
-                                jobScheduler.cancelAll();
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                if (jobScheduler != null) {
-                                    if (mWifiConnected) {
-                                        System.out.println("현재 연결 와이파이");
-                                        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                        final WifiInfo wifiInfo;
-                                        if (wifiManager != null) {
-                                            wifiInfo = wifiManager.getConnectionInfo();
-                                            SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sf.edit();
-                                            editor.putString("recentWifi", wifiInfo.getBSSID());
-                                            editor.putBoolean("firstWifiNoti", true);
-                                            editor.apply();
-                                        }
-                                    }
-                                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                            .build());
-                                    jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
-                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-                                            .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                            .build());
-                                }
-                            }
-                        } else {
-                            System.out.println("카운트 아님");
-                            if (mWifiConnected) {
-                                System.out.println("현재 연결 와이파이2");
-                                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                final WifiInfo wifiInfo;
-                                if (wifiManager != null) {
-                                    wifiInfo = wifiManager.getConnectionInfo();
-                                    SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sf.edit();
-                                    editor.putString("recentWifi", wifiInfo.getBSSID());
-                                    editor.putBoolean("firstWifiNoti", true);
-                                    editor.apply();
-                                }
-                            }
-                        }
-                    } catch (ExecutionException | InterruptedException e) {
-                        showCustomToast(getString(R.string.insert_todo_error));
-                        e.printStackTrace();
-                    }
-                }
+                registerWifi();
+            } else if(integer!=null && integer == 2){
+                registerAlarm();
             }
         }
     }
 
     private void showTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 180 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 150 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -376,7 +348,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(180 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(150 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -391,7 +363,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void showGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 300 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 195 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -408,7 +380,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(300 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(195 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -424,21 +396,54 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     public void customOnClick(View v) {
         switch (v.getId()) {
-            case R.id.activity_todo_edit_todo_tv_no_repeat:
+            case R.id.add_personal_todo_tv_no_repeat:
                 setRepeatTimeView(mTextViewTimeNoRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
                 mRepeatType = ONE_DAY;
                 break;
-            case R.id.activity_todo_edit_todo_tv_day_repeat:
+            case R.id.add_personal_todo_tv_day_repeat:
                 setRepeatTimeView(mTextViewTimeDayRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.GONE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
                 mRepeatType = ALL_DAY;
                 break;
-            case R.id.activity_todo_edit_todo_tv_week_repeat:
+            case R.id.add_personal_todo_tv_week_repeat:
                 setRepeatTimeView(mTextViewTimeWeekRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.GONE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.VISIBLE);
                 mRepeatType = WEEK_DAY;
                 break;
-            case R.id.activity_todo_edit_todo_tv_month_repeat:
+            case R.id.add_personal_todo_tv_month_repeat:
                 setRepeatTimeView(mTextViewTimeMonthRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
                 mRepeatType = MONTH_DAY;
+                break;
+            case R.id.week_repeat_tv_sun:
+                setRepeatWeekView(mTextViewSun);
+                break;
+            case R.id.week_repeat_tv_mon:
+                setRepeatWeekView(mTextViewMon);
+                break;
+            case R.id.week_repeat_tv_tue:
+                setRepeatWeekView(mTextViewTue);
+                break;
+            case R.id.week_repeat_tv_wed:
+                setRepeatWeekView(mTextViewWed);
+                break;
+            case R.id.week_repeat_tv_thu:
+                setRepeatWeekView(mTextViewThu);
+                break;
+            case R.id.week_repeat_tv_fri:
+                setRepeatWeekView(mTextViewFri);
+                break;
+            case R.id.week_repeat_tv_sat:
+                setRepeatWeekView(mTextViewSat);
                 break;
             case R.id.add_personal_todo_switch_time:
                 if (isSwitchTime) { // expand 상태
@@ -532,8 +537,12 @@ public class AddPersonalToDoActivity extends BaseActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                mYear = i;
+                mMonth = i1+1;
+                mDay = i2;
                 mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
                 mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
+                mIsDatePick = true;
             }
         };
         Date currentTime = Calendar.getInstance().getTime();
@@ -549,8 +558,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                mHour = i;
+                mMinute = i1;
                 mTextViewTime.setText(i + "시 " + i1 + "분");
                 mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
+                mIsTimePick = true;
             }
         };
 
@@ -598,6 +610,86 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
+    void setRepeatWeekView(TextView selectedView){
+        if (selectedView.equals(mTextViewSun)){
+            mRepeatDayOfWeek = "일";
+            mINTRepeatDayOfWeek = 1;
+            setVineOnMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if(selectedView.equals(mTextViewMon)){
+            mRepeatDayOfWeek = "월";
+            mINTRepeatDayOfWeek = 2;
+            setVineOffMode(mTextViewSun);
+            setVineOnMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if(selectedView.equals(mTextViewTue)){
+            mRepeatDayOfWeek = "화";
+            mINTRepeatDayOfWeek = 3;
+            setVineOffMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOnMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if(selectedView.equals(mTextViewWed)){
+            mRepeatDayOfWeek = "수";
+            mINTRepeatDayOfWeek = 4;
+            setVineOffMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOnMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if(selectedView.equals(mTextViewThu)){
+            mRepeatDayOfWeek = "목";
+            mINTRepeatDayOfWeek = 5;
+            setVineOffMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOnMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if(selectedView.equals(mTextViewFri)){
+            mRepeatDayOfWeek = "금";
+            mINTRepeatDayOfWeek = 6;
+            setVineOffMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOnMode(mTextViewFri);
+            setVineOffMode(mTextViewSat);
+        }
+        else if (selectedView.equals(mTextViewSat)){
+            mRepeatDayOfWeek = "토";
+            mINTRepeatDayOfWeek = 7;
+            setVineOffMode(mTextViewSun);
+            setVineOffMode(mTextViewMon);
+            setVineOffMode(mTextViewTue);
+            setVineOffMode(mTextViewWed);
+            setVineOffMode(mTextViewThu);
+            setVineOffMode(mTextViewFri);
+            setVineOnMode(mTextViewSat);
+        }
+    }
+
     void setRepeatTimeView(TextView selectedView) {
         if (selectedView.equals(mTextViewTimeNoRepeat)) {
             setVineOnMode(mTextViewTimeNoRepeat);
@@ -634,18 +726,39 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     boolean validateBeforeAdd() {
         if (mEditTextTitle.getText().length() < 1) {
-            showSnackBar(mEditTextTitle, "내용을 입력 해 주세요");
+            showSnackBar(mEditTextTitle, "내용을 입력해 주세요");
             return false;
         }
         if (mTodoCategory == LOCATION) {
+            resetTimeInfo();
             if (!mIsLocationSelected) {
-                showSnackBar(mEditTextTitle, "장소를 선택 해 주세요");
+                showSnackBar(mEditTextTitle, "장소를 선택해 주세요");
                 return false;
             }
         } else if (mTodoCategory == TIME) {
-            return true;
+            resetLocationInfo();
+            if (mRepeatType == ONE_DAY){
+                if(!mIsDatePick || !mIsTimePick){
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+            } else if(mRepeatType==ALL_DAY){
+                if (!mIsTimePick){
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+
+            } else if(mRepeatType==WEEK_DAY){
+                if(!mIsTimePick){
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+            } else if (mRepeatType==MONTH_DAY) {
+
+            }
         } else {
-            return true;
+            showSnackBar(mEditTextTitle, "일정 정보를 입력해 주세요");
+            return false;
         }
         return true;
     }
@@ -659,10 +772,20 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mMyPlaceListAdapter.notifyDataSetChanged();
     }
 
+    void resetLocationInfo(){
+        mIsLocationSelected = false;
+        mWifiMode = 'N';
+    }
+
+    void resetTimeInfo(){
+        mRepeatType = ONE_DAY;
+    }
+
     void setLocationInfo() {
         mIsLocationSelected = true;
         mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocation.setText(mLocation.getPlaceName());
+        mTextViewNear.setVisibility(View.VISIBLE);
     }
 
     void setWifiInfo(String ssid) {
@@ -670,6 +793,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mWifiMode = 'Y';
         mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocation.setText(ssid);
+        setLocationModeView(mTextViewArrive);
+        mLocationMode = AT_ARRIVE;
+        mTextViewNear.setVisibility(View.GONE);
     }
 
     @Override
@@ -696,32 +822,255 @@ public class AddPersonalToDoActivity extends BaseActivity {
     void registerAlarm() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 5);
-        calendar.set(Calendar.MINUTE, 06);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (mRepeatType==ONE_DAY){
+            calendar.set(Calendar.YEAR, mYear);
+            switch (mMonth){
+                case 1:
+                    calendar.set(Calendar.MONTH, Calendar.JANUARY);
+                    break;
+                case 2:
+                    calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
+                    break;
+                case 3:
+                    calendar.set(Calendar.MONTH, Calendar.MARCH);
+                    break;
+                case 4:
+                    calendar.set(Calendar.MONTH, Calendar.APRIL);
+                    break;
+                case 5:
+                    calendar.set(Calendar.MONTH, Calendar.MAY);
+                    break;
+                case 6:
+                    calendar.set(Calendar.MONTH, Calendar.JUNE);
+                    break;
+                case 7:
+                    calendar.set(Calendar.MONTH, Calendar.JULY);
+                    break;
+                case 8:
+                    calendar.set(Calendar.MONTH, Calendar.AUGUST);
+                    break;
+                case 9:
+                    calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+                    break;
+                case 10:
+                    calendar.set(Calendar.MONTH, Calendar.OCTOBER);
+                    break;
+                case 11:
+                    calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
+                    break;
+                case 12:
+                    calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+                    break;
 
-        if (calendar.before(Calendar.getInstance())) {
-            calendar.add(Calendar.DATE, 1);
+            }
+            calendar.set(Calendar.DATE, mDay);
+            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+            calendar.set(Calendar.MINUTE, mMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            System.out.println("특정 알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+            PackageManager pm = this.getPackageManager();
+            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+
+            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+            intent.putExtra("repeatType", 4);
+            intent.putExtra("alarmIndex", mToDoNo);
+            intent.putExtra("title", mEditTextTitle.getText().toString());
+            intent.putExtra("memo", mEditTextMemo.getText().toString());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            if (mAlarmManager != null) {
+                mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
+
+            //부팅후 재실행
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+
+        } else if(mRepeatType == ALL_DAY){
+            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+            calendar.set(Calendar.MINUTE, mMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+            PackageManager pm = this.getPackageManager();
+            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+
+            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+            intent.putExtra("repeatType", 1);
+            intent.putExtra("alarmIndex", mToDoNo);
+            intent.putExtra("title", mEditTextTitle.getText().toString());
+            intent.putExtra("memo", mEditTextMemo.getText().toString());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            if (mAlarmManager != null) {
+//                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+            }
+
+            //부팅후 재실행
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+
+        } else if(mRepeatType==WEEK_DAY){
+            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+            calendar.set(Calendar.MINUTE, mMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+            PackageManager pm = this.getPackageManager();
+            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+
+            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+            intent.putExtra("repeatType", 2);
+            intent.putExtra("repeatDayOfWeek", mRepeatDayOfWeek);
+            intent.putExtra("alarmIndex", mToDoNo);
+            intent.putExtra("title", mEditTextTitle.getText().toString());
+            intent.putExtra("memo", mEditTextMemo.getText().toString());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            if (mAlarmManager != null) {
+                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+//                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+            }
+
+            //부팅후 재실행
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+
+        } else if (mRepeatType==MONTH_DAY){
+
         }
+    }
 
-        System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
-        PackageManager pm = this.getPackageManager();
-        ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
-
-        Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        if (mAlarmManager != null) {
-            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    void registerWifi(){
+        if (mWifiMode == 'Y') {
+            try {
+                if (mLocationMode==AT_START){
+                    Integer startCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)AT_START).get(); // 연결 해제시
+                    System.out.println("출발카운트: " + startCount);
+                    if (startCount == 1){
+                        JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                        if (jobScheduler != null) {
+                            jobScheduler.cancel(1);
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            if (jobScheduler != null) {
+                                if (mWifiConnected) {
+                                    System.out.println("현재 연결 와이파이");
+                                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                    final WifiInfo wifiInfo;
+                                    if (wifiManager != null) {
+                                        wifiInfo = wifiManager.getConnectionInfo();
+                                        SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sf.edit();
+                                        editor.putString("recentWifi", wifiInfo.getBSSID());
+                                        editor.putBoolean("firstWifiNoti", true);
+                                        editor.apply();
+                                    }
+                                }
+                                jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
+                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
+                                        .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+                                        .setPersisted(true)
+                                        .build());
+                            }
+                        }
+                    } else {
+                        System.out.println("카운트 아님");
+                        if (mWifiConnected) {
+                            System.out.println("현재 연결 와이파이2");
+                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            final WifiInfo wifiInfo;
+                            if (wifiManager != null) {
+                                wifiInfo = wifiManager.getConnectionInfo();
+                                SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sf.edit();
+                                editor.putString("recentWifi", wifiInfo.getBSSID());
+                                editor.putBoolean("firstWifiNoti", true);
+                                editor.apply();
+                            }
+                        }
+                    }
+                } else if(mLocationMode == AT_ARRIVE){
+                    Integer arriveCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)AT_ARRIVE).get(); // 연결 시
+                    System.out.println("도착카운트: " + arriveCount);
+                    if (arriveCount == 1) {
+                        JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                        if (jobScheduler != null) {
+                            jobScheduler.cancel(0);
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            if (jobScheduler != null) {
+                                if (mWifiConnected) {
+                                    System.out.println("현재 연결 와이파이");
+                                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                    final WifiInfo wifiInfo;
+                                    if (wifiManager != null) {
+                                        wifiInfo = wifiManager.getConnectionInfo();
+                                        SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sf.edit();
+                                        editor.putString("recentWifi", wifiInfo.getBSSID());
+                                        editor.putBoolean("firstWifiNoti", true);
+                                        editor.apply();
+                                    }
+                                }
+                                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
+                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                                        .setPeriodic(TimeUnit.MINUTES.toMillis(15))
+                                        .setPersisted(true)
+                                        .build());
+                            }
+                        }
+                    } else {
+                        System.out.println("카운트 아님");
+                        if (mWifiConnected) {
+                            System.out.println("현재 연결 와이파이2");
+                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            final WifiInfo wifiInfo;
+                            if (wifiManager != null) {
+                                wifiInfo = wifiManager.getConnectionInfo();
+                                SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sf.edit();
+                                editor.putString("recentWifi", wifiInfo.getBSSID());
+                                editor.putBoolean("firstWifiNoti", true);
+                                editor.apply();
+                            }
+                        }
+                    }
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                showCustomToast(getString(R.string.insert_todo_error));
+                e.printStackTrace();
+            }
         }
-
-        //부팅후 재실행
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
     }
 
     private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
@@ -733,7 +1082,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         @Override
         protected Integer doInBackground(Character... characters) {
-            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0]);
+            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0], (int)characters[1]);
             return count;
         }
     }

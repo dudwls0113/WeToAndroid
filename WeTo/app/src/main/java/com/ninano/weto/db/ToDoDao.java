@@ -26,11 +26,11 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and Todo.todoNo = :todoNo")
     public abstract List<ToDoWithData> getTodoWithTodoNo(int todoNo);
 
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi")
-    public abstract List<ToDoWithData> getTodoWithWifi(char isWifi);
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode")
+    public abstract List<ToDoWithData> getTodoWithWifi(char isWifi, int locationMode);
 
-    @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi")
-    public abstract int getTodoWithWifiCount(char isWifi);
+    @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode")
+    public abstract int getTodoWithWifiCount(char isWifi, int locationMode);
 
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getActivatedTodoList();
@@ -46,6 +46,14 @@ public abstract class ToDoDao {
         return todoNo;
     }
 
+    @Transaction
+    public void updateTodo(ToDo todo, ToDoData toDoData){
+        update(todo);
+        updateTodoData(toDoData);
+    }
+
+
+
     @Insert
     abstract long insert(ToDo todo);
 
@@ -54,6 +62,9 @@ public abstract class ToDoDao {
 
     @Update
     abstract void update(ToDo todo);
+
+    @Update
+    abstract void updateTodoData(ToDoData toDoData);
 
     @Delete
     abstract void delete(ToDo todo);
