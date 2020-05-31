@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".src.todo_detail.TodoDetailActivity">
+    tools:context=".src.todo_detail.ToDoDetailActivity">
 
     <ImageView
         android:id="@+id/activity_todo_detail_iv_close"

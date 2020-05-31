@@ -26,7 +26,7 @@
         <activity android:name=".src.todo_add.AddGroupToDoActivity"></activity>
 <!--        <activity android:name=".src.todo_detail.ToDoDetailActivity" />-->
         <activity android:name=".src.group_add.GroupAddActivity" />
-        <activity android:name=".src.todo_detail.TodoDetailActivity" />
+        <activity android:name=".src.todo_detail.ToDoDetailActivity" />
         <activity android:name=".src.test.TestActivity" />
         <activity android:name=".src.group_invite.GroupInviteActivity" />
         <activity android:name=".src.todo_edit.TodoEditActivity"/>

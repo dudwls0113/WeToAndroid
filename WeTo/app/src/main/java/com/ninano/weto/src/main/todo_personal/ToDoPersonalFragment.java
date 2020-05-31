@@ -26,10 +26,9 @@ import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalListAdapter;
-import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.test.TestActivity;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
-import com.ninano.weto.src.todo_detail.TodoDetailActivity;
+import com.ninano.weto.src.todo_detail.ToDoDetailActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -139,7 +138,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         mToDoPersonalListAdapter = new ToDoPersonalListAdapter(mContext, mTodoList, new ToDoPersonalListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
-                Intent intent = new Intent(mContext, TodoDetailActivity.class);
+                Intent intent = new Intent(mContext, ToDoDetailActivity.class);
                 intent.putExtra("todoData", mTodoList.get(pos));
                 startActivity(intent);
             }
