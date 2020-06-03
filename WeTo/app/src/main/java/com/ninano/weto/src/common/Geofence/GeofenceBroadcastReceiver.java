@@ -1,4 +1,4 @@
-package com.ninano.weto.src.receiver;
+package com.ninano.weto.src.common.Geofence;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,34 +10,25 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
-import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.main.MainActivity;
-import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
-import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
-import static com.ninano.weto.src.ApplicationClass.LOCATION;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     AppDatabase mDatabase;
@@ -45,7 +36,6 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("지오", "수신 첫번째" );
-
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.getErrorCode());

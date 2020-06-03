@@ -23,13 +23,20 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.todo_add.AddGroupToDoActivity"></activity>
-<!--        <activity android:name=".src.todo_detail.ToDoDetailActivity" />-->
+        <activity android:name=".src.splash.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".src.todo_add.AddGroupToDoActivity" /> <!-- <activity android:name=".src.todo_detail.ToDoDetailActivity" /> -->
         <activity android:name=".src.group_add.GroupAddActivity" />
         <activity android:name=".src.todo_detail.ToDoDetailActivity" />
         <activity android:name=".src.test.TestActivity" />
         <activity android:name=".src.group_invite.GroupInviteActivity" />
-        <activity android:name=".src.todo_edit.TodoEditActivity"/>
+        <activity android:name=".src.todo_edit.TodoEditActivity" />
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
@@ -38,11 +45,11 @@
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
         <activity android:name=".src.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"
@@ -56,26 +63,26 @@
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
-        </activity>
-
-        <receiver android:name=".src.receiver.AlarmBroadcastReceiver" />
-
-        <service
-            android:name=".src.WifiService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".src.CellularService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <receiver android:name=".src.receiver.GeofenceBroadcastReceiver" />
+        </activity> <!-- <receiver android:name=".src.receiver.AlarmBroadcastReceiver" /> -->
+        <!-- <service -->
+        <!-- android:name=".src.WifiService" -->
+        <!-- android:permission="android.permission.BIND_JOB_SERVICE" /> -->
+        <!-- <service -->
+        <!-- android:name=".src.CellularService" -->
+        <!-- android:permission="android.permission.BIND_JOB_SERVICE" /> -->
         <receiver
-            android:name=".src.DeviceBootReceiver"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
+            android:name=".src.common.Geofence.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" /> <!-- <receiver -->
+        <!-- android:name=".src.DeviceBootReceiver" -->
+        <!-- android:enabled="false"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
+        <!-- </intent-filter> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.location.PROVIDERS_CHANGED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="6ffkrts5vi" />

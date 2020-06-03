@@ -41,6 +41,9 @@ public class ApplicationClass extends Application {
     // Retrofit 인스턴스
     public static Retrofit retrofit;
 
+    public static final int LOITERING_DELAY = 3000;          // 위치감지시 최소 머무는시간 (1000 = 1초, 특정장소에 ?초에상 머물러야 그곳에 도착했다고 인식함, 왓다갓다 계속할경우 알림안드도록)
+    public static final int GPS_LADIUS = 150;         //항상
+
     public static final int NONE = 55;             // 정보없는 일정
     public static final int TIME = 66;             // 시간일정
     public static final int LOCATION = 77;         // 위치일정

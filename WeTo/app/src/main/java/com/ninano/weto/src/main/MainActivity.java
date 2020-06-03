@@ -3,7 +3,6 @@ package com.ninano.weto.src.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -19,24 +18,18 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
-import android.view.View;
 
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.kakao.auth.Session;
 import com.ninano.weto.R;
-import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
-import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
@@ -45,7 +38,7 @@ import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
 import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
-import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
+import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
@@ -60,7 +53,6 @@ import devlight.io.library.ntb.NavigationTabBar;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
-import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class MainActivity extends BaseActivity implements AutoPermissionsListener {
 

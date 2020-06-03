@@ -158,7 +158,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             public void onLocationChange(@NonNull Location location) {
                 mCircleOverlay.setMap(null);
                 mCircleOverlay.setCenter(new LatLng(location.getLatitude(), location.getLongitude()));
-                mCircleOverlay.setRadius(200);
+                mCircleOverlay.setRadius(60);
                 mCircleOverlay.setColor(getResources().getColor(R.color.colorMapGpsTransBlue));
                 mCircleOverlay.setMap(naverMap);
             }
@@ -172,17 +172,17 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
         naverMap.setLocationSource(locationSource);
 
-        GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-        });
-
-        System.out.println("gps: " + gpsTracker.getLatitude() + ", " + gpsTracker.getLongitude());
-
-        CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
-        naverMap.setCameraPosition(cameraPosition);
+//        GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//
+//            }
+//        });
+//
+//        System.out.println("gps: " + gpsTracker.getLatitude() + ", " + gpsTracker.getLongitude());
+//
+//        CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
+//        naverMap.setCameraPosition(cameraPosition);
 
 
         zoomControlView.setMap(naverMap);

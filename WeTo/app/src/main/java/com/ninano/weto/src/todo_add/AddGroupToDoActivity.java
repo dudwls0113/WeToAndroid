@@ -1,8 +1,6 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,18 +9,12 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -46,15 +38,12 @@ import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
-import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.CellularService;
 import com.ninano.weto.src.DeviceBootReceiver;
-import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
-import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
+import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.AddGroupToDoMemberAdapter;
 //import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.models.AddGroupToDoMemberData;
@@ -67,8 +56,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
@@ -87,6 +74,7 @@ import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.NOREPEAT;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.WEEKREPEAT;
+import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
 public class AddGroupToDoActivity extends BaseActivity {
 
@@ -117,7 +105,7 @@ public class AddGroupToDoActivity extends BaseActivity {
     private int mTodoCategory, mLocationMode, mLocationTime, mLadius;
     private char mWifiMode = 'N';
     private String mWifiBssid = "";
-    private String mImportantMode = "N";
+    private char mImportantMode = 'N';
 
     public static float dpUnit;             // dp단위 값
     ArrayList<Geofence> geofenceList = new ArrayList<>();
@@ -131,6 +119,7 @@ public class AddGroupToDoActivity extends BaseActivity {
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +132,7 @@ public class AddGroupToDoActivity extends BaseActivity {
         initGeoFence();
     }
 
-    void init(){
+    void init() {
         mTextViewTimeNoRepeat = findViewById(R.id.add_group_todo_tv_no_repeat);
 //        isSelectedNoRepeat = true;
         mTextViewTimeDayRepeat = findViewById(R.id.add_group_todo_tv_day_repeat);
@@ -217,16 +206,6 @@ public class AddGroupToDoActivity extends BaseActivity {
 
     private void setDatabase() {
         mDatabase = AppDatabase.getAppDatabase(this);
-        //UI 갱신 (라이브 데이터를 이용하여 자동으로)
-        mDatabase.todoDao().getTodoList().observe(this, new Observer<List<ToDoWithData>>() {
-            @Override
-            public void onChanged(List<ToDoWithData> todoList) {
-                //목록가져와서 자동으로 처리
-//                mTextView.setText(todoList.toString());
-//                geofenceList.add(getGeofence(3, "가디역", new Pair<>(37.477198, 126.883828), (float) 100.0, 10000));
-//                addGeofences();
-            }
-        });
     }
 
     void initGeoFence() {
@@ -236,7 +215,6 @@ public class AddGroupToDoActivity extends BaseActivity {
     private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
         int GEOFENCE_TRANSITION;
         if (type == AT_ARRIVE) {
-            Log.d("지오 추가 중", "진입 감지");
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
         } else if (type == AT_START) {
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
@@ -271,8 +249,8 @@ public class AddGroupToDoActivity extends BaseActivity {
         geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
-                finish();
+//                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
+//                finish();
             }
         }).addOnFailureListener(this, new OnFailureListener() {
             @Override
@@ -286,19 +264,19 @@ public class AddGroupToDoActivity extends BaseActivity {
     }
 
     private void insertToRoomDB() {
-//        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory);
-//        ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
-//                longitude, latitude, mLocationMode, mLadius,
-//                mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", mImportantMode);
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory, mImportantMode);
         switch (mLocationMode) {
             case NONE:
                 break;
             case TIME:
                 break;
             case LOCATION:
+                ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
+                        longitude, latitude, mLocationMode, mLadius,
+                        mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "");
+                new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
                 break;
         }
-//        new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -319,8 +297,23 @@ public class AddGroupToDoActivity extends BaseActivity {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
-                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
-                    addGeofencesToClient();
+//                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
+//                    addGeofencesToClient();
+                    getGeofenceMaker().addGeoFenceOne(todoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
+                            new OnSuccessListener() {
+                                @Override
+                                public void onSuccess(Object o) {
+                                    showCustomToast("할 일이 추가되었습니다");
+                                    finish();
+                                }
+                            },
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
+                                    Log.e("지오펜스 등록 실패", e.toString());
+                                }
+                            });
                 }
             }
 
@@ -578,8 +571,8 @@ public class AddGroupToDoActivity extends BaseActivity {
                 //추가버튼
                 if (validateBeforeAdd()) {
                     insertToRoomDB();
-                    showCustomToast("일정이 등록되었습니다.");
-                    finish();
+//                    showCustomToast("일정이 등록되었습록니다.");
+//                    finish();
                 }
                 break;
         }

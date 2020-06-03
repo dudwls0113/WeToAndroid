@@ -34,7 +34,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.ZoomControlView;
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.main.map.GpsTracker;
+//import com.ninano.weto.src.main..GpsTracker;
 import com.ninano.weto.src.map_select.keyword_search.KeywordMapSearchActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.AddressResponse;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
@@ -231,13 +231,13 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             }
         });
         naverMap.setLocationSource(locationSource);
-        GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-            }
-        });
-        CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
-        naverMap.setCameraPosition(cameraPosition);
+//        GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//            }
+//        });
+//        CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
+//        naverMap.setCameraPosition(cameraPosition);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);

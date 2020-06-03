@@ -54,7 +54,7 @@ import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
-import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
+import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
 import com.ninano.weto.src.todo_add.models.MyPlace;
 

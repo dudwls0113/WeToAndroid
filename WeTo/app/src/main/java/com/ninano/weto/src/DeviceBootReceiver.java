@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.widget.Toast;
 
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
@@ -50,6 +52,23 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
             if (manager != null) {
                 manager.setRepeating(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            }
+
+
+//            TODO 지오펜스 재동록 - 휴대폰 재부팅
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            if (!Objects.requireNonNull(locationManager).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                context.registerReceiver(this, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+            } else {
+                //We are good, continue with adding geofences!
+            }
+
+//            TODO 지오펜스 재동록 - GPS 껏다
+            if (intent.getAction().equals(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                    context.unregisterReceiver(this);
+                    //We got our GPS stuff up, add our geofences!
+                }
             }
         }
     }

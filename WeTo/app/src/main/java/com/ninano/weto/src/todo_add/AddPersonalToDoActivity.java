@@ -1,7 +1,6 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +25,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,8 +36,6 @@ import android.widget.TimePicker;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
@@ -47,7 +43,6 @@ import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
-import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.CellularService;
 import com.ninano.weto.src.DeviceBootReceiver;
@@ -55,7 +50,6 @@ import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
-import com.ninano.weto.src.receiver.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
 import com.ninano.weto.src.todo_add.models.MyPlace;
 
@@ -63,18 +57,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
@@ -86,6 +77,7 @@ import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
+import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
 public class AddPersonalToDoActivity extends BaseActivity {
 
@@ -139,7 +131,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mContext = this;
         init();
         setTempLikeLocationData();
-        initGeoFence();
+//        initGeoFence();
     }
 
     void init() {
@@ -209,7 +201,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mLocationMode = AT_ARRIVE;
         mLocationTime = ALWAYS;
 //        mWifiMode = 'Y';
-        mLadius = 300;
+        mLadius = GPS_LADIUS;
 
         /* Set Constant */
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -223,59 +215,59 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mDatabase = AppDatabase.getAppDatabase(this);
     }
 
-    void initGeoFence() {
-        geofencingClient = LocationServices.getGeofencingClient(this);
-    }
+//    void initGeoFence() {
+//        geofencingClient = LocationServices.getGeofencingClient(this);
+//    }
 
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-        int GEOFENCE_TRANSITION;
-        if (type == AT_ARRIVE) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == AT_START) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-        } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-        }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
-    }
+//    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
+//        int GEOFENCE_TRANSITION;
+//        if (type == AT_ARRIVE) {
+//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
+//        } else if (type == AT_START) {
+//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
+//        } else {
+//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
+//        }
+//        return new Geofence.Builder()
+//                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
+//                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
+//                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
+//                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
+//                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
+//                .setTransitionTypes(GEOFENCE_TRANSITION)
+//                .build();
+//    }
 
-    private PendingIntent geofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        // Geofence 이벤트는 진입시 부터 처리할 때
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(list);  // Geofence 리스트 추가
-        return builder.build();
-    }
-
-    private void addGeofencesToClient() {
-        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
-                finish();
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showCustomToast("add Fail");
-                Log.d("에러", e.toString());
-            }
-        });
-        //        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-//                geofencingClient.removeGeofences(new List<String>())
-    }
+//    private PendingIntent geofencePendingIntent() {
+//        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+//        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    }
+//
+//    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
+//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+//        // Geofence 이벤트는 진입시 부터 처리할 때
+//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+//        builder.addGeofences(list);  // Geofence 리스트 추가
+//        return builder.build();
+//    }
+//
+//    private void addGeofencesToClient() {
+//        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
+//                finish();
+//            }
+//        }).addOnFailureListener(this, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                showCustomToast("add Fail");
+//                Log.d("에러", e.toString());
+//            }
+//        });
+//        //        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
+////                geofencingClient.removeGeofences(new List<String>())
+//    }
 
     private void insertToRoomDB() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
@@ -311,8 +303,22 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
-                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(mToDoNo), new Pair<>(toDoData.getLongitude(), toDoData.getLatitude()), (float) toDoData.getRadius(), 1000));
-                    addGeofencesToClient();
+                    getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
+                            new OnSuccessListener() {
+                                @Override
+                                public void onSuccess(Object o) {
+                                    showCustomToast("할 일이 추가되었습니다");
+                                    finish();
+                                }
+                            },
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
+                                    Log.e("지오펜스 등록 실패", e.toString());
+                                    //지오펜스 실패하면 db에사도 지워줘야함
+                                }
+                            });
                 }
             } else if(((ToDo) toDos[0]).getType() == TIME){
                 return 2;
@@ -333,7 +339,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void showTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 150 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 170 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -348,7 +354,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(150 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(170 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -363,7 +369,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void showGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 195 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 260 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -380,7 +386,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(195 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(250 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -525,8 +531,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 //추가버튼
                 if (validateBeforeAdd()) {
                     insertToRoomDB();
-                    showCustomToast("일정이 등록되었습니다.");
-                    finish();
                 }
                 break;
         }
