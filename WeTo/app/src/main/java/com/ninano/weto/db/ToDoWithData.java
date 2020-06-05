@@ -25,6 +25,7 @@ public class ToDoWithData implements Serializable {
     private String repeatDayOfWeek;
     private int repeatDay;
     private String date;
+    private char isImportant;
 
     public String getDate() {
         return date;
@@ -199,6 +200,15 @@ public class ToDoWithData implements Serializable {
     public void setIsGroup(char isGroup) {
         this.isGroup = isGroup;
     }
+
+    public char getIsImportant() {
+        return isImportant;
+    }
+
+    public void setIsImportant(char isImportant) {
+        this.isImportant = isImportant;
+    }
+
 
     @NonNull
     @Override

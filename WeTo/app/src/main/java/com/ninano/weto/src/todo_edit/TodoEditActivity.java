@@ -146,7 +146,6 @@ public class TodoEditActivity extends BaseActivity {
 
         init();
         setTempLikeLocationData();
-        initGeoFence();
         initEditMode();
     }
 
@@ -316,60 +315,6 @@ public class TodoEditActivity extends BaseActivity {
         mDatabase = AppDatabase.getAppDatabase(this);
     }
 
-    void initGeoFence() {
-        geofencingClient = LocationServices.getGeofencingClient(this);
-    }
-
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-        int GEOFENCE_TRANSITION;
-        if (type == AT_ARRIVE) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == AT_START) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-        } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-        }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
-    }
-
-    private PendingIntent geofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        // Geofence 이벤트는 진입시 부터 처리할 때
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(list);  // Geofence 리스트 추가
-        return builder.build();
-    }
-
-    private void addGeofencesToClient() {
-        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
-                finish();
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showCustomToast("add Fail");
-                Log.d("에러", e.toString());
-            }
-        });
-        //        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-//                geofencingClient.removeGeofences(new List<String>())
-    }
-
     private void insertToRoomDB() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
         ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
@@ -427,8 +372,6 @@ public class TodoEditActivity extends BaseActivity {
                     return 1;
                 } else {
                     ToDoData toDoData = (ToDoData) toDos[1];
-                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLongitude(), toDoData.getLatitude()), (float) toDoData.getRadius(), 1000));
-                    addGeofencesToClient();
                 }
             }
 

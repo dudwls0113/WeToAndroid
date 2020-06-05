@@ -145,7 +145,8 @@ public class ToDoPersonalFragment extends BaseFragment {
 
             @Override
             public void editClick(int pos) {
-                Intent intent = new Intent(mContext, com.ninano.weto.src.todo_edit.TodoEditActivity.class);
+                Intent intent = new Intent(mContext, AddPersonalToDoActivity.class);
+                intent.putExtra("isEditMode", true);
                 intent.putExtra("todoData", mTodoList.get(pos));
                 startActivity(intent);
             }

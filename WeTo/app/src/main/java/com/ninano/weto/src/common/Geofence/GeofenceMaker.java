@@ -93,22 +93,28 @@ public class GeofenceMaker {
     }
 
     public void addGeoFenceOne(int todoNo, double latitude, double longitude, int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
-        geofencingClient.addGeofences(getGeofencingRequest(getGeofence(locationMode, String.valueOf(todoNo), new Pair<>(longitude, latitude), (float) radius), locationMode), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+        geofencingClient.addGeofences(getGeofencingRequest(getGeofence(locationMode, String.valueOf(todoNo), new Pair<>(latitude, longitude), (float) radius), locationMode), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 
     public void removeAllGeofence() {
         geofencingClient.removeGeofences(geofencePendingIntent());
     }
 
+    public void removeGeofence(String id) {
+        List<String> idList = new ArrayList<>();
+        idList.add(id);
+        geofencingClient.removeGeofences(idList);
+    }
+
     public void addGeoFenceList(List<ToDoWithData> toDoWithDataArrayList, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
         List<Geofence> geofenceList = new ArrayList<>();
-        for(ToDoWithData toDoWithData: toDoWithDataArrayList) {
-            if(toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N'){
+        for (ToDoWithData toDoWithData : toDoWithDataArrayList) {
+            if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                 geofenceList.add(getGeofence(toDoWithData.getLocationMode(), String.valueOf(toDoWithData.getTodoNo()),
-                        new Pair<>(toDoWithData.getLongitude(), toDoWithData.getLatitude()), (float)toDoWithData.getRadius()));
+                        new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
             }
         }
-        if(geofenceList.size()==0){
+        if (geofenceList.size() == 0) {
             return;
         }
         geofencingClient.addGeofences(getGeofencingListRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);

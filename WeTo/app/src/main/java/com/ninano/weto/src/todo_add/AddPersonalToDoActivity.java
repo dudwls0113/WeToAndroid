@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -43,6 +45,7 @@ import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
+import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.CellularService;
 import com.ninano.weto.src.DeviceBootReceiver;
@@ -52,6 +55,7 @@ import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
 import com.ninano.weto.src.todo_add.models.MyPlace;
+import com.ninano.weto.src.todo_edit.TodoEditActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,6 +72,7 @@ import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.NONE;
+import static com.ninano.weto.src.ApplicationClass.NO_DATA;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
@@ -90,10 +95,13 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private boolean isSwitchTime, isSwitchGps;
     private char mImportantMode = 'N';
     private int mToDoNo = -1;
+    private int mTodoCategory;
+    private Button mDoneBtn;
+    private Switch mImportantSwitch;
 
     //Time Mode
     private TextView mTextViewTimeNoRepeat, mTextViewTimeDayRepeat, mTextViewTimeWeekRepeat, mTextViewTimeMonthRepeat, mTextViewDate, mTextViewTime,
-                    mTextViewSun, mTextViewMon, mTextViewTue, mTextViewWed, mTextViewThu, mTextViewFri, mTextViewSat;
+            mTextViewSun, mTextViewMon, mTextViewTue, mTextViewWed, mTextViewThu, mTextViewFri, mTextViewSat;
     private FrameLayout mFrameHiddenTimeDate;
     private LinearLayout mLinearHiddenTime, mLinearHiddenTimeDate, mLinearHiddenTimeTime, mLinearHiddenTimeWeekRepeat;
     private AlarmManager mAlarmManager;
@@ -101,19 +109,19 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private boolean mIsDatePick, mIsTimePick;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String mRepeatDayOfWeek = "일";
+    private int mRepeatDay; // 매월 의 반복일 (1~31)
     private int mINTRepeatDayOfWeek = 1;
 
     //Location Mode
     private TextView mTextViewLocation, mTextViewStart, mTextViewArrive, mTextViewNear;
     private TextView mTextViewAlways, mTextViewMorning, mTextViewEvening, mTextViewNight;
     private LinearLayout mLinearHiddenGps;
-    private int mTodoCategory, mLocationMode, mLocationTime, mLadius;
+    private int mLocationMode, mLocationTime, mLadius;
     private boolean mIsLocationSelected;
     private char mWifiMode = 'N';
     private String mWifiBssid = "";
     private boolean mWifiConnected;
-    ArrayList<Geofence> geofenceList = new ArrayList<>();
-    private Double longitude = 0.0, latitude=0.0;
+    private Double longitude = 0.0, latitude = 0.0;
 
     private RecyclerView mRecyclerViewMyPlace;
     private MyPlaceListAdapter mMyPlaceListAdapter;
@@ -121,8 +129,12 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private LocationResponse.Location mLocation;
 
     AppDatabase mDatabase;
-    private GeofencingClient geofencingClient;
     public static float dpUnit;
+
+    //수정모드
+    private boolean isEditMode = false;
+    private ToDoWithData mToDoWithData;
+    private int mToDoDataNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +143,104 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mContext = this;
         init();
         setTempLikeLocationData();
-//        initGeoFence();
+        setEditMode();
+    }
+
+    void setEditMode() {
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("isEditMode", false)) {
+            isEditMode = true;
+            mToDoWithData = (ToDoWithData) intent.getSerializableExtra("todoData");
+            mToDoNo = mToDoWithData.getTodoNo();
+            mToDoDataNo = mToDoWithData.getTodoDataNo();
+
+            mEditTextTitle.setText(mToDoWithData.getTitle());
+            mEditTextMemo.setText(mToDoWithData.getContent());
+
+            mDoneBtn.setText("수정하기");
+            switch (mToDoWithData.getType()) {
+                case TIME:
+                    mSwitchTime.setChecked(true);
+                    mTodoCategory = TIME;
+                    showTimeLayout();
+                    isSwitchTime = true;
+                    mIsLocationSelected = false;
+
+                    switch (mToDoWithData.getRepeatType()) {
+                        case ALL_DAY:
+                            setRepeatTimeView(mTextViewTimeNoRepeat);
+                            break;
+                        case WEEK_DAY:
+                            setRepeatTimeView(mTextViewTimeDayRepeat);
+                            break;
+                        case MONTH_DAY:
+                            setRepeatTimeView(mTextViewTimeWeekRepeat);
+                            break;
+                        case ONE_DAY:
+                            setRepeatTimeView(mTextViewTimeMonthRepeat);
+                            break;
+                    }
+                    break;
+                case LOCATION:
+                    mSwitchGps.setChecked(true);
+                    mTodoCategory = LOCATION;
+                    showGpsLayout();
+                    isSwitchGps = true;
+                    mIsLocationSelected = true;
+                    longitude = mToDoWithData.getLongitude();
+                    latitude = mToDoWithData.getLatitude();
+                    mLocationMode = mToDoWithData.getLocationMode();
+                    mLocationTime = mToDoWithData.getTimeSlot();
+
+                    switch (mToDoWithData.getLocationMode()) {
+                        case AT_START:
+                            setLocationModeView(mTextViewStart);
+                            break;
+                        case AT_ARRIVE:
+                            setLocationModeView(mTextViewArrive);
+                            break;
+                        case AT_NEAR:
+                            setLocationModeView(mTextViewNear);
+                            break;
+                    }
+                    switch (mToDoWithData.getTimeSlot()) {
+                        case ALWAYS:
+                            setLocationTimeView(mTextViewAlways);
+                            break;
+                        case MORNING:
+                            setLocationTimeView(mTextViewMorning);
+                            break;
+                        case EVENING:
+                            setLocationTimeView(mTextViewEvening);
+                            break;
+                        case NIGHT:
+                            setLocationTimeView(mTextViewNight);
+                            break;
+                    }
+                    mTextViewLocation.setText(mToDoWithData.getLocationName());
+                    mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
+                    if (mToDoWithData.getIsWiFi() == 'Y') {
+                        mWifiMode = 'Y';
+                        mWifiBssid = mToDoWithData.getSsid();
+                        mTextViewNear.setVisibility(View.GONE);
+                    } else {
+                        mWifiMode = 'N';
+                        mTextViewNear.setVisibility(View.VISIBLE);
+                    }
+                    break;
+
+
+                //수정하면 UPDATE문으로 덮어쓰기, geo나 wifi, 알람매니저는 어떻게바꾸지?
+                // 1. geo는 원래있던거 지우고 새로등록
+                // 2. wifi는?
+                // 2. 알람매니저는?
+            }
+            if (mToDoWithData.getIsImportant() == 'N') {
+                mImportantSwitch.setChecked(false);
+            } else {
+                mImportantSwitch.setChecked(true);
+            }
+        }
     }
 
     void init() {
@@ -176,6 +285,18 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mTextViewNight = findViewById(R.id.add_personal_todo_btn_night);
 
         mRecyclerViewMyPlace = findViewById(R.id.add_personal_todo_rv_like);
+        mDoneBtn = findViewById(R.id.add_personal_todo_btn_done);
+        mImportantSwitch = findViewById(R.id.add_personal_todo_switch_important);
+        mImportantSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mImportantMode = 'Y';
+                } else {
+                    mImportantMode = 'N';
+                }
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerViewMyPlace.setLayoutManager(linearLayoutManager);
@@ -215,65 +336,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mDatabase = AppDatabase.getAppDatabase(this);
     }
 
-//    void initGeoFence() {
-//        geofencingClient = LocationServices.getGeofencingClient(this);
-//    }
-
-//    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-//        int GEOFENCE_TRANSITION;
-//        if (type == AT_ARRIVE) {
-//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-//        } else if (type == AT_START) {
-//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-//        } else {
-//            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-//        }
-//        return new Geofence.Builder()
-//                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-//                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-//                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-//                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-//                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-//                .setTransitionTypes(GEOFENCE_TRANSITION)
-//                .build();
-//    }
-
-//    private PendingIntent geofencePendingIntent() {
-//        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-//        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//    }
-//
-//    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-//        // Geofence 이벤트는 진입시 부터 처리할 때
-//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-//        builder.addGeofences(list);  // Geofence 리스트 추가
-//        return builder.build();
-//    }
-//
-//    private void addGeofencesToClient() {
-//        geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
-//                finish();
-//            }
-//        }).addOnFailureListener(this, new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                showCustomToast("add Fail");
-//                Log.d("에러", e.toString());
-//            }
-//        });
-//        //        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-////                geofencingClient.removeGeofences(new List<String>())
-//    }
-
     private void insertToRoomDB() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
-        ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
-                longitude, latitude, mLocationMode, mLadius,
-                mWifiBssid, mWifiMode, mLocationTime, mRepeatType, mRepeatDayOfWeek, 0, mTextViewDate.getText().toString(), mTextViewTime.getText().toString());
+        ToDo todo = makeTodoObject();
+        ToDoData toDoData = makeTodoDataObject();
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -286,7 +351,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private class InsertAsyncTask extends AsyncTask<Object, Void, Integer> {
+    private class InsertAsyncTask extends AsyncTask<Object, Void, ToDoData> {
         private ToDoDao mTodoDao;
 
         InsertAsyncTask(ToDoDao mTodoDao) {
@@ -294,49 +359,110 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
 
         @Override
-        protected Integer doInBackground(Object... toDos) {
+        protected ToDoData doInBackground(Object... toDos) {
             mToDoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
             Log.d("추가된 todoNo", " = " + mToDoNo);
-
-            if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
-                if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
-                    return 1;
-                } else {
-                    ToDoData toDoData = (ToDoData) toDos[1];
-                    getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
-                            new OnSuccessListener() {
-                                @Override
-                                public void onSuccess(Object o) {
-                                    showCustomToast("할 일이 추가되었습니다");
-                                    finish();
-                                }
-                            },
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
-                                    Log.e("지오펜스 등록 실패", e.toString());
-                                    //지오펜스 실패하면 db에사도 지워줘야함
-                                }
-                            });
-                }
-            } else if(((ToDo) toDos[0]).getType() == TIME){
-                return 2;
-            }
-
-            return null;
+            return (ToDoData) toDos[1];
+//            if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
+//                if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
+//                    return (ToDoData) toDos[1];
+//                } else {
+//                    ToDoData toDoData = (ToDoData) toDos[1];
+//                }
+//            } else if (((ToDo) toDos[0]).getType() == TIME) {
+//                return (ToDoData) toDos[1];
+//            }
+//
+//            return null;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (integer != null && integer == 1) {
+        protected void onPostExecute(ToDoData toDoData) {
+            super.onPostExecute(toDoData);
+            if (toDoData == null) {
+                return;
+            }
+            if (toDoData.getIsWiFi() == 'Y') {//와이파이
                 registerWifi();
-            } else if(integer!=null && integer == 2){
+            } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
                 registerAlarm();
+            } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
+                getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
+                        new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                showCustomToast("할 일이 추가되었습니다");
+                                finish();
+                            }
+                        },
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
+                                Log.e("지오펜스 등록 실패", e.toString());
+                                //지오펜스 실패하면 db에사도 지워줘야함
+                            }
+                        });
             }
         }
     }
+
+    private void updateToRoomDB() {
+        ToDo todo = makeTodoObject();
+        ToDoData toDoData = makeTodoDataObject();
+        toDoData.setTodoDataNo(mToDoDataNo);
+        toDoData.setTodoNo(mToDoNo);
+        System.out.println("넘버: " + mToDoNo + ", " + mToDoDataNo);
+        new updateAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+    }
+
+    //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
+    private class updateAsyncTask extends AsyncTask<Object, Void, ToDoData> {
+        private ToDoDao mTodoDao;
+
+        updateAsyncTask(ToDoDao mTodoDao) {
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected ToDoData doInBackground(Object... objects) {
+            mTodoDao.updateTodo((ToDo) objects[0], (ToDoData) objects[1]);
+            return (ToDoData) objects[1];
+        }
+
+        @Override
+        protected void onPostExecute(ToDoData toDoData) {
+            //수정로직 돌리기
+            super.onPostExecute(toDoData);
+            if (toDoData == null) {
+                return;
+            }
+            if (toDoData.getIsWiFi() == 'Y') {//와이파이
+//                registerWifi();
+            } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
+//                registerAlarm();
+            } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
+                getGeofenceMaker().removeGeofence(String.valueOf(toDoData.getTodoNo()));
+                getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
+                        new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                showCustomToast("수정이 완료되었습니다.");
+                                finish();
+                            }
+                        },
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showCustomToast("수정 할 수 없습니다. 다시 시도해주세요");
+                                Log.e("지오펜스 등록 실패", e.toString());
+                                //지오펜스 실패하면 db에사도 지워줘야함
+                            }
+                        });
+            }
+        }
+    }
+
 
     private void showTimeLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(0, 170 * (int) dpUnit);
@@ -530,7 +656,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
             case R.id.add_personal_todo_btn_done:
                 //추가버튼
                 if (validateBeforeAdd()) {
-                    insertToRoomDB();
+                    if (isEditMode) {
+                        updateToRoomDB();
+                    } else {
+                        insertToRoomDB();
+                    }
                 }
                 break;
         }
@@ -542,7 +672,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                 mYear = i;
-                mMonth = i1+1;
+                mMonth = i1 + 1;
                 mDay = i2;
                 mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
                 mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
@@ -614,8 +744,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void setRepeatWeekView(TextView selectedView){
-        if (selectedView.equals(mTextViewSun)){
+    void setRepeatWeekView(TextView selectedView) {
+        if (selectedView.equals(mTextViewSun)) {
             mRepeatDayOfWeek = "일";
             mINTRepeatDayOfWeek = 1;
             setVineOnMode(mTextViewSun);
@@ -625,8 +755,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewThu);
             setVineOffMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if(selectedView.equals(mTextViewMon)){
+        } else if (selectedView.equals(mTextViewMon)) {
             mRepeatDayOfWeek = "월";
             mINTRepeatDayOfWeek = 2;
             setVineOffMode(mTextViewSun);
@@ -636,8 +765,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewThu);
             setVineOffMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if(selectedView.equals(mTextViewTue)){
+        } else if (selectedView.equals(mTextViewTue)) {
             mRepeatDayOfWeek = "화";
             mINTRepeatDayOfWeek = 3;
             setVineOffMode(mTextViewSun);
@@ -647,8 +775,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewThu);
             setVineOffMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if(selectedView.equals(mTextViewWed)){
+        } else if (selectedView.equals(mTextViewWed)) {
             mRepeatDayOfWeek = "수";
             mINTRepeatDayOfWeek = 4;
             setVineOffMode(mTextViewSun);
@@ -658,8 +785,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewThu);
             setVineOffMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if(selectedView.equals(mTextViewThu)){
+        } else if (selectedView.equals(mTextViewThu)) {
             mRepeatDayOfWeek = "목";
             mINTRepeatDayOfWeek = 5;
             setVineOffMode(mTextViewSun);
@@ -669,8 +795,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOnMode(mTextViewThu);
             setVineOffMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if(selectedView.equals(mTextViewFri)){
+        } else if (selectedView.equals(mTextViewFri)) {
             mRepeatDayOfWeek = "금";
             mINTRepeatDayOfWeek = 6;
             setVineOffMode(mTextViewSun);
@@ -680,8 +805,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewThu);
             setVineOnMode(mTextViewFri);
             setVineOffMode(mTextViewSat);
-        }
-        else if (selectedView.equals(mTextViewSat)){
+        } else if (selectedView.equals(mTextViewSat)) {
             mRepeatDayOfWeek = "토";
             mINTRepeatDayOfWeek = 7;
             setVineOffMode(mTextViewSun);
@@ -741,23 +865,23 @@ public class AddPersonalToDoActivity extends BaseActivity {
             }
         } else if (mTodoCategory == TIME) {
             resetLocationInfo();
-            if (mRepeatType == ONE_DAY){
-                if(!mIsDatePick || !mIsTimePick){
+            if (mRepeatType == ONE_DAY) {
+                if (!mIsDatePick || !mIsTimePick) {
                     showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
                     return false;
                 }
-            } else if(mRepeatType==ALL_DAY){
-                if (!mIsTimePick){
+            } else if (mRepeatType == ALL_DAY) {
+                if (!mIsTimePick) {
                     showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
                     return false;
                 }
 
-            } else if(mRepeatType==WEEK_DAY){
-                if(!mIsTimePick){
+            } else if (mRepeatType == WEEK_DAY) {
+                if (!mIsTimePick) {
                     showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
                     return false;
                 }
-            } else if (mRepeatType==MONTH_DAY) {
+            } else if (mRepeatType == MONTH_DAY) {
 
             }
         } else {
@@ -776,12 +900,12 @@ public class AddPersonalToDoActivity extends BaseActivity {
         mMyPlaceListAdapter.notifyDataSetChanged();
     }
 
-    void resetLocationInfo(){
+    void resetLocationInfo() {
         mIsLocationSelected = false;
         mWifiMode = 'N';
     }
 
-    void resetTimeInfo(){
+    void resetTimeInfo() {
         mRepeatType = ONE_DAY;
     }
 
@@ -826,9 +950,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
     void registerAlarm() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        if (mRepeatType==ONE_DAY){
+        if (mRepeatType == ONE_DAY) {
             calendar.set(Calendar.YEAR, mYear);
-            switch (mMonth){
+            switch (mMonth) {
                 case 1:
                     calendar.set(Calendar.MONTH, Calendar.JANUARY);
                     break;
@@ -900,7 +1024,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
 
-        } else if(mRepeatType == ALL_DAY){
+        } else if (mRepeatType == ALL_DAY) {
             calendar.set(Calendar.HOUR_OF_DAY, mHour);
             calendar.set(Calendar.MINUTE, mMinute);
             calendar.set(Calendar.SECOND, 0);
@@ -934,7 +1058,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
 
-        } else if(mRepeatType==WEEK_DAY){
+        } else if (mRepeatType == WEEK_DAY) {
             calendar.set(Calendar.HOUR_OF_DAY, mHour);
             calendar.set(Calendar.MINUTE, mMinute);
             calendar.set(Calendar.SECOND, 0);
@@ -969,18 +1093,18 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
 
-        } else if (mRepeatType==MONTH_DAY){
+        } else if (mRepeatType == MONTH_DAY) {
 
         }
     }
 
-    void registerWifi(){
+    void registerWifi() {
         if (mWifiMode == 'Y') {
             try {
-                if (mLocationMode==AT_START){
-                    Integer startCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)AT_START).get(); // 연결 해제시
+                if (mLocationMode == AT_START) {
+                    Integer startCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) AT_START).get(); // 연결 해제시
                     System.out.println("출발카운트: " + startCount);
-                    if (startCount == 1){
+                    if (startCount == 1) {
                         JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
                         if (jobScheduler != null) {
                             jobScheduler.cancel(1);
@@ -1023,8 +1147,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
                             }
                         }
                     }
-                } else if(mLocationMode == AT_ARRIVE){
-                    Integer arriveCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)AT_ARRIVE).get(); // 연결 시
+                } else if (mLocationMode == AT_ARRIVE) {
+                    Integer arriveCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) AT_ARRIVE).get(); // 연결 시
                     System.out.println("도착카운트: " + arriveCount);
                     if (arriveCount == 1) {
                         JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -1086,8 +1210,31 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
         @Override
         protected Integer doInBackground(Character... characters) {
-            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0], (int)characters[1]);
+            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0], (int) characters[1]);
             return count;
+        }
+    }
+
+    private ToDo makeTodoObject() {
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
+        todo.setTodoNo(mToDoNo);
+        return todo;
+    }
+
+    private ToDoData makeTodoDataObject() {
+
+        if (mTodoCategory == LOCATION) {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    latitude, longitude, mLocationMode, mLadius,
+                    mWifiBssid, mWifiMode, mLocationTime, NO_DATA, "", NO_DATA, "", "");
+        } else if (mTodoCategory == TIME) {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
+                    "", 'N', NO_DATA, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString());
+        } else {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
+                    "", 'N', NO_DATA, NO_DATA, "", NO_DATA, "", "");
         }
     }
 }

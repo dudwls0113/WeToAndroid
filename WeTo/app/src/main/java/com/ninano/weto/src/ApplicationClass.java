@@ -66,6 +66,9 @@ public class ApplicationClass extends Application {
     public static final int DAYREPEAT = 2;        //매일반복
     public static final int WEEKREPEAT = 3;       //매주반복
     public static final int MONTHREPEAT = 4;      //매달반복
+
+    public static final int NO_DATA = -1;          //의미없는값표시
+
     public static String fcmToken = "";
 
     private static ApplicationClass applicationClass;
