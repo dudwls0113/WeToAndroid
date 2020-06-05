@@ -100,8 +100,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         if (intent.getBooleanExtra("isLocationSelected", false)) {
             LocationResponse.Location location = (LocationResponse.Location) intent.getSerializableExtra("location");
             setLocationWhenSelectedMode(Objects.requireNonNull(location));
-        }
-        else{
+        } else {
             naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
     }
@@ -292,16 +291,26 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             @Override
             public void onCameraChange(int i, boolean b) {
                 if (latitude != null && longitude != null) {
-                    double distance = getDistance(naverMap.getCameraPosition().target.latitude, naverMap.getCameraPosition().target.longitude, latitude, longitude, "meter");
-                    Log.d("카메라", distance + "미");
-                    if (distance < 500) {
+                    double distanceFromMe = getDistance(naverMap.getCameraPosition().target.latitude, naverMap.getCameraPosition().target.longitude, latitude, longitude, "meter");
+                    if (distanceFromMe < 500) {
                         mLayoutWifi.setVisibility(View.VISIBLE);
                     } else {
                         mLayoutWifi.setVisibility(View.GONE);
                     }
+
+//                    if (mLocation != null) {
+//                        double distanceFromSelectLocation = getDistance(Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude()), latitude, longitude, "meter");
+//                        if (distanceFromSelectLocation < 2000) {
+//                            mLayoutLocation.setVisibility(View.VISIBLE);
+//                        } else {
+//                            mLayoutLocation.setVisibility(View.GONE);
+//                        }
+//                    }
                 } else {
                     mLayoutWifi.setVisibility(View.GONE);
                 }
+
+
             }
         });
 
