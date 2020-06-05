@@ -69,12 +69,14 @@ public class SplashActivity extends BaseActivity {
             if (geofenceList.size() == 0) {
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
             getGeofenceMaker().addGeoFenceList(geofenceList, new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
                     Intent intent = new Intent(mContext, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }, new OnFailureListener() {
                 @Override

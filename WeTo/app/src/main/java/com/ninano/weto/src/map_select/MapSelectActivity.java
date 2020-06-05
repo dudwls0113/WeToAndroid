@@ -46,6 +46,8 @@ import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.ninano.weto.src.common.util.Util.getDistance;
+
 public class MapSelectActivity extends BaseActivity implements OnMapReadyCallback, MapSelectActivityView {
 
     private Context mContext;
@@ -98,6 +100,9 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         if (intent.getBooleanExtra("isLocationSelected", false)) {
             LocationResponse.Location location = (LocationResponse.Location) intent.getSerializableExtra("location");
             setLocationWhenSelectedMode(Objects.requireNonNull(location));
+        }
+        else{
+            naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
     }
 
@@ -196,7 +201,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.VISIBLE);
-        mLayoutWifi.setVisibility(View.GONE);
+//        mLayoutWifi.setVisibility(View.GONE);
         mTextViewTitle.setText(location.getPlaceName());
         mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocationTitle.setText(location.getPlaceName());
@@ -213,7 +218,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
 
     private void setLocationWhenLongClick(LocationResponse.Location location) {
         mLayoutLocation.setVisibility(View.VISIBLE);
-        mLayoutWifi.setVisibility(View.GONE);
+//        mLayoutWifi.setVisibility(View.GONE);
         mTextViewTitle.setText(location.getPlaceName());
         mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocationTitle.setText(location.getPlaceName());
@@ -231,7 +236,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.GONE);
-        mLayoutWifi.setVisibility(View.VISIBLE);
+//        mLayoutWifi.setVisibility(View.VISIBLE);
         mTextViewTitle.setText(location.getPlaceName());
         mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
 
@@ -256,15 +261,16 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         naverMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
             @Override
             public void onLocationChange(@NonNull Location location) {
-                mCircleOverlay.setMap(null);
-                mCircleOverlay.setCenter(new LatLng(location.getLatitude(), location.getLongitude()));
-                mCircleOverlay.setRadius(200);
-                mCircleOverlay.setColor(getResources().getColor(R.color.colorMapGpsTransBlue));
-                mCircleOverlay.setMap(naverMap);
+//                mCircleOverlay.setMap(null);
+//                mCircleOverlay.setCenter(new LatLng(location.getLatitude(), location.getLongitude()));
+//                mCircleOverlay.setRadius(200);
+//                mCircleOverlay.setColor(getResources().getColor(R.color.colorMapGpsTransBlue));
+//                mCircleOverlay.setMap(naverMap);
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
             }
         });
+
         naverMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
@@ -279,10 +285,26 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);
         uiSettings.setScaleBarEnabled(false);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         zoomControlView.setMap(naverMap);
 
         setSelectedLocation();
+        naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(int i, boolean b) {
+                if (latitude != null && longitude != null) {
+                    double distance = getDistance(naverMap.getCameraPosition().target.latitude, naverMap.getCameraPosition().target.longitude, latitude, longitude, "meter");
+                    Log.d("카메라", distance + "미");
+                    if (distance < 500) {
+                        mLayoutWifi.setVisibility(View.VISIBLE);
+                    } else {
+                        mLayoutWifi.setVisibility(View.GONE);
+                    }
+                } else {
+                    mLayoutWifi.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
     @Override
