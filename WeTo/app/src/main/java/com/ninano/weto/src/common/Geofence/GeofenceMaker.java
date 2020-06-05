@@ -68,7 +68,7 @@ public class GeofenceMaker {
         return builder.build();
     }
 
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter) {
+    public Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter) {
         int GEOFENCE_TRANSITION;
         if (type == AT_ARRIVE) {
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
@@ -106,17 +106,7 @@ public class GeofenceMaker {
         geofencingClient.removeGeofences(idList);
     }
 
-    public void addGeoFenceList(List<ToDoWithData> toDoWithDataArrayList, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
-        List<Geofence> geofenceList = new ArrayList<>();
-        for (ToDoWithData toDoWithData : toDoWithDataArrayList) {
-            if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
-                geofenceList.add(getGeofence(toDoWithData.getLocationMode(), String.valueOf(toDoWithData.getTodoNo()),
-                        new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
-            }
-        }
-        if (geofenceList.size() == 0) {
-            return;
-        }
+    public void addGeoFenceList(List<Geofence> geofenceList, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
         geofencingClient.addGeofences(getGeofencingListRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 }

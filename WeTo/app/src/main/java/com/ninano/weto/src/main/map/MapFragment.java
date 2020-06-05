@@ -166,7 +166,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         naverMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-//                showCustomToast(pointF + "");
+
             }
         });
 
@@ -186,7 +186,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
 
         zoomControlView.setMap(naverMap);
-
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);
@@ -195,7 +194,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         uiSettings.setLogoMargin((int)(12*density), (int)(12*density), 0, 0);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
-        naverMap.setLightness(0.3f);
+//        naverMap.setLightness(0.3f);
 
     }
 }

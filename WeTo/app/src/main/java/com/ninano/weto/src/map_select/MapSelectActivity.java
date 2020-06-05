@@ -13,6 +13,7 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     private LinearLayout mLayoutWifi, mLayoutLocation;
     private LocationResponse.Location mLocation;
     private MapSelectService mapSelectService;
+    private Marker mMarker = new Marker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,17 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
 
         mapView.getMapAsync(this);
         mapSelectService = new MapSelectService(this);
+        zoomControlView = findViewById(R.id.zoom);
+        locationSource =
+                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    private void setSelectedLocation() {
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("isLocationSelected", false)) {
+            LocationResponse.Location location = (LocationResponse.Location) intent.getSerializableExtra("location");
+            setLocationWhenSelectedMode(Objects.requireNonNull(location));
+        }
     }
 
     @Override
@@ -180,7 +193,6 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     }
 
     private void getLocationAndSetMap(LocationResponse.Location location) {
-        Log.d("좌표", location.getLatitude() + " " + location.getLongitude());
         CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.VISIBLE);
@@ -190,13 +202,45 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mTextViewLocationTitle.setText(location.getPlaceName());
         mTextViewLocationAddress.setText(location.getAddressName());
 
-        Marker marker = new Marker();
-        marker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
-        marker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
-        marker.setIconTintColor(getResources().getColor(R.color.colorMarker));
-        marker.setWidth(100);
-        marker.setHeight(130);
-        marker.setMap(naverMap);
+        mMarker.setMap(null);
+        mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
+        mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
+        mMarker.setWidth(200);
+        mMarker.setHeight(230);
+        mMarker.setMap(naverMap);
+    }
+
+
+    private void setLocationWhenLongClick(LocationResponse.Location location) {
+        mLayoutLocation.setVisibility(View.VISIBLE);
+        mLayoutWifi.setVisibility(View.GONE);
+        mTextViewTitle.setText(location.getPlaceName());
+        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+        mTextViewLocationTitle.setText(location.getPlaceName());
+        mTextViewLocationAddress.setText(location.getAddressName());
+
+        mMarker.setMap(null);
+        mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
+        mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
+        mMarker.setWidth(200);
+        mMarker.setHeight(230);
+        mMarker.setMap(naverMap);
+    }
+
+    private void setLocationWhenSelectedMode(LocationResponse.Location location) {
+        CameraPosition cameraPosition = new CameraPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())), 14);
+        naverMap.setCameraPosition(cameraPosition);
+        mLayoutLocation.setVisibility(View.GONE);
+        mLayoutWifi.setVisibility(View.VISIBLE);
+        mTextViewTitle.setText(location.getPlaceName());
+        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+
+        mMarker.setMap(null);
+        mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
+        mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
+        mMarker.setWidth(200);
+        mMarker.setHeight(230);
+        mMarker.setMap(naverMap);
     }
 
     public void onMapReady(@NonNull NaverMap naverMap2) {
@@ -231,25 +275,21 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             }
         });
         naverMap.setLocationSource(locationSource);
-//        GpsTracker gpsTracker = new GpsTracker(mContext, new GpsTracker.GpsTrackerListener() {
-//            @Override
-//            public void onLocationChanged(Location location) {
-//            }
-//        });
-//        CameraPosition cameraPosition = new CameraPosition(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()), 14);
-//        naverMap.setCameraPosition(cameraPosition);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setZoomControlEnabled(false);
+        uiSettings.setScaleBarEnabled(false);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-        naverMap.setLightness(0.3f);
+        zoomControlView.setMap(naverMap);
+
+        setSelectedLocation();
     }
 
     @Override
     public void validateSuccess(AddressResponse.Address address) {
         Log.d("좌표", mLocation.getLatitude() + mLocation.getLatitude());
         mLocation = new LocationResponse.Location(address.getNormalAddress().getAddressName(), address.getNormalAddress().getAddressName(), mLocation.getLongitude(), mLocation.getLatitude());
-        getLocationAndSetMap(mLocation);
+        setLocationWhenLongClick(mLocation);
     }
 
     @Override

@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
+import com.ninano.weto.db.Location;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
@@ -126,7 +127,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private RecyclerView mRecyclerViewMyPlace;
     private MyPlaceListAdapter mMyPlaceListAdapter;
     private ArrayList<MyPlace> mDataArrayList = new ArrayList<>();
-    private LocationResponse.Location mLocation;
+    private LocationResponse.Location mLocation = null;
 
     AppDatabase mDatabase;
     public static float dpUnit;
@@ -217,6 +218,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
                             setLocationTimeView(mTextViewNight);
                             break;
                     }
+                    mLocation = new LocationResponse.Location("", mToDoWithData.getLocationName(), String.valueOf(mToDoWithData.getLongitude()), String.valueOf(mToDoWithData.getLatitude()));
+                    longitude = Double.valueOf(mLocation.getLongitude());
+                    latitude = Double.valueOf(mLocation.getLatitude());
+                    setLocationInfo();
+
                     mTextViewLocation.setText(mToDoWithData.getLocationName());
                     mTextViewLocation.setTextColor(getResources().getColor(R.color.colorBlack));
                     if (mToDoWithData.getIsWiFi() == 'Y') {
@@ -228,7 +234,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
                         mTextViewNear.setVisibility(View.VISIBLE);
                     }
                     break;
-
 
                 //수정하면 UPDATE문으로 덮어쓰기, geo나 wifi, 알람매니저는 어떻게바꾸지?
                 // 1. geo는 원래있던거 지우고 새로등록
@@ -437,12 +442,15 @@ public class AddPersonalToDoActivity extends BaseActivity {
             if (toDoData == null) {
                 return;
             }
+            //기존 지오펜스 삭제처리
+            getGeofenceMaker().removeGeofence(String.valueOf(toDoData.getTodoNo()));
+
             if (toDoData.getIsWiFi() == 'Y') {//와이파이
 //                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
+
 //                registerAlarm();
             } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
-                getGeofenceMaker().removeGeofence(String.valueOf(toDoData.getTodoNo()));
                 getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
                         new OnSuccessListener() {
                             @Override
@@ -643,6 +651,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
             case R.id.add_personal_todo_layout_gps:
                 // 지도 선 화면
                 Intent intent = new Intent(mContext, MapSelectActivity.class);
+                if(mLocation != null){
+                    intent.putExtra("location", mLocation);
+                    intent.putExtra("isLocationSelected", true);
+                }
                 startActivityForResult(intent, 100);
                 break;
             case R.id.add_personal_todo_layout_hidden_time_date:

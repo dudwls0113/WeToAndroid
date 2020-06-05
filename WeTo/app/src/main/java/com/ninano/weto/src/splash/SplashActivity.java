@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Pair;
 
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
@@ -16,8 +18,10 @@ import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
@@ -55,11 +59,18 @@ public class SplashActivity extends BaseActivity {
         @Override
         protected void onPostExecute(List<ToDoWithData> toDoWithDataList) {
             super.onPostExecute(toDoWithDataList);
-            if(toDoWithDataList.size()==0){
+            List<Geofence> geofenceList = new ArrayList<>();
+            for (ToDoWithData toDoWithData : toDoWithDataList) {
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
+                    geofenceList.add(getGeofenceMaker().getGeofence(toDoWithData.getLocationMode(), String.valueOf(toDoWithData.getTodoNo()),
+                            new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
+                }
+            }
+            if (geofenceList.size() == 0) {
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
-            getGeofenceMaker().addGeoFenceList(toDoWithDataList, new OnSuccessListener() {
+            getGeofenceMaker().addGeoFenceList(geofenceList, new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
                     Intent intent = new Intent(mContext, MainActivity.class);

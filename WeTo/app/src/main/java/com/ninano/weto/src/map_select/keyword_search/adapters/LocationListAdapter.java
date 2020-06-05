@@ -47,8 +47,12 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         holder.mTextViewPlaceName.setText(mDataArrayList.get(position).getPlaceName());
         holder.mTextViewAddressName.setText(mDataArrayList.get(position).getAddressName());
         holder.mTextViewCategory.setText(mDataArrayList.get(position).getCategoryGroupName());
-        int disKm = Integer.parseInt(mDataArrayList.get(position).getDistanceStr())/1000;
-        holder.mTextViewDistance.setText(disKm+"Km");
+        try {
+            int disKm = Integer.parseInt(mDataArrayList.get(position).getDistanceStr()) / 1000;
+            holder.mTextViewDistance.setText(disKm + "Km");
+        } catch (NumberFormatException e) {
+
+        }
     }
 
     @Override
