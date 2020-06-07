@@ -22,13 +22,19 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="38dp" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/fragment_map_vp"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="13dp">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/fragment_map_vp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="13dp"/>
 
-    </androidx.viewpager.widget.ViewPager>
+<!--    <androidx.viewpager2.widget.ViewPager2-->
+<!--        android:id="@+id/fragment_map_vp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginBottom="13dp" />-->
+
 
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.ninano.weto.src.main.todo_personal;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.lifecycle.Observer;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
+import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
@@ -72,6 +74,8 @@ public class ToDoPersonalFragment extends BaseFragment {
     private float density;
 
     AppDatabase mDatabase;
+
+    private float currentHeight = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,6 +159,11 @@ public class ToDoPersonalFragment extends BaseFragment {
             public void onStartDrag(ToDoPersonalListAdapter.CustomViewHolder holder) {
                 mItemTouchHelper.startDrag(holder);
             }
+
+            @Override
+            public void doneClick(int pos) {
+                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos).getTodoNo());
+            }
         });
 
         ToDoPersonalItemTouchHelperCallback mCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoPersonalListAdapter, mContext);
@@ -187,6 +196,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                 if (!isEditMode) {
                     for (int i = 0; i < mTodoList.size(); i++) {
                         mTodoList.get(i).setEditMode(true);
+                        new UpdateOrderAsyncTask(mDatabase.todoDao()).execute(i, mTodoList.get(i).getTodoNo());
                     }
                     isEditMode = true;
                     mImageViewDrag.setVisibility(View.VISIBLE);
@@ -235,6 +245,11 @@ public class ToDoPersonalFragment extends BaseFragment {
             public void onStartDrag(ToDoPersonalListAdapter.CustomViewHolder holder) {
                 mDoneItemTouchHelper.startDrag(holder);
             }
+
+            @Override
+            public void doneClick(int pos) {
+                new UpdateActivateAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos).getTodoNo());
+            }
         });
 
         mRecyclerViewDone.setAdapter(mToDoPersonalDoneListAdapter);
@@ -261,6 +276,57 @@ public class ToDoPersonalFragment extends BaseFragment {
         });
     }
 
+    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void>{
+
+        private ToDoDao mTodoDao;
+
+        UpdateDoneAsyncTask(ToDoDao mTodoDao) {
+            this.mTodoDao = mTodoDao;
+        }
+
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mDatabase.todoDao().updateStatusDone(integers[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private class UpdateActivateAsyncTask extends AsyncTask<Integer, Void, Void>{
+
+        private ToDoDao mTodoDao;
+
+        UpdateActivateAsyncTask(ToDoDao mTodoDao){
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mDatabase.todoDao().updateStatusActivate(integers[0]);
+            return null;
+        }
+    }
+
+    private class UpdateOrderAsyncTask extends AsyncTask<Integer, Void, Void>{
+
+        private ToDoDao mTodoDao;
+
+        UpdateOrderAsyncTask(ToDoDao mTodoDao){
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mDatabase.todoDao().updateOrder(integers[0], integers[1]);
+            return null;
+        }
+    }
+
     private void getCurrentTime() {
         Date currentTime = Calendar.getInstance().getTime();
         String cur_date = new SimpleDateFormat("MM월 dd일 (EE)", Locale.getDefault()).format(currentTime);
@@ -283,6 +349,9 @@ public class ToDoPersonalFragment extends BaseFragment {
                 mDoneTodoList.clear();
                 mDoneTodoList.addAll(todoList);
                 mToDoPersonalDoneListAdapter.notifyDataSetChanged();
+                if (isExpandable){
+                    showDoneLayout();
+                }
             }
         });
     }
@@ -307,7 +376,25 @@ public class ToDoPersonalFragment extends BaseFragment {
     }
 
     private void showDoneLayout() {
+        currentHeight = (66 * density * mDoneTodoList.size() + 15 * density);
         ValueAnimator anim1 = ValueAnimator.ofInt(0, (int) (66 * density * mDoneTodoList.size() + 15 * density));
+        anim1.setDuration(500);
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Integer value = (Integer) valueAnimator.getAnimatedValue();
+                mLInearHiddenDone.getLayoutParams().height = value.intValue();
+                mLInearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
+    }
+
+    private void showPlusDoneLayout(){
+        System.out.println(currentHeight + ", " + mDoneTodoList.size());
+        ValueAnimator anim1 = ValueAnimator.ofInt(mLInearHiddenDone.getLayoutParams().height, (int) (mLInearHiddenDone.getLayoutParams().height + 66 * density  + 15 * density));
+        currentHeight = (66 * density * mDoneTodoList.size() + 15 * density);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

@@ -120,6 +120,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                 CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(toDoWithDataArrayList.get(position).getLatitude(), toDoWithDataArrayList.get(position).getLongitude()))
                         .animate(CameraAnimation.Fly);
                 naverMap.moveCamera(cameraUpdate2);
+
+                mMapLocationTodoAdapter.getItem(position);
             }
 
             @Override
@@ -136,6 +138,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             public void onChanged(List<ToDoWithData> todoList) {
                 toDoWithDataArrayList.clear();
                 toDoWithDataArrayList.addAll(todoList);
+                mMapLocationTodoAdapter.setArrayList(todoList);
                 mMapLocationTodoAdapter.notifyDataSetChanged();
                 addTodoMarker(todoList);
             }

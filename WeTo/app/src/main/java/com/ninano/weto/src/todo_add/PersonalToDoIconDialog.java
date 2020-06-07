@@ -52,9 +52,115 @@ public class PersonalToDoIconDialog extends Dialog {
         mImageViewIcon11 = findViewById(R.id.dialog_personal_todo_icon_iv_11);
         mImageViewIcon12 = findViewById(R.id.dialog_personal_todo_icon_iv_12);
         mImageViewIcon13 = findViewById(R.id.dialog_personal_todo_icon_iv_13);
+
+        mImageViewIcon1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 1;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 2;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 3;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 4;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 5;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 6;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 7;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 8;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 9;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 10;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 11;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 12;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+        mImageViewIcon13.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconNum = 13;
+                mSelectClickListener.selectClick(iconNum);
+                dismiss();
+            }
+        });
+
     }
 
     public interface SelectClickListener{
-        void selectClick();
+        void selectClick(int iconNum);
     }
 }

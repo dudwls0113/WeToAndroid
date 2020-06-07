@@ -47,6 +47,7 @@ public class ToDoDetailActivity extends BaseActivity {
         mTextViewCondition = findViewById(R.id.activity_todo_detail_tv_condition);
         mTextViewContent = findViewById(R.id.activity_todo_detail_tv_content);
         mImageViewIcon = findViewById(R.id.activity_todo_detail_iv_icon);
+        changeIcon(mToDoWithData.getIcon());
 
         mTextViewTitle.setText(mToDoWithData.getTitle());
         switch (mToDoWithData.getType()) {
@@ -115,6 +116,50 @@ public class ToDoDetailActivity extends BaseActivity {
         mTextViewCondition.setText(condition);
         mTextViewContent.setText(mToDoWithData.getContent());
 
+    }
+
+    void changeIcon(int iconNum) {
+        switch (iconNum) {
+            case 1:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
+                break;
+            case 2:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_2);
+                break;
+            case 3:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_3);
+                break;
+            case 4:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_4);
+                break;
+            case 5:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_5);
+                break;
+            case 6:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_6);
+                break;
+            case 7:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_7);
+                break;
+            case 8:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_8);
+                break;
+            case 9:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_9);
+                break;
+            case 10:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_10);
+                break;
+            case 11:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_11);
+                break;
+            case 12:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_12);
+                break;
+            case 13:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_13);
+                break;
+        }
     }
 
     public void customOnClick(View view) {

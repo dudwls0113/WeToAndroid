@@ -37,14 +37,26 @@ public abstract class ToDoDao {
     public abstract LiveData<List<ToDoWithData>> getActivatedTodoList();
 
     //종료된 일정조회
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE'")
     public abstract LiveData<List<ToDoWithData>> getDoneTodoList();
 
     //활성중인 일정조회 (livedata아닌버전)
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")
     public abstract List<ToDoWithData> getActivatedTodoListNoLive();
 
-    //자주가는 장소 조
+    // 일정 완료
+    @Query("UPDATE ToDo SET status = 'DONE' WHERE todoNo = :todoNo")
+    public abstract void updateStatusDone(int todoNo);
+
+    // 일정 완료x
+    @Query("UPDATE ToDo SET status = 'ACTIVATE' WHERE todoNo = :todoNo")
+    public abstract void updateStatusActivate(int todoNo);
+
+    //순서 변경
+    @Query("UPDATE ToDo SET ordered = :order WHERE todoNo = :todoNo AND status = 'ACTIVATE'")
+    public abstract void updateOrder(int order, int todoNo);
+
+    //자주가는 장소 조회
     @Query("SELECT * FROM FavoriteLocation")
     public abstract LiveData<List<FavoriteLocation>> getFavoriteLocation();
 
