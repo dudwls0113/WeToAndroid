@@ -65,6 +65,12 @@ public abstract class ToDoDao {
         updateTodoData(toDoData);
     }
 
+    @Transaction
+    public void deleteTodo(ToDo todo, ToDoData toDoData){
+        delete(todo);
+        deleteTodoData(toDoData);
+    }
+
 
 
     @Insert
@@ -81,5 +87,8 @@ public abstract class ToDoDao {
 
     @Delete
     abstract void delete(ToDo todo);
+
+    @Delete
+    abstract void deleteTodoData(ToDoData toDoData);
 
 }

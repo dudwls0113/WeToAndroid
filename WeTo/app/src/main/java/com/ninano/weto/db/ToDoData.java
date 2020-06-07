@@ -36,6 +36,52 @@ public class ToDoData {
 
     private String time;
 
+    private int year;
+    private int month;
+    private int day;
+    private int hour;
+    private int minute;
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
     public int getLocationMode() {
         return locationMode;
     }
@@ -44,7 +90,8 @@ public class ToDoData {
         this.locationMode = locationMode;
     }
 
-    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time) {
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time
+                    , int year, int month, int day, int hour, int minute) {
         this.locationName = locationName;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -58,6 +105,11 @@ public class ToDoData {
         this.repeatDay = repeatDay;
         this.date = date;
         this.time = time;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
     }
 
     public String getDate() {

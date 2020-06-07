@@ -1,4 +1,4 @@
-package com.ninano.weto.src.receiver;
+package com.ninano.weto.src.common.Alarm;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -47,7 +47,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             SimpleDateFormat weekdayFormat = new SimpleDateFormat("EE", Locale.getDefault());
             String weekDay = weekdayFormat.format(currentTime);
             Toast.makeText(context, weekDay, Toast.LENGTH_LONG).show();
-            if (dayOfWeek.equals(weekDay) ){
+            if (dayOfWeek.contains(weekDay)){
                 sendNotification(context, title, memo);
             }
         }

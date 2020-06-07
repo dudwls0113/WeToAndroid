@@ -10,18 +10,12 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,27 +30,21 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.Location;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.CellularService;
 import com.ninano.weto.src.DeviceBootReceiver;
-import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
-import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
+import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
 import com.ninano.weto.src.todo_add.models.MyPlace;
-import com.ninano.weto.src.todo_edit.TodoEditActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,8 +52,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
@@ -83,7 +69,9 @@ import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
+import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 
 public class AddPersonalToDoActivity extends BaseActivity {
 
@@ -108,10 +96,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private AlarmManager mAlarmManager;
     private int mRepeatType;
     private boolean mIsDatePick, mIsTimePick;
-    private int mYear, mMonth, mDay, mHour, mMinute;
-    private String mRepeatDayOfWeek = "일";
+    private int mYear =0, mMonth=0, mDay=0, mHour=0, mMinute=0;
+    private String mRepeatDayOfWeek = "일,";
     private int mRepeatDay; // 매월 의 반복일 (1~31)
     private int mINTRepeatDayOfWeek = 1;
+    private boolean[] selectedDayList = new boolean[7];
 
     //Location Mode
     private TextView mTextViewLocation, mTextViewStart, mTextViewArrive, mTextViewNear;
@@ -329,6 +318,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
 //        mWifiMode = 'Y';
         mLadius = GPS_LADIUS;
 
+        mTextViewSun.setSelected(true);
+        selectedDayList[0] = true;
+
         /* Set Constant */
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -388,9 +380,13 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 return;
             }
             if (toDoData.getIsWiFi() == 'Y') {//와이파이
-                registerWifi();
+                getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
+                finish();
+//                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-                registerAlarm();
+                changeRepeatDayOfWeek();
+                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
+                finish();
             } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
                 getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
                         new OnSuccessListener() {
@@ -415,9 +411,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private void updateToRoomDB() {
         ToDo todo = makeTodoObject();
         ToDoData toDoData = makeTodoDataObject();
-        toDoData.setTodoDataNo(mToDoDataNo);
+        todo.setTodoNo(mToDoNo);
         toDoData.setTodoNo(mToDoNo);
-        System.out.println("넘버: " + mToDoNo + ", " + mToDoDataNo);
+        toDoData.setTodoDataNo(mToDoDataNo);
+        System.out.println("넘버: " + mToDoNo + ", " + mToDoDataNo + ", " + todo.getTitle());
         new updateAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
     }
 
@@ -432,6 +429,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         @Override
         protected ToDoData doInBackground(Object... objects) {
             mTodoDao.updateTodo((ToDo) objects[0], (ToDoData) objects[1]);
+            System.out.println(objects[0].toString());
             return (ToDoData) objects[1];
         }
 
@@ -444,12 +442,17 @@ public class AddPersonalToDoActivity extends BaseActivity {
             }
             //기존 지오펜스 삭제처리
             getGeofenceMaker().removeGeofence(String.valueOf(toDoData.getTodoNo()));
+            // 기존 알람 삭제처리
+            getAlarmMaker().removeAlarm(toDoData.getTodoNo());
 
             if (toDoData.getIsWiFi() == 'Y') {//와이파이
+                getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
+                finish();
 //                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-
-//                registerAlarm();
+                changeRepeatDayOfWeek();
+                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
+                finish();
             } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
                 getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
                         new OnSuccessListener() {
@@ -675,6 +678,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     }
                 }
                 break;
+            case R.id.add_personal_todo_iv_icon: // 아이콘 선택버튼
+                break;
         }
     }
 
@@ -757,76 +762,42 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void setRepeatWeekView(TextView selectedView) {
-        if (selectedView.equals(mTextViewSun)) {
-            mRepeatDayOfWeek = "일";
-            mINTRepeatDayOfWeek = 1;
-            setVineOnMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewMon)) {
-            mRepeatDayOfWeek = "월";
-            mINTRepeatDayOfWeek = 2;
-            setVineOffMode(mTextViewSun);
-            setVineOnMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewTue)) {
-            mRepeatDayOfWeek = "화";
-            mINTRepeatDayOfWeek = 3;
-            setVineOffMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOnMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewWed)) {
-            mRepeatDayOfWeek = "수";
-            mINTRepeatDayOfWeek = 4;
-            setVineOffMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOnMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewThu)) {
-            mRepeatDayOfWeek = "목";
-            mINTRepeatDayOfWeek = 5;
-            setVineOffMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOnMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewFri)) {
-            mRepeatDayOfWeek = "금";
-            mINTRepeatDayOfWeek = 6;
-            setVineOffMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOnMode(mTextViewFri);
-            setVineOffMode(mTextViewSat);
-        } else if (selectedView.equals(mTextViewSat)) {
-            mRepeatDayOfWeek = "토";
-            mINTRepeatDayOfWeek = 7;
-            setVineOffMode(mTextViewSun);
-            setVineOffMode(mTextViewMon);
-            setVineOffMode(mTextViewTue);
-            setVineOffMode(mTextViewWed);
-            setVineOffMode(mTextViewThu);
-            setVineOffMode(mTextViewFri);
-            setVineOnMode(mTextViewSat);
+        if(selectedView.isSelected()){
+            selectedView.setSelected(false);
+            setVineOffMode(selectedView);
+            if (selectedView.equals(mTextViewSun)) {
+                selectedDayList[0] = false;
+            } else if (selectedView.equals(mTextViewMon)) {
+                selectedDayList[1] = false;
+            } else if (selectedView.equals(mTextViewTue)) {
+                selectedDayList[2] = false;
+            } else if (selectedView.equals(mTextViewWed)) {
+                selectedDayList[3] = false;
+            } else if (selectedView.equals(mTextViewThu)) {
+                selectedDayList[4] = false;
+            } else if (selectedView.equals(mTextViewFri)) {
+                selectedDayList[5] = false;
+            } else if (selectedView.equals(mTextViewSat)) {
+                selectedDayList[6] = false;
+            }
+        } else {
+            selectedView.setSelected(true);
+            setVineOnMode(selectedView);
+            if (selectedView.equals(mTextViewSun)) {
+                selectedDayList[0] = true;
+            } else if (selectedView.equals(mTextViewMon)) {
+                selectedDayList[1] = true;
+            } else if (selectedView.equals(mTextViewTue)) {
+                selectedDayList[2] = true;
+            } else if (selectedView.equals(mTextViewWed)) {
+                selectedDayList[3] = true;
+            } else if (selectedView.equals(mTextViewThu)) {
+                selectedDayList[4] = true;
+            } else if (selectedView.equals(mTextViewFri)) {
+                selectedDayList[5] = true;
+            } else if (selectedView.equals(mTextViewSat)) {
+                selectedDayList[6] = true;
+            }
         }
     }
 
@@ -959,277 +930,194 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void registerAlarm() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        if (mRepeatType == ONE_DAY) {
-            calendar.set(Calendar.YEAR, mYear);
-            switch (mMonth) {
-                case 1:
-                    calendar.set(Calendar.MONTH, Calendar.JANUARY);
-                    break;
-                case 2:
-                    calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
-                    break;
-                case 3:
-                    calendar.set(Calendar.MONTH, Calendar.MARCH);
-                    break;
-                case 4:
-                    calendar.set(Calendar.MONTH, Calendar.APRIL);
-                    break;
-                case 5:
-                    calendar.set(Calendar.MONTH, Calendar.MAY);
-                    break;
-                case 6:
-                    calendar.set(Calendar.MONTH, Calendar.JUNE);
-                    break;
-                case 7:
-                    calendar.set(Calendar.MONTH, Calendar.JULY);
-                    break;
-                case 8:
-                    calendar.set(Calendar.MONTH, Calendar.AUGUST);
-                    break;
-                case 9:
-                    calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
-                    break;
-                case 10:
-                    calendar.set(Calendar.MONTH, Calendar.OCTOBER);
-                    break;
-                case 11:
-                    calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
-                    break;
-                case 12:
-                    calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-                    break;
-
-            }
-            calendar.set(Calendar.DATE, mDay);
-            calendar.set(Calendar.HOUR_OF_DAY, mHour);
-            calendar.set(Calendar.MINUTE, mMinute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DATE, 1);
-            }
-
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            System.out.println("특정 알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
-            PackageManager pm = this.getPackageManager();
-            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
-
-            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
-            intent.putExtra("repeatType", 4);
-            intent.putExtra("alarmIndex", mToDoNo);
-            intent.putExtra("title", mEditTextTitle.getText().toString());
-            intent.putExtra("memo", mEditTextMemo.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            if (mAlarmManager != null) {
-                mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
-
-            //부팅후 재실행
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-
-        } else if (mRepeatType == ALL_DAY) {
-            calendar.set(Calendar.HOUR_OF_DAY, mHour);
-            calendar.set(Calendar.MINUTE, mMinute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DATE, 1);
-            }
-
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
-            PackageManager pm = this.getPackageManager();
-            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
-
-            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
-            intent.putExtra("repeatType", 1);
-            intent.putExtra("alarmIndex", mToDoNo);
-            intent.putExtra("title", mEditTextTitle.getText().toString());
-            intent.putExtra("memo", mEditTextMemo.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            if (mAlarmManager != null) {
-//                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-            }
-
-            //부팅후 재실행
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-
-        } else if (mRepeatType == WEEK_DAY) {
-            calendar.set(Calendar.HOUR_OF_DAY, mHour);
-            calendar.set(Calendar.MINUTE, mMinute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DATE, 1);
-            }
-
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
-            PackageManager pm = this.getPackageManager();
-            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
-
-            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
-            intent.putExtra("repeatType", 2);
-            intent.putExtra("repeatDayOfWeek", mRepeatDayOfWeek);
-            intent.putExtra("alarmIndex", mToDoNo);
-            intent.putExtra("title", mEditTextTitle.getText().toString());
-            intent.putExtra("memo", mEditTextMemo.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            if (mAlarmManager != null) {
-                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+//    void registerAlarm() {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        if (mRepeatType == ONE_DAY) {
+//            calendar.set(Calendar.YEAR, mYear);
+//            switch (mMonth) {
+//                case 1:
+//                    calendar.set(Calendar.MONTH, Calendar.JANUARY);
+//                    break;
+//                case 2:
+//                    calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
+//                    break;
+//                case 3:
+//                    calendar.set(Calendar.MONTH, Calendar.MARCH);
+//                    break;
+//                case 4:
+//                    calendar.set(Calendar.MONTH, Calendar.APRIL);
+//                    break;
+//                case 5:
+//                    calendar.set(Calendar.MONTH, Calendar.MAY);
+//                    break;
+//                case 6:
+//                    calendar.set(Calendar.MONTH, Calendar.JUNE);
+//                    break;
+//                case 7:
+//                    calendar.set(Calendar.MONTH, Calendar.JULY);
+//                    break;
+//                case 8:
+//                    calendar.set(Calendar.MONTH, Calendar.AUGUST);
+//                    break;
+//                case 9:
+//                    calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+//                    break;
+//                case 10:
+//                    calendar.set(Calendar.MONTH, Calendar.OCTOBER);
+//                    break;
+//                case 11:
+//                    calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
+//                    break;
+//                case 12:
+//                    calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+//                    break;
+//
+//            }
+//            calendar.set(Calendar.DATE, mDay);
+//            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+//            calendar.set(Calendar.MINUTE, mMinute);
+//            calendar.set(Calendar.SECOND, 0);
+//            calendar.set(Calendar.MILLISECOND, 0);
+//
+//            if (calendar.before(Calendar.getInstance())) {
+//                calendar.add(Calendar.DATE, 1);
+//            }
+//
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            System.out.println("특정 알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+//            PackageManager pm = this.getPackageManager();
+//            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+//
+//            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+//            intent.putExtra("repeatType", 4);
+//            intent.putExtra("alarmIndex", mToDoNo);
+//            intent.putExtra("title", mEditTextTitle.getText().toString());
+//            intent.putExtra("memo", mEditTextMemo.getText().toString());
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            if (mAlarmManager != null) {
+//                mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//            }
+//
+//            //부팅후 재실행
+//            pm.setComponentEnabledSetting(receiver,
+//                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                    PackageManager.DONT_KILL_APP);
+//
+//        } else if (mRepeatType == ALL_DAY) {
+//            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+//            calendar.set(Calendar.MINUTE, mMinute);
+//            calendar.set(Calendar.SECOND, 0);
+//            calendar.set(Calendar.MILLISECOND, 0);
+//
+//            if (calendar.before(Calendar.getInstance())) {
+//                calendar.add(Calendar.DATE, 1);
+//            }
+//
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+//            PackageManager pm = this.getPackageManager();
+//            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+//
+//            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+//            intent.putExtra("repeatType", 1);
+//            intent.putExtra("alarmIndex", mToDoNo);
+//            intent.putExtra("title", mEditTextTitle.getText().toString());
+//            intent.putExtra("memo", mEditTextMemo.getText().toString());
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            if (mAlarmManager != null) {
+////                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 //                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-            }
+//            }
+//
+//            //부팅후 재실행
+//            pm.setComponentEnabledSetting(receiver,
+//                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                    PackageManager.DONT_KILL_APP);
+//
+//        } else if (mRepeatType == WEEK_DAY) {
+//            calendar.set(Calendar.HOUR_OF_DAY, mHour);
+//            calendar.set(Calendar.MINUTE, mMinute);
+//            calendar.set(Calendar.SECOND, 0);
+//            calendar.set(Calendar.MILLISECOND, 0);
+//
+//            if (calendar.before(Calendar.getInstance())) {
+//                calendar.add(Calendar.DATE, 1);
+//            }
+//            System.out.println(mRepeatDayOfWeek);
+//
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            System.out.println("알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
+//            PackageManager pm = this.getPackageManager();
+//            ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
+//
+//            Intent intent = new Intent(AddPersonalToDoActivity.this, AlarmBroadcastReceiver.class);
+//            intent.putExtra("repeatType", 2);
+//            intent.putExtra("repeatDayOfWeek", mRepeatDayOfWeek);
+//            intent.putExtra("alarmIndex", mToDoNo);
+//            intent.putExtra("title", mEditTextTitle.getText().toString());
+//            intent.putExtra("memo", mEditTextMemo.getText().toString());
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, mToDoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//            if (mAlarmManager != null) {
+//                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+////                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+//            }
+//
+//            //부팅후 재실행
+//            pm.setComponentEnabledSetting(receiver,
+//                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                    PackageManager.DONT_KILL_APP);
+//
+//        } else if (mRepeatType == MONTH_DAY) {
+//
+//        }
+//    }
 
-            //부팅후 재실행
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-
-        } else if (mRepeatType == MONTH_DAY) {
-
-        }
-    }
-
-    void registerWifi() {
-        if (mWifiMode == 'Y') {
-            try {
-                if (mLocationMode == AT_START) {
-                    Integer startCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) AT_START).get(); // 연결 해제시
-                    System.out.println("출발카운트: " + startCount);
-                    if (startCount == 1) {
-                        JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                        if (jobScheduler != null) {
-                            jobScheduler.cancel(1);
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            if (jobScheduler != null) {
-                                if (mWifiConnected) {
-                                    System.out.println("현재 연결 와이파이");
-                                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                    final WifiInfo wifiInfo;
-                                    if (wifiManager != null) {
-                                        wifiInfo = wifiManager.getConnectionInfo();
-                                        SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sf.edit();
-                                        editor.putString("recentWifi", wifiInfo.getBSSID());
-                                        editor.putBoolean("firstWifiNoti", true);
-                                        editor.apply();
-                                    }
-                                }
-                                jobScheduler.schedule(new JobInfo.Builder(1, new ComponentName(mContext, CellularService.class))
-                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-                                        .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                        .setPersisted(true)
-                                        .build());
-                            }
-                        }
-                    } else {
-                        System.out.println("카운트 아님");
-                        if (mWifiConnected) {
-                            System.out.println("현재 연결 와이파이2");
-                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                            final WifiInfo wifiInfo;
-                            if (wifiManager != null) {
-                                wifiInfo = wifiManager.getConnectionInfo();
-                                SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sf.edit();
-                                editor.putString("recentWifi", wifiInfo.getBSSID());
-                                editor.putBoolean("firstWifiNoti", true);
-                                editor.apply();
-                            }
-                        }
-                    }
-                } else if (mLocationMode == AT_ARRIVE) {
-                    Integer arriveCount = new CountWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) AT_ARRIVE).get(); // 연결 시
-                    System.out.println("도착카운트: " + arriveCount);
-                    if (arriveCount == 1) {
-                        JobScheduler jobScheduler = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                        if (jobScheduler != null) {
-                            jobScheduler.cancel(0);
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            if (jobScheduler != null) {
-                                if (mWifiConnected) {
-                                    System.out.println("현재 연결 와이파이");
-                                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                    final WifiInfo wifiInfo;
-                                    if (wifiManager != null) {
-                                        wifiInfo = wifiManager.getConnectionInfo();
-                                        SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sf.edit();
-                                        editor.putString("recentWifi", wifiInfo.getBSSID());
-                                        editor.putBoolean("firstWifiNoti", true);
-                                        editor.apply();
-                                    }
-                                }
-                                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(mContext, WifiService.class))
-                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                                        .setPeriodic(TimeUnit.MINUTES.toMillis(15))
-                                        .setPersisted(true)
-                                        .build());
-                            }
-                        }
-                    } else {
-                        System.out.println("카운트 아님");
-                        if (mWifiConnected) {
-                            System.out.println("현재 연결 와이파이2");
-                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                            final WifiInfo wifiInfo;
-                            if (wifiManager != null) {
-                                wifiInfo = wifiManager.getConnectionInfo();
-                                SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sf.edit();
-                                editor.putString("recentWifi", wifiInfo.getBSSID());
-                                editor.putBoolean("firstWifiNoti", true);
-                                editor.apply();
-                            }
-                        }
-                    }
+    private void changeRepeatDayOfWeek(){
+        for(int i=0; i<7; i++){
+            if(selectedDayList[i]){
+                switch (i){
+                    case 0:
+                        mRepeatDayOfWeek += "일,";
+                        break;
+                    case 1:
+                        mRepeatDayOfWeek += "월,";
+                        break;
+                    case 2:
+                        mRepeatDayOfWeek += "화,";
+                        break;
+                    case 3:
+                        mRepeatDayOfWeek += "수,";
+                        break;
+                    case 4:
+                        mRepeatDayOfWeek += "목,";
+                        break;
+                    case 5:
+                        mRepeatDayOfWeek += "금,";
+                        break;
+                    case 6:
+                        mRepeatDayOfWeek += "토,";
+                        break;
                 }
-            } catch (ExecutionException | InterruptedException e) {
-                showCustomToast(getString(R.string.insert_todo_error));
-                e.printStackTrace();
             }
         }
+
+        mRepeatDayOfWeek = mRepeatDayOfWeek.substring(0, mRepeatDayOfWeek.length()-1);
     }
 
-    private class CountWifiAsyncTask extends AsyncTask<Character, Void, Integer> {
-        private ToDoDao mTodoDao;
-
-        CountWifiAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
-        }
-
-        @Override
-        protected Integer doInBackground(Character... characters) {
-            Integer count = mDatabase.todoDao().getTodoWithWifiCount(characters[0], (int) characters[1]);
-            return count;
-        }
-    }
 
     private ToDo makeTodoObject() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
-        todo.setTodoNo(mToDoNo);
+//        todo.setTodoNo(mToDoNo);
         return todo;
     }
 
@@ -1238,15 +1126,15 @@ public class AddPersonalToDoActivity extends BaseActivity {
         if (mTodoCategory == LOCATION) {
             return new ToDoData(mTextViewLocation.getText().toString(),
                     latitude, longitude, mLocationMode, mLadius,
-                    mWifiBssid, mWifiMode, mLocationTime, NO_DATA, "", NO_DATA, "", "");
+                    mWifiBssid, mWifiMode, mLocationTime, NO_DATA, "", NO_DATA, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA,NO_DATA);
         } else if (mTodoCategory == TIME) {
             return new ToDoData(mTextViewLocation.getText().toString(),
                     NO_DATA, NO_DATA, NO_DATA, NO_DATA,
-                    "", 'N', NO_DATA, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString());
+                    "", 'N', NO_DATA, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mYear, mMonth, mDay, mHour, mMinute);
         } else {
             return new ToDoData(mTextViewLocation.getText().toString(),
                     NO_DATA, NO_DATA, NO_DATA, NO_DATA,
-                    "", 'N', NO_DATA, NO_DATA, "", NO_DATA, "", "");
+                    "", 'N', NO_DATA, NO_DATA, "", NO_DATA, "", "",  NO_DATA, NO_DATA, NO_DATA, NO_DATA,NO_DATA);
         }
     }
 }
