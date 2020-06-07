@@ -40,7 +40,6 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE'")
     public abstract LiveData<List<ToDoWithData>> getDoneTodoList();
 
-
     //활성중인 일정조회 (livedata아닌버전)
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")
     public abstract List<ToDoWithData> getActivatedTodoListNoLive();
@@ -57,11 +56,14 @@ public abstract class ToDoDao {
     @Query("UPDATE ToDo SET ordered = :order WHERE todoNo = :todoNo AND status = 'ACTIVATE'")
     public abstract void updateOrder(int order, int todoNo);
 
+    //자주가는 장소 조회
+    @Query("SELECT * FROM FavoriteLocation")
+    public abstract LiveData<List<FavoriteLocation>> getFavoriteLocation();
+
 
     //종료된 일정조회
 //    @Query("SELECT todoNo, latitude, longitude, locationMode, radius FROM  ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
 //    public abstract LiveData<List<ToDoData>> getGpsTodo();
-
 
     @Transaction
     public int insertTodo(ToDo todo, ToDoData toDoData) {
@@ -72,18 +74,16 @@ public abstract class ToDoDao {
     }
 
     @Transaction
-    public void updateTodo(ToDo todo, ToDoData toDoData){
+    public void updateTodo(ToDo todo, ToDoData toDoData) {
         update(todo);
         updateTodoData(toDoData);
     }
 
     @Transaction
-    public void deleteTodo(ToDo todo, ToDoData toDoData){
+    public void deleteTodo(ToDo todo, ToDoData toDoData) {
         delete(todo);
         deleteTodoData(toDoData);
     }
-
-
 
     @Insert
     abstract long insert(ToDo todo);
@@ -99,6 +99,12 @@ public abstract class ToDoDao {
 
     @Delete
     abstract void delete(ToDo todo);
+
+    @Insert
+    public abstract long insert(FavoriteLocation todo);
+
+    @Update
+    public abstract void update(FavoriteLocation todo);
 
     @Delete
     abstract void deleteTodoData(ToDoData toDoData);

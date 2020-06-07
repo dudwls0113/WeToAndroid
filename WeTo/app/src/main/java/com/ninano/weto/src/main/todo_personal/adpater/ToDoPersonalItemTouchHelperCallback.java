@@ -40,7 +40,6 @@ public class ToDoPersonalItemTouchHelperCallback extends ItemTouchHelper.Callbac
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
         return makeMovementFlags(dragFlags, swipeFlags);

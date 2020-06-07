@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {ToDo.class, ToDoData.class}, version = 1)
+@Database(entities = {ToDo.class, ToDoData.class, FavoriteLocation.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     //데이터베이스를 매번 생성하는건 리소스를 많이사용하므로 싱글톤이 권장된다고한다.
 
