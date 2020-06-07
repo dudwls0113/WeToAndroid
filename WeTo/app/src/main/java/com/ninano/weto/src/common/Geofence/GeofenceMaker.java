@@ -32,7 +32,6 @@ public class GeofenceMaker {
         if (GeofenceMakerInstance == null) {
             GeofenceMakerInstance = new GeofenceMaker();
         }
-
         return GeofenceMakerInstance;
     }
 

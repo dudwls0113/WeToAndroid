@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:lineSpacingExtra="6sp"
                     android:text="@string/wifi_search_title"
                     android:textColor="#38454c"
@@ -99,6 +99,40 @@
                     android:layout_marginStart="21dp"
                     android:layout_marginEnd="21dp"
                     android:src="@drawable/ic_arrow_right_wifi" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_map_select_layout_favorite_other"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_round_dialog"
+                android:elevation="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="21dp"
+                    android:layout_marginEnd="21dp"
+                    android:src="@drawable/img_star" />
+
+                <TextView
+                    android:id="@+id/activity_map_select_tv_favorite_guide"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/favorite_place_other_title"
+                    android:textColor="#38454c"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -133,8 +167,9 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="7dp"
                     android:lineSpacingExtra="6sp"
-                    android:textColor="@color/colorGray"
+                    android:textColor="@color/colorSearchGray"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     tools:text="서울특별시 종로구 종로 203" />
 
                 <Button

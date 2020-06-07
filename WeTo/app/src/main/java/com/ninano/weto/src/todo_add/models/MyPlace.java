@@ -45,4 +45,5 @@ public class MyPlace {
     public void setLast(boolean last) {
         isLast = last;
     }
+
 }

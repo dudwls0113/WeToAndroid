@@ -66,10 +66,12 @@ public class SplashActivity extends BaseActivity {
                             new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
                 }
             }
+
             if (geofenceList.size() == 0) {
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
                 finish();
+                return;
             }
             getGeofenceMaker().addGeoFenceList(geofenceList, new OnSuccessListener() {
                 @Override

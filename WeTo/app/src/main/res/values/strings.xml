@@ -16,6 +16,12 @@
     <string name="dialog_group_title">그룹 기능을\n사용하기 위해 로그인 해주세요.</string>
     <string name="dialog_group_subtitle">별도의 회원가입 과정 없이\n카카오톡 연동 로그인을 하실 수 있습니다.</string>
     <string name="wifi_search_title">근처에서 연결되는 Wi-fi를 이용\n하여 더욱 정확한 위치 등록하기</string>
+    <string name="favorite_place_other_title">자주가는 장소로 등록할 곳을 선택해주세요.</string>
+    <string name="favorite_place_home_title">집으로 등록할 장소를 선택해주세요.</string>
+    <string name="favorite_place_company_title">회사로 등록할 장소를 선택\n해주세요.</string>
+    <string name="favorite_place_school_title">학교로 등록할 장소를 선택\n해주세요.</string>
+
+
     <string name="group_invite_title">그룹에 초대하기</string>
     <string name="group_invite_button">카카오톡 친구 초대하기</string>
     <string name="modify">수정하기</string>

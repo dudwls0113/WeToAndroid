@@ -11,17 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ninano.weto.R;
-import com.ninano.weto.src.todo_add.models.MyPlace;
+import com.ninano.weto.db.FavoriteLocation;
 
 import java.util.ArrayList;
 
-public class MyPlaceListAdapter extends RecyclerView.Adapter<MyPlaceListAdapter.CustomViewHolder> {
+public class FavoritePlaceAdapter extends RecyclerView.Adapter<FavoritePlaceAdapter.CustomViewHolder> {
 
     private Context mContext;
-    private ArrayList<MyPlace> mDataArrayList;
+    private ArrayList<FavoriteLocation> mDataArrayList;
     private ItemClickListener mItemClickListener = null;
 
-    public MyPlaceListAdapter(Context context, ArrayList<MyPlace> arrayList, ItemClickListener itemClickListener){
+    public FavoritePlaceAdapter(Context context, ArrayList<FavoriteLocation> arrayList, ItemClickListener itemClickListener){
         mContext = context;
         mDataArrayList = arrayList;
         mItemClickListener = itemClickListener;

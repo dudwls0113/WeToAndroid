@@ -1,6 +1,7 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,13 +37,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.Location;
+import com.ninano.weto.db.FavoriteLocation;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
@@ -54,14 +53,13 @@ import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
-import com.ninano.weto.src.todo_add.adpater.MyPlaceListAdapter;
-import com.ninano.weto.src.todo_add.models.MyPlace;
-import com.ninano.weto.src.todo_edit.TodoEditActivity;
+import com.ninano.weto.src.todo_add.adpater.FavoritePlaceAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -70,11 +68,14 @@ import java.util.concurrent.TimeUnit;
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
+import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.NO_DATA;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
+import static com.ninano.weto.src.ApplicationClass.SCHOOL_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
@@ -123,10 +124,11 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private String mWifiBssid = "";
     private boolean mWifiConnected;
     private Double longitude = 0.0, latitude = 0.0;
+    private int mFavoriteSelectedIndex = -1;
 
     private RecyclerView mRecyclerViewMyPlace;
-    private MyPlaceListAdapter mMyPlaceListAdapter;
-    private ArrayList<MyPlace> mDataArrayList = new ArrayList<>();
+    private FavoritePlaceAdapter mFavoritePlaceAdapter;
+    private ArrayList<FavoriteLocation> mFavoritePlaceList = new ArrayList<>();
     private LocationResponse.Location mLocation = null;
 
     AppDatabase mDatabase;
@@ -143,7 +145,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setContentView(R.layout.activity_add_personal_to_do);
         mContext = this;
         init();
-        setTempLikeLocationData();
         setEditMode();
     }
 
@@ -305,21 +306,41 @@ public class AddPersonalToDoActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerViewMyPlace.setLayoutManager(linearLayoutManager);
-        mMyPlaceListAdapter = new MyPlaceListAdapter(mContext, mDataArrayList, new MyPlaceListAdapter.ItemClickListener() {
+
+        mFavoritePlaceAdapter = new FavoritePlaceAdapter(mContext, mFavoritePlaceList, new FavoritePlaceAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
-                for (int i = 0; i < mDataArrayList.size(); i++) {
-                    mDataArrayList.get(i).setSelected(false);
-                }
-                if (pos != mDataArrayList.size() - 1) {
-                    mDataArrayList.get(pos).setSelected(true);
+                if (pos != mFavoritePlaceList.size() - 1) {
+                    if (mFavoritePlaceList.get(pos).isConfirmed()) {
+                        //집,회사,학교 / 기타 가 이미 입력되있음
+                        setFavoritePlaceItem(pos);
+                    } else {
+                        //집,회사,학교 입력안받음
+                        Intent intent = new Intent(mContext, MapSelectActivity.class);
+                        intent.putExtra("isFavoritePlaceMode", true);
+                        if (mFavoritePlaceList.get(pos).getName().equals("집")) {
+                            intent.putExtra("homeMode", true);
+                            startActivityForResult(intent, HOME_SELECT_MODE);
+                        } else if (mFavoritePlaceList.get(pos).getName().equals("회사")) {
+                            intent.putExtra("companyMode", true);
+                            startActivityForResult(intent, COMPANY_SELECT_MODE);
+                        } else if (mFavoritePlaceList.get(pos).getName().equals("학교")) {
+                            intent.putExtra("schoolMode", true);
+                            startActivityForResult(intent, SCHOOL_SELECT_MODE);
+                        }
+                    }
                 } else {
                     // 즐겨찾기 장소 추가화면
+                    Intent intent = new Intent(mContext, MapSelectActivity.class);
+                    intent.putExtra("isFavoritePlaceMode", true);
+                    startActivityForResult(intent, 200);
                 }
-                mMyPlaceListAdapter.notifyDataSetChanged();
+                mFavoritePlaceAdapter.notifyDataSetChanged();
             }
         });
-        mRecyclerViewMyPlace.setAdapter(mMyPlaceListAdapter);
+
+
+        mRecyclerViewMyPlace.setAdapter(mFavoritePlaceAdapter);
 
         mTodoCategory = NONE;
         mRepeatType = ONE_DAY;
@@ -337,8 +358,50 @@ public class AddPersonalToDoActivity extends BaseActivity {
         setDatabase();
     }
 
+    private void setFavoritePlaceItem(int index) {
+        for (int i = 0; i < mFavoritePlaceList.size(); i++) {
+            mFavoritePlaceList.get(i).setSelected(false);
+        }
+        if (index == NO_DATA) {
+            return;
+        }
+        mFavoritePlaceList.get(index).setSelected(true);
+        mLocation = new LocationResponse.Location("", mFavoritePlaceList.get(index).getName(), String.valueOf(mFavoritePlaceList.get(index).getLongitude()), String.valueOf(mFavoritePlaceList.get(index).getLatitude()));
+        longitude = Double.valueOf(mLocation.getLongitude());
+        latitude = Double.valueOf(mLocation.getLatitude());
+        setLocationInfo();
+
+        //즐겨찾는 장소가 와이파이일 경우 처리해야함
+//        if (mToDoWithData.getIsWiFi() == 'Y') {
+//            mWifiMode = 'Y';
+//            mWifiBssid = mToDoWithData.getSsid();
+//            mTextViewNear.setVisibility(View.GONE);
+//        } else {
+//            mWifiMode = 'N';
+//            mTextViewNear.setVisibility(View.VISIBLE);
+//        }
+    }
+
     private void setDatabase() {
         mDatabase = AppDatabase.getAppDatabase(this);
+
+        mDatabase.todoDao().getFavoriteLocation().observe(this, new Observer<List<FavoriteLocation>>() {
+            @Override
+            public void onChanged(List<FavoriteLocation> favoriteLocations) {
+                mFavoritePlaceList.clear();
+                mFavoritePlaceList.addAll(favoriteLocations);
+                if (mFavoritePlaceList.size() == 0) {
+                    new FavoritePlaceInsertAsyncTask().execute(new FavoriteLocation("집"));
+                    new FavoritePlaceInsertAsyncTask().execute(new FavoriteLocation("학교"));
+                    new FavoritePlaceInsertAsyncTask().execute(new FavoriteLocation("회사"));
+                }
+                if (mFavoriteSelectedIndex != -1) {
+                    setFavoritePlaceItem(mFavoriteSelectedIndex);
+                }
+                mFavoritePlaceList.add(new FavoriteLocation());
+                mFavoritePlaceAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void insertToRoomDB() {
@@ -471,7 +534,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-
     private void showTimeLayout() {
         ValueAnimator anim1 = ValueAnimator.ofInt(0, 170 * (int) dpUnit);
         anim1.setDuration(500);
@@ -515,8 +577,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             }
         });
         anim1.start();
-        System.out.println(mDataArrayList.size());
-        mMyPlaceListAdapter.notifyDataSetChanged();
+        mFavoritePlaceAdapter.notifyDataSetChanged();
     }
 
     private void hideGpsLayout() {
@@ -651,7 +712,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             case R.id.add_personal_todo_layout_gps:
                 // 지도 선 화면
                 Intent intent = new Intent(mContext, MapSelectActivity.class);
-                if(mLocation != null){
+                if (mLocation != null) {
                     intent.putExtra("location", mLocation);
                     intent.putExtra("isLocationSelected", true);
                 }
@@ -903,15 +964,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         return true;
     }
 
-    void setTempLikeLocationData() {
-        mDataArrayList.add(new MyPlace("집", "청라1동", false, false));
-        mDataArrayList.add(new MyPlace("회사", "청라1동", false, false));
-        mDataArrayList.add(new MyPlace("사무실", "청라1동", false, false));
-        //마지막 +
-        mDataArrayList.add(new MyPlace("+", "청라1동", false, true));
-        mMyPlaceListAdapter.notifyDataSetChanged();
-    }
-
     void resetLocationInfo() {
         mIsLocationSelected = false;
         mWifiMode = 'N';
@@ -948,6 +1000,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
                 longitude = Double.parseDouble(mLocation.getLongitude());
                 latitude = Double.parseDouble(mLocation.getLatitude());
+                setFavoritePlaceItem(NO_DATA);
                 setLocationInfo();
             } else if (resultCode == 111) {
                 mWifiBssid = data.getStringExtra("bssid");
@@ -956,8 +1009,79 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mWifiConnected = data.getBooleanExtra("connected", false);
                 setWifiInfo(data.getStringExtra("ssid"));
             }
+        } else if (requestCode == 200) {//즐겨찾기 추가(기타)
+            if (resultCode == 100) {
+                mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                new FavoritePlaceInsertAsyncTask().execute(new FavoriteLocation(mLocation.getAddressName(), Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude())));
+            }
+        } else if (requestCode == HOME_SELECT_MODE) {
+            if (resultCode == 100) {
+                mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(0), Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude()), HOME_SELECT_MODE);
+            }
+        } else if (requestCode == SCHOOL_SELECT_MODE) {
+            if (resultCode == 100) {
+                mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(1), Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude()), SCHOOL_SELECT_MODE);
+            }
+        } else if (requestCode == COMPANY_SELECT_MODE) {
+            if (resultCode == 100) {
+                mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
+                new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(2), Double.parseDouble(mLocation.getLatitude()), Double.parseDouble(mLocation.getLongitude()), COMPANY_SELECT_MODE);
+            }
+        }
+
+    }
+
+    private class FavoritePlaceInsertAsyncTask extends AsyncTask<Object, Void, Void> {
+
+        FavoritePlaceInsertAsyncTask() {
+        }
+
+        @Override
+        protected Void doInBackground(Object... objects) {
+            FavoriteLocation favoriteLocation = ((FavoriteLocation) objects[0]);
+            mDatabase.todoDao().insert(favoriteLocation);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mFavoriteSelectedIndex = mFavoritePlaceList.size() - 1;
         }
     }
+
+    private class FavoritePlaceUpdateAsyncTask extends AsyncTask<Object, Void, Integer> {
+
+        FavoritePlaceUpdateAsyncTask() {
+
+        }
+
+        @Override
+        protected Integer doInBackground(Object... objects) {
+            FavoriteLocation favoriteLocation = ((FavoriteLocation) objects[0]);
+            double latitude = (double) objects[1];
+            double longitude = (double) objects[2];
+            int type = (int) objects[3];
+            favoriteLocation.setPlaceConfirm(latitude, longitude);
+            mDatabase.todoDao().update(favoriteLocation);
+            return type;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (integer == HOME_SELECT_MODE) {
+                mFavoriteSelectedIndex = 0;
+            } else if (integer == SCHOOL_SELECT_MODE) {
+                mFavoriteSelectedIndex = 1;
+            } else if (integer == COMPANY_SELECT_MODE) {
+                mFavoriteSelectedIndex = 2;
+            }
+        }
+    }
+
 
     void registerAlarm() {
         Calendar calendar = Calendar.getInstance();

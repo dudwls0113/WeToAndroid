@@ -46,6 +46,9 @@ import com.ninano.weto.src.wifi_search.WifiSearchActivity;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
+import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
+import static com.ninano.weto.src.ApplicationClass.SCHOOL_SELECT_MODE;
 import static com.ninano.weto.src.common.util.Util.getDistance;
 
 public class MapSelectActivity extends BaseActivity implements OnMapReadyCallback, MapSelectActivityView {
@@ -55,17 +58,20 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     private MapView mapView;
     private NaverMap naverMap;
 
-    private TextView mTextViewTitle, mTextViewLocationTitle, mTextViewLocationAddress;
+    private TextView mTextViewTitle, mTextViewLocationTitle, mTextViewLocationAddress, mTextViewFavoriteGuide;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
     private ArrayList<PathOverlay> pathOverlays = new ArrayList<>();
     private CircleOverlay mCircleOverlay = new CircleOverlay();
     private Double longitude, latitude;
-    private LinearLayout mLayoutWifi, mLayoutLocation;
+    private LinearLayout mLayoutWifi, mLayoutLocation, mLayoutFavoriteOther;
     private LocationResponse.Location mLocation;
     private MapSelectService mapSelectService;
     private Marker mMarker = new Marker();
+
+    private boolean isFavoritePlaceMode = false;
+    private int mFavoritePlaceCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +93,17 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mTextViewLocationTitle = findViewById(R.id.activity_map_select_layout_location_tv_title);
         mTextViewLocationAddress = findViewById(R.id.activity_map_select_layout_location_tv_address);
         mLayoutLocation = findViewById(R.id.activity_map_select_layout_location);
+        mLayoutFavoriteOther = findViewById(R.id.activity_map_select_layout_favorite_other);
+        mTextViewFavoriteGuide = findViewById(R.id.activity_map_select_tv_favorite_guide);
 
         mapView.getMapAsync(this);
         mapSelectService = new MapSelectService(this);
         zoomControlView = findViewById(R.id.zoom);
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        mLayoutFavoriteOther.setVisibility(View.GONE);
+        mLayoutFavoriteOther.setVisibility(View.GONE);
+
     }
 
     private void setSelectedLocation() {
@@ -104,6 +115,29 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
             naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
     }
+
+    private void setFavoritePlaceMode() {
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("isFavoritePlaceMode", false)) {
+            isFavoritePlaceMode = true;
+        }
+
+        if (intent.getBooleanExtra("homeMode", false)) {
+            mFavoritePlaceCode = HOME_SELECT_MODE;
+            mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_home_title));
+        } else if (intent.getBooleanExtra("companyMode", false)) {
+            mFavoritePlaceCode = COMPANY_SELECT_MODE;
+            mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_company_title));
+        } else if (intent.getBooleanExtra("schoolMode", false)) {
+            mFavoritePlaceCode = SCHOOL_SELECT_MODE;
+            mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_school_title));
+        }
+        else{
+            mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_other_title));
+        }
+        mLayoutFavoriteOther.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     protected void onStart() {
@@ -162,10 +196,30 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                 break;
             case R.id.activity_map_select_layout_location_btn:
                 Intent intent2 = new Intent();
-                intent2.putExtra("location", mLocation);
-                setResult(100, intent2);
-                finish();
-                break;
+                if (isFavoritePlaceMode) {
+                    if (mFavoritePlaceCode == HOME_SELECT_MODE || mFavoritePlaceCode == COMPANY_SELECT_MODE || mFavoritePlaceCode == SCHOOL_SELECT_MODE) {
+                        intent2.putExtra("location", mLocation);
+                        setResult(100, intent2);
+                        finish();
+                    } else {
+                        NameSelectDialog nameSelectDialog = new NameSelectDialog(this, new NameSelectDialog.NameSelectDialogClickListener() {
+                            @Override
+                            public void okClicked(String name) {
+                                Intent intent = new Intent();
+                                mLocation.setAddressName(name);
+                                intent.putExtra("location", mLocation);
+                                setResult(100, intent);
+                                finish();
+                            }
+                        });
+                        nameSelectDialog.show();
+                    }
+                } else {
+                    intent2.putExtra("location", mLocation);
+                    setResult(100, intent2);
+                    finish();
+                    break;
+                }
 
         }
     }
@@ -201,8 +255,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.VISIBLE);
 //        mLayoutWifi.setVisibility(View.GONE);
-        mTextViewTitle.setText(location.getPlaceName());
-        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+//        mTextViewTitle.setText(location.getPlaceName());
+//        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocationTitle.setText(location.getPlaceName());
         mTextViewLocationAddress.setText(location.getAddressName());
 
@@ -218,8 +272,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     private void setLocationWhenLongClick(LocationResponse.Location location) {
         mLayoutLocation.setVisibility(View.VISIBLE);
 //        mLayoutWifi.setVisibility(View.GONE);
-        mTextViewTitle.setText(location.getPlaceName());
-        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+//        mTextViewTitle.setText(location.getPlaceName());
+//        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
         mTextViewLocationTitle.setText(location.getPlaceName());
         mTextViewLocationAddress.setText(location.getAddressName());
 
@@ -236,8 +290,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         naverMap.setCameraPosition(cameraPosition);
         mLayoutLocation.setVisibility(View.GONE);
 //        mLayoutWifi.setVisibility(View.VISIBLE);
-        mTextViewTitle.setText(location.getPlaceName());
-        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+//        mTextViewTitle.setText(location.getPlaceName());
+//        mTextViewTitle.setTextColor(getResources().getColor(R.color.colorBlack));
 
         mMarker.setMap(null);
         mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
@@ -287,6 +341,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         zoomControlView.setMap(naverMap);
 
         setSelectedLocation();
+        setFavoritePlaceMode();
         naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(int i, boolean b) {
