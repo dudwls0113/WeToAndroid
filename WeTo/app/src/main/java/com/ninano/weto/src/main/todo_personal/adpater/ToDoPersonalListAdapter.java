@@ -63,6 +63,8 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
         void editClick(int pos);
 
         void onStartDrag(CustomViewHolder holder);
+
+        void doneClick(int pos);
     }
 
     @NonNull
@@ -146,6 +148,136 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
                 return false;
             }
         });
+        if (mData.get(position).getStatus().equals("ACTIVATE")){
+            switch (mData.get(position).getIcon()){
+                case 1:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
+                    break;
+                case 2:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_2);
+                    break;
+                case 3:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_3);
+                    break;
+                case 4:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_4);
+                    break;
+                case 5:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_5);
+                    break;
+                case 6:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_6);
+                    break;
+                case 7:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_7);
+                    break;
+                case 8:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_8);
+                    break;
+                case 9:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_9);
+                    break;
+                case 10:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_10);
+                    break;
+                case 11:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_11);
+                    break;
+                case 12:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_12);
+                    break;
+                case 13:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_13);
+                    break;
+            }
+        } else if(mData.get(position).getStatus().equals("DONE")){
+            switch (mData.get(position).getIcon()){
+                case 1:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_1_on);
+                    break;
+                case 2:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_2_on);
+                    break;
+                case 3:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_3_on);
+                    break;
+                case 4:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_4_on);
+                    break;
+                case 5:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_5_on);
+                    break;
+                case 6:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_6_on);
+                    break;
+                case 7:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_7_on);
+                    break;
+                case 8:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_8_on);
+                    break;
+                case 9:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_9_on);
+                    break;
+                case 10:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_10_on);
+                    break;
+                case 11:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_11_on);
+                    break;
+                case 12:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_12_on);
+                    break;
+                case 13:
+                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_13_on);
+                    break;
+            }
+        }
+        if (mData.get(position).getIsImportant() == 'Y'){
+            switch (mData.get(position).getIcon()){
+                case 1:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup1));
+                    break;
+                case 2:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup2));
+                    break;
+                case 3:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup3));
+                    break;
+                case 4:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup4));
+                    break;
+                case 5:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup5));
+                    break;
+                case 6:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup6));
+                    break;
+                case 7:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup7));
+                    break;
+                case 8:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup8));
+                    break;
+                case 9:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup9));
+                    break;
+                case 10:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup10));
+                    break;
+                case 11:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup11));
+                    break;
+                case 12:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup12));
+                    break;
+                case 13:
+                    holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorGroup13));
+                    break;
+            }
+        } else {
+            holder.mTextViewTitle.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
+        }
     }
 
     @Override
@@ -162,6 +294,12 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageViewIcon = itemView.findViewById(R.id.list_todo_personal_iv_icon);
+            mImageViewIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickLIstener.doneClick(getAdapterPosition());
+                }
+            });
             mImageViewType = itemView.findViewById(R.id.list_todo_personal_iv_type);
             mImageViewEdit = itemView.findViewById(R.id.list_todo_personal_iv_edit);
             mTextViewTitle = itemView.findViewById(R.id.list_todo_personal_tv_title);

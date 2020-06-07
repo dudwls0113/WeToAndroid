@@ -36,7 +36,6 @@ public class ToDoPersonalItemTouchHelperCallback extends ItemTouchHelper.Callbac
     public interface OnItemMoveListener{
         void onItemMove(int fromPosition, int toPosition);
         void onItemSwipe(int position);
-        void onRemoveClick(int position, RecyclerView.ViewHolder viewHolder);
     }
 
     @Override

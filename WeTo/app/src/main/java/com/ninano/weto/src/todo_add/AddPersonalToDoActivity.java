@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -79,7 +80,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     //공통
     private EditText mEditTextTitle, mEditTextMemo;
-    private int mIcon;
+    private ImageView mImageViewIcon;
+    private int mIcon = -1;
     private Switch mSwitchTime, mSwitchGps;
     private boolean isSwitchTime, isSwitchGps;
     private char mImportantMode = 'N';
@@ -238,6 +240,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void init() {
+        mImageViewIcon = findViewById(R.id.add_personal_todo_iv_icon);
+
         mTextViewTimeNoRepeat = findViewById(R.id.add_personal_todo_tv_no_repeat);
         mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
         mTextViewTimeWeekRepeat = findViewById(R.id.add_personal_todo_tv_week_repeat);
@@ -679,6 +683,58 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
                 break;
             case R.id.add_personal_todo_iv_icon: // 아이콘 선택버튼
+                PersonalToDoIconDialog personalToDoIconDialog = new PersonalToDoIconDialog(mContext, new PersonalToDoIconDialog.SelectClickListener() {
+                    @Override
+                    public void selectClick(int iconNum) {
+                        mIcon = iconNum;
+                        changeIcon(mIcon);
+                    }
+                });
+                personalToDoIconDialog.show();
+                break;
+        }
+    }
+
+    void changeIcon(int iconNum){
+        switch (iconNum){
+            case 1:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
+                break;
+            case 2:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_2);
+                break;
+            case 3:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_3);
+                break;
+            case 4:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_4);
+                break;
+            case 5:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_5);
+                break;
+            case 6:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_6);
+                break;
+            case 7:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_7);
+                break;
+            case 8:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_8);
+                break;
+            case 9:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_9);
+                break;
+            case 10:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_10);
+                break;
+            case 11:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_11);
+                break;
+            case 12:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_12);
+                break;
+            case 13:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_13);
                 break;
         }
     }
@@ -836,6 +892,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     boolean validateBeforeAdd() {
+        if (mIcon==-1){
+            showSnackBar(mEditTextTitle, "아이콘을 선택해주세요.");
+        }
         if (mEditTextTitle.getText().length() < 1) {
             showSnackBar(mEditTextTitle, "내용을 입력해 주세요");
             return false;
