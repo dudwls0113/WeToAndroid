@@ -19,6 +19,12 @@ public class FavoriteLocation {
 
     private boolean isConfirmed;
 
+    private boolean isWiFi;
+
+    private String ssid;
+
+    private String wifiName;
+
     @Ignore
     private boolean isSelected;
     @Ignore
@@ -31,7 +37,21 @@ public class FavoriteLocation {
         this.isSelected = false;
         this.isLast = false;
         this.isConfirmed = true;
+        this.isWiFi = false;
     }
+
+    public FavoriteLocation(String name, double latitude, double longitude, String wifiName, String ssid) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isSelected = false;
+        this.isLast = false;
+        this.isConfirmed = true;
+        this.wifiName = wifiName;
+        this.ssid = ssid;
+        this.isWiFi = true;
+    }
+
 
     public FavoriteLocation(String name) {
         //맨처음 집,학교,회사
@@ -41,6 +61,7 @@ public class FavoriteLocation {
         this.isSelected = false;
         this.isLast = false;
         this.isConfirmed = false;
+        this.isWiFi = false;
     }
 
     public FavoriteLocation() {
@@ -51,6 +72,7 @@ public class FavoriteLocation {
         this.isSelected = false;
         this.isLast = true;
         this.isConfirmed = true;
+        this.isWiFi = false;
     }
 
     public void setPlaceConfirm(double latitude, double longitude) {
@@ -113,6 +135,30 @@ public class FavoriteLocation {
 
     public void setConfirmed(boolean confirmed) {
         isConfirmed = confirmed;
+    }
+
+    public boolean isWiFi(){
+        return isWiFi;
+    }
+
+    public void setWiFi(boolean wiFi) {
+        isWiFi = wiFi;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public String getWifiName() {
+        return wifiName;
+    }
+
+    public void setWifiName(String wifiName) {
+        this.wifiName = wifiName;
     }
 
     @NonNull

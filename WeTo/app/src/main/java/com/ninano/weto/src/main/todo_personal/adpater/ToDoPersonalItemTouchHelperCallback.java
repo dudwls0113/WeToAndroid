@@ -15,9 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ninano.weto.R;
 
+enum ButtonState{
+    GONE,
+    LEFT_VISIBLE,
+    RIGHT_VISIBLE
+}
+
 public class ToDoPersonalItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final OnItemMoveListener mItemMoveListener;
+    private boolean swipeBack = false;
+    private ButtonState buttonShowedState = ButtonState.GONE;
     private Context mContext;
 
     public ToDoPersonalItemTouchHelperCallback(OnItemMoveListener onItemMoveListener, Context context){
@@ -28,6 +36,7 @@ public class ToDoPersonalItemTouchHelperCallback extends ItemTouchHelper.Callbac
     public interface OnItemMoveListener{
         void onItemMove(int fromPosition, int toPosition);
         void onItemSwipe(int position);
+//        void onRemoveClick(int position, RecyclerView.ViewHolder viewHolder);
     }
 
     @Override

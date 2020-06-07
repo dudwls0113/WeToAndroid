@@ -48,6 +48,7 @@ import java.util.Objects;
 
 import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
+import static com.ninano.weto.src.ApplicationClass.OTHER_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.SCHOOL_SELECT_MODE;
 import static com.ninano.weto.src.common.util.Util.getDistance;
 
@@ -84,8 +85,24 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mLayoutWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
-                startActivityForResult(intent, 111);
+                if (isFavoritePlaceMode) {
+                    if (mFavoritePlaceCode == HOME_SELECT_MODE) {
+                        Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                        startActivityForResult(intent, HOME_SELECT_MODE);
+                    } else if (mFavoritePlaceCode == SCHOOL_SELECT_MODE) {
+                        Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                        startActivityForResult(intent, SCHOOL_SELECT_MODE);
+                    } else if (mFavoritePlaceCode == COMPANY_SELECT_MODE) {
+                        Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                        startActivityForResult(intent, COMPANY_SELECT_MODE);
+                    } else {
+                        Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                        startActivityForResult(intent, OTHER_SELECT_MODE);
+                    }
+                } else {
+                    Intent intent = new Intent(MapSelectActivity.this, WifiSearchActivity.class);
+                    startActivityForResult(intent, 111);
+                }
             }
         });
         mapView.onCreate(savedInstanceState);
@@ -131,8 +148,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         } else if (intent.getBooleanExtra("schoolMode", false)) {
             mFavoritePlaceCode = SCHOOL_SELECT_MODE;
             mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_school_title));
-        }
-        else{
+        } else {
             mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_other_title));
         }
         mLayoutFavoriteOther.setVisibility(View.VISIBLE);
@@ -225,7 +241,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 100) {
@@ -247,6 +263,52 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                 setResult(111, intent);
                 finish();
             }
+        }
+        //집,회사,학교 선택하는거라면 와아피아 선택된 후 바로 추가화면까지 이동
+        //다른 일정이라면 이름등록할 수 잇게하기 =
+        if (requestCode == HOME_SELECT_MODE) {
+            Intent intent = new Intent();
+            intent.putExtra("ssid", data.getStringExtra("ssid"));
+            intent.putExtra("bssid", data.getStringExtra("bssid"));
+            intent.putExtra("connected", data.getBooleanExtra("connected", false));
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("latitude", latitude);
+            setResult(333, intent);
+            finish();
+        } else if (requestCode == SCHOOL_SELECT_MODE) {
+            Intent intent = new Intent();
+            intent.putExtra("ssid", data.getStringExtra("ssid"));
+            intent.putExtra("bssid", data.getStringExtra("bssid"));
+            intent.putExtra("connected", data.getBooleanExtra("connected", false));
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("latitude", latitude);
+            setResult(333, intent);
+            finish();
+        } else if (requestCode == COMPANY_SELECT_MODE) {
+            Intent intent = new Intent();
+            intent.putExtra("ssid", data.getStringExtra("ssid"));
+            intent.putExtra("bssid", data.getStringExtra("bssid"));
+            intent.putExtra("connected", data.getBooleanExtra("connected", false));
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("latitude", latitude);
+            setResult(333, intent);
+            finish();
+        } else if (requestCode == OTHER_SELECT_MODE) {
+            NameSelectDialog nameSelectDialog = new NameSelectDialog(this, new NameSelectDialog.NameSelectDialogClickListener() {
+                @Override
+                public void okClicked(String name) {
+                    Intent intent = new Intent();
+                    intent.putExtra("ssid", data.getStringExtra("ssid"));
+                    intent.putExtra("bssid", data.getStringExtra("bssid"));
+                    intent.putExtra("connected", data.getBooleanExtra("connected", false));
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("latitude", latitude);
+                    intent.putExtra("favoriteName", name);
+                    setResult(333, intent);
+                    finish();
+                }
+            });
+            nameSelectDialog.show();
         }
     }
 

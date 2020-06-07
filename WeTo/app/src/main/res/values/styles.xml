@@ -19,6 +19,7 @@
 
     <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/colorGroup4</item>
+<!--        <item name="android:background">@drawable/bg_round_dialog</item>-->
     </style>
 
 </resources>

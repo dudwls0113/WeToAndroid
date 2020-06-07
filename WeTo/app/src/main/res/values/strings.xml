@@ -39,6 +39,9 @@
 
     <string name="todo_group_add_member">해당 멤버 선택하기</string>
 
+    <string name="todo_icon_select">아이콘 선택 - 수정하기</string>
+    <string name="select">선택하기</string>
+
 
     <string name="group_invite_deny">거절하기</string>
     <string name="group_invite_deny_title">정말 거절하시겠습니까?</string>

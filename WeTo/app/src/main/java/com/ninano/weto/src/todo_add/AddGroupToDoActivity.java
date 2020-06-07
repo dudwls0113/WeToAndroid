@@ -42,7 +42,7 @@ import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.DeviceBootReceiver;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
-import com.ninano.weto.src.receiver.AlarmBroadcastReceiver;
+import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
 import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.AddGroupToDoMemberAdapter;
 //import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
@@ -72,6 +72,7 @@ import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.NOREPEAT;
+import static com.ninano.weto.src.ApplicationClass.NO_DATA;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.WEEKREPEAT;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
@@ -273,7 +274,7 @@ public class AddGroupToDoActivity extends BaseActivity {
             case LOCATION:
                 ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
                         longitude, latitude, mLocationMode, mLadius,
-                        mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "");
+                        mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
                 break;
         }

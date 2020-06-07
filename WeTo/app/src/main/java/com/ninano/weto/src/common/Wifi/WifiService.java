@@ -1,4 +1,4 @@
-package com.ninano.weto.src;
+package com.ninano.weto.src.common.Wifi;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -46,19 +46,18 @@ public class WifiService extends JobService {
         try {
             List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)22).get();
             SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-            boolean isFirstWifiNoti = sf.getBoolean("firstWifiNoti", false);
-            if (!isFirstWifiNoti) {
-                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                final WifiInfo wifiInfo;
-                if (wifiManager != null) {
-                    wifiInfo = wifiManager.getConnectionInfo();
-                    if (wifiInfo != null && wifiInfo.getBSSID() != null) {
-                        for (int i = 0; i < toDoWithDataList.size(); i++) {
-                            if (wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())) {
-                                SharedPreferences.Editor editor = sf.edit();
-                                editor.putString("recentWifi", toDoWithDataList.get(i).getSsid());
-                                editor.putBoolean("firstWifiNoti", true);
-                                editor.apply();
+            String recentWifi = sf.getString("recentWifi","");
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            final WifiInfo wifiInfo;
+            if (wifiManager != null) {
+                wifiInfo = wifiManager.getConnectionInfo();
+                if (wifiInfo != null && wifiInfo.getBSSID() != null) {
+                    if (!wifiInfo.getBSSID().equals(recentWifi)){ // 현재연결와이파이와 recentWifi가 다르면 노티 보내야함
+                        SharedPreferences.Editor editor = sf.edit();
+                        editor.putString("recentWifi", wifiInfo.getBSSID());
+                        editor.apply();
+                        for(int i=0; i<toDoWithDataList.size(); i++){
+                            if(wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())){
                                 Intent notificationIntent = new Intent(this, MainActivity.class);
                                 notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -2,32 +2,22 @@ package com.ninano.weto.src.wifi_search;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.ninano.weto.R;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.CellularService;
-import com.ninano.weto.src.WifiService;
 import com.ninano.weto.src.wifi_search.adapter.WifiListAdapter;
 import com.ninano.weto.src.wifi_search.models.WifiData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class WifiSearchActivity extends BaseActivity {
 
