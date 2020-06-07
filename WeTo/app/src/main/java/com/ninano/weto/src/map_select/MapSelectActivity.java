@@ -137,6 +137,7 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         Intent intent = getIntent();
         if (intent.getBooleanExtra("isFavoritePlaceMode", false)) {
             isFavoritePlaceMode = true;
+            mLayoutFavoriteOther.setVisibility(View.VISIBLE);
         }
 
         if (intent.getBooleanExtra("homeMode", false)) {
@@ -151,7 +152,6 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         } else {
             mTextViewFavoriteGuide.setText(getString(R.string.favorite_place_other_title));
         }
-        mLayoutFavoriteOther.setVisibility(View.VISIBLE);
     }
 
 
@@ -434,7 +434,6 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
 
     @Override
     public void validateSuccess(AddressResponse.Address address) {
-        Log.d("좌표", mLocation.getLatitude() + mLocation.getLatitude());
         mLocation = new LocationResponse.Location(address.getNormalAddress().getAddressName(), address.getNormalAddress().getAddressName(), mLocation.getLongitude(), mLocation.getLatitude());
         setLocationWhenLongClick(mLocation);
     }
