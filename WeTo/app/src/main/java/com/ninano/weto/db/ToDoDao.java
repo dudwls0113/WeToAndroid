@@ -48,6 +48,10 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM FavoriteLocation")
     public abstract LiveData<List<FavoriteLocation>> getFavoriteLocation();
 
+    //활성중인 일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.type == 77 ORDER BY Todo.ordered")
+    public abstract LiveData<List<ToDoWithData>> getActivatedLocationTodoList();
+
     //종료된 일정조회
 //    @Query("SELECT todoNo, latitude, longitude, locationMode, radius FROM  ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
 //    public abstract LiveData<List<ToDoData>> getGpsTodo();

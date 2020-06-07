@@ -357,14 +357,14 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void setFavoritePlaceItem(int index) {
+        if (index == NO_DATA) {
+            return;
+        }
         if (!mFavoritePlaceList.get(index).isConfirmed()) {
             return;
         }
         for (int i = 0; i < mFavoritePlaceList.size(); i++) {
             mFavoritePlaceList.get(i).setSelected(false);
-        }
-        if (index == NO_DATA) {
-            return;
         }
         mFavoritePlaceList.get(index).setSelected(true);
         mLocation = new LocationResponse.Location("", mFavoritePlaceList.get(index).getName(), String.valueOf(mFavoritePlaceList.get(index).getLongitude()), String.valueOf(mFavoritePlaceList.get(index).getLatitude()));

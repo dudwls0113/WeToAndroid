@@ -236,7 +236,6 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
                     finish();
                     break;
                 }
-
         }
     }
 
