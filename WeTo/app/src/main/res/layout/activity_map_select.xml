@@ -111,6 +111,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/bg_round_dialog"
+                android:visibility="gone"
                 android:elevation="5dp"
                 android:orientation="horizontal">
 

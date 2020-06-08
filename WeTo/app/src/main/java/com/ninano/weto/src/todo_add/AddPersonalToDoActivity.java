@@ -400,14 +400,14 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void setFavoritePlaceItem(int index) {
+        if (index == NO_DATA) {
+            return;
+        }
         if (!mFavoritePlaceList.get(index).isConfirmed()) {
             return;
         }
         for (int i = 0; i < mFavoritePlaceList.size(); i++) {
             mFavoritePlaceList.get(i).setSelected(false);
-        }
-        if (index == NO_DATA) {
-            return;
         }
         mFavoritePlaceList.get(index).setSelected(true);
         mLocation = new LocationResponse.Location("", mFavoritePlaceList.get(index).getName(), String.valueOf(mFavoritePlaceList.get(index).getLongitude()), String.valueOf(mFavoritePlaceList.get(index).getLatitude()));
@@ -1176,7 +1176,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             double latitude = (double) objects[1];
             double longitude = (double) objects[2];
             int type = (int) objects[3];
-            if (objects[4] != null) { //와이파이 일 경우
+            if (objects.length > 4) { //와이파이 일 경우
                 favoriteLocation.setPlaceConfirm(latitude, longitude);
                 favoriteLocation.setWiFi(true);
                 favoriteLocation.setSsid((String) objects[4]);
