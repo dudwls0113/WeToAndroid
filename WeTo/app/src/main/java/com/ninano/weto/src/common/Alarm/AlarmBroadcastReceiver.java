@@ -46,7 +46,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat weekdayFormat = new SimpleDateFormat("EE", Locale.getDefault());
             String weekDay = weekdayFormat.format(currentTime);
-            Toast.makeText(context, weekDay, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, dayOfWeek, Toast.LENGTH_LONG).show();
             if (dayOfWeek.contains(weekDay)){
                 sendNotification(context, title, memo);
             }

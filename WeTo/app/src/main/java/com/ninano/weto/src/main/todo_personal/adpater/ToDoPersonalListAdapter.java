@@ -57,6 +57,18 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
         notifyItemRemoved(position);
     }
 
+    @Override
+    public void onLeftClick(int position, RecyclerView.ViewHolder viewHolder) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onRightClick(int position, RecyclerView.ViewHolder viewHolder) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public interface ItemClickListener{
         void itemClick(int pos);
 

@@ -263,7 +263,7 @@ public class ToDoWithData implements Serializable {
                 " locationName: " + locationName + " latitude: " + latitude + " longitude: " + longitude +
                 " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
                 " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay +
-                "date: " + date +  " time:" + time + "year: " + year + "month: " + month + "day: " + day + "hour: " + hour + "day: " + day +
+                "date: " + date +  " time:" + time + "year: " + year + "month: " + month + "day: " + day + "hour: " + hour + "minute: " + minute +
                 " isGroup: " + String.valueOf(isGroup) + "\n";
     }
 

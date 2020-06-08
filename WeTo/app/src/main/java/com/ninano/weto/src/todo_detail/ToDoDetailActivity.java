@@ -2,16 +2,22 @@ package com.ninano.weto.src.todo_detail;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ninano.weto.R;
+import com.ninano.weto.db.AppDatabase;
+import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
@@ -26,16 +32,23 @@ import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
+import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 
 public class ToDoDetailActivity extends BaseActivity {
+
+    private Context mContext;
     private ImageView mImageViewIcon;
     private TextView mTextViewTitle, mTextViewCategory, mTextViewCondition, mTextViewContent;
+    private Button mButtonModify, mButtonDelete, mButtonDone;
     private ToDoWithData mToDoWithData;
+    private AppDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_detail);
+        mContext = this;
+        mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
         Intent intent = getIntent();
         mToDoWithData = (ToDoWithData) intent.getSerializableExtra("todoData");
         initView();
@@ -47,6 +60,9 @@ public class ToDoDetailActivity extends BaseActivity {
         mTextViewCondition = findViewById(R.id.activity_todo_detail_tv_condition);
         mTextViewContent = findViewById(R.id.activity_todo_detail_tv_content);
         mImageViewIcon = findViewById(R.id.activity_todo_detail_iv_icon);
+        mButtonModify = findViewById(R.id.add_personal_todo_btn_modify);
+        mButtonDelete = findViewById(R.id.add_personal_todo_btn_delete);
+        mButtonDone = findViewById(R.id.add_personal_todo_btn_done);
         changeIcon(mToDoWithData.getIcon());
 
         mTextViewTitle.setText(mToDoWithData.getTitle());
@@ -168,8 +184,39 @@ public class ToDoDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_personal_todo_btn_done:
-
+                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mToDoWithData.getTodoNo());
                 break;
+            case R.id.add_personal_todo_btn_modify:
+                Intent intent = new Intent(mContext, AddPersonalToDoActivity.class);
+                intent.putExtra("isEditMode", true);
+                intent.putExtra("todoData", mToDoWithData);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.add_personal_todo_btn_delete:
+                break;
+        }
+    }
+
+    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        private ToDoDao mTodoDao;
+
+        UpdateDoneAsyncTask(ToDoDao mTodoDao) {
+            this.mTodoDao = mTodoDao;
+        }
+
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mDatabase.todoDao().updateStatusDone(integers[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            finish();
         }
     }
 

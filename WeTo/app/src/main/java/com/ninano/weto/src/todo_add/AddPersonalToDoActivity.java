@@ -106,7 +106,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private int mRepeatType;
     private boolean mIsDatePick, mIsTimePick;
     private int mYear = 0, mMonth = 0, mDay = 0, mHour = 0, mMinute = 0;
-    private String mRepeatDayOfWeek = "일,";
+    private String mRepeatDayOfWeek = "";
     private int mRepeatDay; // 매월 의 반복일 (1~31)
     private int mINTRepeatDayOfWeek = 1;
     private boolean[] selectedDayList = new boolean[7];
@@ -153,6 +153,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
             mToDoNo = mToDoWithData.getTodoNo();
             mToDoDataNo = mToDoWithData.getTodoDataNo();
 
+            changeIcon(mToDoWithData.getIcon());
+            mIcon = mToDoWithData.getIcon();
             mEditTextTitle.setText(mToDoWithData.getTitle());
             mEditTextMemo.setText(mToDoWithData.getContent());
 
@@ -166,17 +168,57 @@ public class AddPersonalToDoActivity extends BaseActivity {
                     mIsLocationSelected = false;
 
                     switch (mToDoWithData.getRepeatType()) {
-                        case ALL_DAY:
-                            setRepeatTimeView(mTextViewTimeNoRepeat);
-                            break;
-                        case WEEK_DAY:
+                        case ALL_DAY: // 매일
+                            mFrameHiddenTimeDate.setVisibility(View.GONE);
+                            mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                            mRepeatType = ALL_DAY;
+                            mTextViewTime.setText(mToDoWithData.getTime());
+                            mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
+                            mIsTimePick = true;
+                            mHour = mToDoWithData.getHour();
+                            mMinute = mToDoWithData.getMinute();
                             setRepeatTimeView(mTextViewTimeDayRepeat);
                             break;
-                        case MONTH_DAY:
+                        case WEEK_DAY: // 매주
+                            mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeDate.setVisibility(View.GONE);
+                            mLinearHiddenTimeWeekRepeat.setVisibility(View.VISIBLE);
+                            mRepeatType = WEEK_DAY;
+                            mRepeatDayOfWeek = mToDoWithData.getRepeatDayOfWeek();
+                            findRepeatDayOfWeek(mRepeatDayOfWeek);
+                            mRepeatDayOfWeek=""; // 확인버튼누를때 다시 확인함
+                            mTextViewTime.setText(mToDoWithData.getTime());
+                            mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
+                            mIsTimePick = true;
+                            mHour = mToDoWithData.getHour();
+                            mMinute = mToDoWithData.getMinute();
                             setRepeatTimeView(mTextViewTimeWeekRepeat);
                             break;
-                        case ONE_DAY:
+                        case MONTH_DAY: // 매월
+                            mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                            mRepeatType = MONTH_DAY;
                             setRepeatTimeView(mTextViewTimeMonthRepeat);
+                            break;
+                        case ONE_DAY: // 반복안함
+                            mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                            mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                            mRepeatType = ONE_DAY;
+                            mTextViewDate.setText(mToDoWithData.getDate());
+                            mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
+                            mTextViewTime.setText(mToDoWithData.getTime());
+                            mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
+                            mIsDatePick = true;
+                            mYear = mToDoWithData.getYear();
+                            mMonth = mToDoWithData.getMonth();
+                            mDay = mToDoWithData.getDay();
+                            mIsTimePick = true;
+                            mHour = mToDoWithData.getHour();
+                            mMinute = mToDoWithData.getMinute();
+                            setRepeatTimeView(mTextViewTimeNoRepeat);
                             break;
                     }
                     break;
@@ -349,9 +391,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
 //        mWifiMode = 'Y';
         mLadius = GPS_LADIUS;
 
-        mTextViewSun.setSelected(true);
-        selectedDayList[0] = true;
-
         /* Set Constant */
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -463,7 +502,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 finish();
 //                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-                changeRepeatDayOfWeek();
+//                changeRepeatDayOfWeek();
                 getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
                 finish();
             } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
@@ -529,7 +568,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 finish();
 //                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-                changeRepeatDayOfWeek();
+//                changeRepeatDayOfWeek();
                 getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
                 finish();
             } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
@@ -748,6 +787,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             case R.id.add_personal_todo_btn_done:
                 //추가버튼
                 if (validateBeforeAdd()) {
+                    changeRepeatDayOfWeek();
                     if (isEditMode) {
                         updateToRoomDB();
                     } else {
@@ -967,6 +1007,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     boolean validateBeforeAdd() {
         if (mIcon==-1){
             showSnackBar(mEditTextTitle, "아이콘을 선택해주세요.");
+            return false;
         }
         if (mEditTextTitle.getText().length() < 1) {
             showSnackBar(mEditTextTitle, "내용을 입력해 주세요");
@@ -992,6 +1033,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
 
             } else if (mRepeatType == WEEK_DAY) {
+                if(!validateRepeatDayOfWeek(selectedDayList)){
+                    showSnackBar(mEditTextTitle, "반복요일을 선택해주세요");
+                    return false;
+                }
                 if (!mIsTimePick) {
                     showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
                     return false;
@@ -1154,6 +1199,53 @@ public class AddPersonalToDoActivity extends BaseActivity {
             } else if (integer == COMPANY_SELECT_MODE) {
                 mFavoriteSelectedIndex = 2;
             }
+        }
+    }
+
+    private boolean validateRepeatDayOfWeek(boolean[] list){
+        for(int i=0; i<list.length; i++){
+            if(list[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void findRepeatDayOfWeek(String repeatDayOfWeek){
+        if(repeatDayOfWeek.contains("일")){
+            selectedDayList[0] = true;
+            mTextViewSun.setSelected(true);
+            setVineOnMode(mTextViewSun);
+        }
+        if(repeatDayOfWeek.contains("월")){
+            selectedDayList[1] = true;
+            mTextViewMon.setSelected(true);
+            setVineOnMode(mTextViewMon);
+        }
+        if(repeatDayOfWeek.contains("화")){
+            selectedDayList[2] = true;
+            mTextViewTue.setSelected(true);
+            setVineOnMode(mTextViewTue);
+        }
+        if(repeatDayOfWeek.contains("수")){
+            selectedDayList[3] = true;
+            mTextViewWed.setSelected(true);
+            setVineOnMode(mTextViewWed);
+        }
+        if(repeatDayOfWeek.contains("목")){
+            selectedDayList[4] = true;
+            mTextViewThu.setSelected(true);
+            setVineOnMode(mTextViewThu);
+        }
+        if(repeatDayOfWeek.contains("금")){
+            selectedDayList[5] = true;
+            mTextViewFri.setSelected(true);
+            setVineOnMode(mTextViewFri);
+        }
+        if(repeatDayOfWeek.contains("토")){
+            selectedDayList[6] = true;
+            mTextViewSat.setSelected(true);
+            setVineOnMode(mTextViewSat);
         }
     }
 

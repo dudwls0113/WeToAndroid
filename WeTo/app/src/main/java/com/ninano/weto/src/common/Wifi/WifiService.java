@@ -1,5 +1,6 @@
 package com.ninano.weto.src.common.Wifi;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +25,8 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.main.MainActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -58,42 +61,45 @@ public class WifiService extends JobService {
                         editor.apply();
                         for(int i=0; i<toDoWithDataList.size(); i++){
                             if(wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())){
-                                Intent notificationIntent = new Intent(this, MainActivity.class);
-                                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                //타임슬롯 확인
+                                if(compareTimeSlot(toDoWithDataList.get(i).getTimeSlot())){
+                                    Intent notificationIntent = new Intent(this, MainActivity.class);
+                                    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                                final String CHANNEL_ID = "채널ID";
-                                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                                    final String CHANNEL_ID = "채널ID";
+                                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    final String CHANNEL_NAME = "채널이름";
-                                    final String CHANNEL_DESCRIPTION = "채널 Description";
-                                    final int importance = NotificationManager.IMPORTANCE_HIGH;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        final String CHANNEL_NAME = "채널이름";
+                                        final String CHANNEL_DESCRIPTION = "채널 Description";
+                                        final int importance = NotificationManager.IMPORTANCE_HIGH;
 
-                                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-                                    mChannel.setDescription(CHANNEL_DESCRIPTION);
-                                    mChannel.enableLights(true);
-                                    mChannel.enableVibration(true);
-                                    mChannel.setVibrationPattern(new long[]{100, 200, 100, 200});
-                                    mChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-                                    if (notificationManager != null) {
-                                        notificationManager.createNotificationChannel(mChannel);
+                                        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
+                                        mChannel.setDescription(CHANNEL_DESCRIPTION);
+                                        mChannel.enableLights(true);
+                                        mChannel.enableVibration(true);
+                                        mChannel.setVibrationPattern(new long[]{100, 200, 100, 200});
+                                        mChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+                                        if (notificationManager != null) {
+                                            notificationManager.createNotificationChannel(mChannel);
+                                        }
                                     }
-                                }
 
 
-                                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-                                builder.setSmallIcon(R.mipmap.ic_launcher);
-                                builder.setWhen(System.currentTimeMillis());
-                                builder.setContentTitle(toDoWithDataList.get(i).getTitle());
-                                builder.setContentText(toDoWithDataList.get(i).getContent());
-                                builder.setContentIntent(pendingIntent);
-                                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                                builder.setAutoCancel(true);
-                                if (notificationManager != null) {
-                                    notificationManager.notify(1, builder.build());
+                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+                                    builder.setSmallIcon(R.mipmap.ic_launcher);
+                                    builder.setWhen(System.currentTimeMillis());
+                                    builder.setContentTitle(toDoWithDataList.get(i).getTitle());
+                                    builder.setContentText(toDoWithDataList.get(i).getContent());
+                                    builder.setContentIntent(pendingIntent);
+                                    builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                                    builder.setAutoCancel(true);
+                                    if (notificationManager != null) {
+                                        notificationManager.notify(1, builder.build());
+                                    }
+                                    jobFinished(jobParameters, false);
                                 }
-                                jobFinished(jobParameters, false);
                             }
                         }
                     }
@@ -197,6 +203,26 @@ public class WifiService extends JobService {
         protected List<ToDoWithData> doInBackground(Character... characters) {
             List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int)characters[1]);
             return toDoWithData;
+        }
+    }
+
+    private boolean compareTimeSlot(int timeSlot){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfNow = new SimpleDateFormat("HH");
+        String hour = sdfNow.format(date);
+        int currentHour = Integer.parseInt(hour);
+        System.out.println("시간: " + currentHour);
+        if (timeSlot==100){
+            return true;
+        } else if(timeSlot==200){
+            return currentHour >= 6 && currentHour < 12;
+        } else if(timeSlot==300){
+            return currentHour >= 12 && currentHour < 21;
+        } else if(timeSlot==400){
+            return currentHour >= 21 && currentHour < 24 || currentHour>=0 && currentHour<6;
+        } else {
+            return false;
         }
     }
 }

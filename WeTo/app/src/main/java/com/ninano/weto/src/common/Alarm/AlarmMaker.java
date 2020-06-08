@@ -83,9 +83,10 @@ public class AlarmMaker {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
 
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DATE, 1);
-            }
+            // 특정날은 이미 지나간 시간이면 선택 안되게
+//            if (calendar.before(Calendar.getInstance())) {
+//                calendar.add(Calendar.DATE, 1);
+//            }
 
             System.out.println("특정 알람 시간: " + calendar.getTime().toString() + ", " + calendar.getTimeInMillis());
             PackageManager pm = getApplicationClassContext().getPackageManager();
