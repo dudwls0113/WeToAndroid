@@ -1278,7 +1278,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
             }
         }
 
-        mRepeatDayOfWeek = mRepeatDayOfWeek.substring(0, mRepeatDayOfWeek.length() - 1);
+        if(mRepeatDayOfWeek.length()>1){
+            mRepeatDayOfWeek = mRepeatDayOfWeek.substring(0, mRepeatDayOfWeek.length() - 1);
+        }
     }
 
 

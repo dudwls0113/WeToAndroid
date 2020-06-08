@@ -20,8 +20,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="21dp"
-            android:background="#effbe7" />
+            android:layout_marginEnd="21dp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -57,6 +56,9 @@
 
                 <TextView
                     android:id="@+id/list_todo_personal_tv_subtitle"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

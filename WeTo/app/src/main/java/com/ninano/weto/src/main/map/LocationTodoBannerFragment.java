@@ -84,6 +84,7 @@ public class LocationTodoBannerFragment extends BaseFragment {
     @Override
     public void setComponentView(View v) {
         mImageViewIcon = v.findViewById(R.id.list_todo_personal_iv_icon);
+        changeIcon(toDoWithData.getIcon());
         mImageViewNextArrow = v.findViewById(R.id.list_todo_personal_iv_arrow);
         mTextViewTitle = v.findViewById(R.id.list_todo_personal_tv_title);
         mTextViewContent = v.findViewById(R.id.list_todo_personal_tv_subtitle);
@@ -156,5 +157,49 @@ public class LocationTodoBannerFragment extends BaseFragment {
                 break;
         }
         mTextViewContent.setText(condition);
+    }
+
+    void changeIcon(int iconNum){
+        switch (iconNum){
+            case 1:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
+                break;
+            case 2:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_2);
+                break;
+            case 3:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_3);
+                break;
+            case 4:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_4);
+                break;
+            case 5:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_5);
+                break;
+            case 6:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_6);
+                break;
+            case 7:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_7);
+                break;
+            case 8:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_8);
+                break;
+            case 9:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_9);
+                break;
+            case 10:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_10);
+                break;
+            case 11:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_11);
+                break;
+            case 12:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_12);
+                break;
+            case 13:
+                mImageViewIcon.setImageResource(R.drawable.personal_icon_13);
+                break;
+        }
     }
 }
