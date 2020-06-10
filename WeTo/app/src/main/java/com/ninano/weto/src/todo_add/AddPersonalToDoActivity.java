@@ -93,6 +93,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private Context mContext;
 
     //공통
+    private TextView mTextViewTitle;
     private EditText mEditTextTitle, mEditTextMemo;
     private ImageView mImageViewIcon;
     private int mIcon = -1;
@@ -169,6 +170,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             mEditTextTitle.setText(mToDoWithData.getTitle());
             mEditTextMemo.setText(mToDoWithData.getContent());
 
+            mTextViewTitle.setText("수정하기");
             mDoneBtn.setText("수정하기");
             switch (mToDoWithData.getType()) {
                 case TIME:
@@ -301,6 +303,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
     void init() {
         mImageViewIcon = findViewById(R.id.add_personal_todo_iv_icon);
+        mTextViewTitle = findViewById(R.id.add_personal_todo_tv_title);
 
         mTextViewTimeNoRepeat = findViewById(R.id.add_personal_todo_tv_no_repeat);
         mTextViewTimeDayRepeat = findViewById(R.id.add_personal_todo_tv_day_repeat);
