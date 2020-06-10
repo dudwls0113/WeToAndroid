@@ -87,10 +87,9 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
     private class DbAsyncTask extends AsyncTask<Integer, Void, List<ToDoWithData>> {
-        private ToDoDao mTodoDao;
 
         DbAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
+
         }
 
         @Override

@@ -178,7 +178,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                 } else if(mTodoList.get(pos).getType()==LOCATION){
 
                 }
-                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos).getTodoNo(), mTodoList.get(pos).getTodoDataNo(), 0);
+                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos));
             }
         });
 
@@ -297,7 +297,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         });
     }
 
-    private class DeleteToDoAsyncTask extends AsyncTask<Integer, Void, Integer>{
+    private class DeleteToDoAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData>{
 
         private ToDoDao mTodoDao;
 
@@ -306,19 +306,19 @@ public class ToDoPersonalFragment extends BaseFragment {
         }
 
         @Override
-        protected Integer doInBackground(Integer... integers) {
-            mDatabase.todoDao().deleteToDo(integers[0]);
-            mDatabase.todoDao().deleteToDoData(integers[1]);
-            return integers[2];
+        protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
+            mDatabase.todoDao().deleteToDo(toDoWithData[0].getTodoNo());
+            mDatabase.todoDao().deleteToDoData(toDoWithData[0].getTodoDataNo());
+            return toDoWithData[0];
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (integer==0){ // ACTIVATE 리스트
+        protected void onPostExecute(ToDoWithData toDoWithData) {
+            super.onPostExecute(toDoWithData);
+            if (toDoWithData.getStatus().equals("ACTIVATE")){ // ACTIVATE 리스트
                 mTodoList.remove(mDeletePosition);
                 mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
-            } else if (integer==1){ // DONE 리스트
+            } else if (toDoWithData.getStatus().equals("DONE")){ // DONE 리스트
 
             }
 

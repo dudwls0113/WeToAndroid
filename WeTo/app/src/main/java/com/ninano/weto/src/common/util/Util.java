@@ -89,7 +89,6 @@ public class Util {
         Intent notificationIntent = new Intent(getApplicationClassContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationClassContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationManager notificationManager = (NotificationManager) getApplicationClassContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -107,6 +106,7 @@ public class Util {
                 notificationManager.createNotificationChannel(mChannel);
             }
         }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationClassContext(), CHANNEL_ID);
         builder.setSmallIcon(R.drawable.app_icon);
         builder.setWhen(System.currentTimeMillis());
