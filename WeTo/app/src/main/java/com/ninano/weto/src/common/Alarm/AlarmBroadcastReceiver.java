@@ -7,57 +7,75 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
 import com.ninano.weto.R;
+import com.ninano.weto.db.AppDatabase;
+import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.src.main.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+
+import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
+
+    AppDatabase mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
+
     @Override
     public void onReceive(Context context, Intent intent) {
         int alarmIdx = intent.getIntExtra("alarmIndex", -1);
         if (alarmIdx == -1){
             return;
         }
-        String title = intent.getStringExtra("title");
-        String memo = intent.getStringExtra("memo");
 
-        int repeatType = intent.getIntExtra("repeatType", -1); // 1: 매일, 2: 매주, 3: 매월, 4: 특정일
-        if (repeatType==-1){
-            return;
-        }
-        if (repeatType==1){
-            sendNotification(context, title, memo);
-        }
-        else if(repeatType==2){
-            String dayOfWeek = "";
-            dayOfWeek = intent.getStringExtra("repeatDayOfWeek");
-            if (dayOfWeek.equals("")){
-                return;
-            }
-            Date currentTime = Calendar.getInstance().getTime();
-            SimpleDateFormat weekdayFormat = new SimpleDateFormat("EE", Locale.getDefault());
-            String weekDay = weekdayFormat.format(currentTime);
-            Toast.makeText(context, dayOfWeek, Toast.LENGTH_LONG).show();
-            if (dayOfWeek.contains(weekDay)){
-                sendNotification(context, title, memo);
-            }
-        }
-        else if(repeatType==3){
+        try {
+            int count = new AlarmValidateAsync(mDatabase.todoDao()).execute(alarmIdx).get();
+            if(count>0){
+                String title = intent.getStringExtra("title");
+                String memo = intent.getStringExtra("memo");
 
+                int repeatType = intent.getIntExtra("repeatType", -1); // 1: 매일, 2: 매주, 3: 매월, 4: 특정일
+                if (repeatType==-1){
+                    return;
+                }
+                if (repeatType==1){
+                    sendNotification(context, title, memo);
+                }
+                else if(repeatType==2){
+                    String dayOfWeek = "";
+                    dayOfWeek = intent.getStringExtra("repeatDayOfWeek");
+                    if (dayOfWeek.equals("")){
+                        return;
+                    }
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat weekdayFormat = new SimpleDateFormat("EE", Locale.getDefault());
+                    String weekDay = weekdayFormat.format(currentTime);
+//                    Toast.makeText(context, dayOfWeek, Toast.LENGTH_LONG).show();
+                    if (dayOfWeek.contains(weekDay)){
+                        sendNotification(context, title, memo);
+                    }
+                }
+                else if(repeatType==3){
+
+                }
+                else if (repeatType == 4) {
+                    sendNotification(context, title, memo);
+                    // 특정일의 경우 반복이 없으므로 여기서 완료로 수정???
+                }
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
         }
-        else if (repeatType == 4) {
-            sendNotification(context, title, memo);
-            // 특정일의 경우 반복이 없으므로 여기서 완료로 수정???
-        }
+
     }
 
     void sendNotification(Context context, String title, String memo){
@@ -86,7 +104,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.app_icon);
         builder.setWhen(System.currentTimeMillis());
         builder.setContentTitle(title);
         builder.setContentText(memo);
@@ -95,6 +113,21 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         if (notificationManager != null) {
             notificationManager.notify(3, builder.build());
+        }
+    }
+
+    private class AlarmValidateAsync extends AsyncTask<Integer, Void, Integer>{
+
+        private ToDoDao mTodoDao;
+
+        AlarmValidateAsync(ToDoDao mTodoDao){
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... integers) {
+            Integer count = mDatabase.todoDao().getTodoWithAlarmCount(integers[0]);
+            return count;
         }
     }
 }

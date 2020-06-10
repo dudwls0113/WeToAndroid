@@ -32,6 +32,10 @@ public abstract class ToDoDao {
     @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode AND Todo.status = 'ACTIVATE'")
     public abstract int getTodoWithWifiCount(char isWifi, int locationMode);
 
+    //존재하는 알람인지 확인
+    @Query("SELECT count(*) FROM ToDo WHERE todoNo = :todoNo AND status = 'ACTIVATE'")
+    public abstract int getTodoWithAlarmCount(int todoNo);
+
     //활성중인 일정조회
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getActivatedTodoList();

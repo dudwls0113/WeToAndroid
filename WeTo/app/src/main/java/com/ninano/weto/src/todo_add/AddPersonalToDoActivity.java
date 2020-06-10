@@ -80,6 +80,7 @@ import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.main.MainActivity.FINISH_INTERVAL_TIME;
 
 public class AddPersonalToDoActivity extends BaseActivity {
 
@@ -135,6 +136,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
     private boolean isEditMode = false;
     private ToDoWithData mToDoWithData;
     private int mToDoDataNo;
+
+    //중복클릭 방지
+    private long backPressedTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -786,12 +791,17 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 break;
             case R.id.add_personal_todo_btn_done:
                 //추가버튼
-                if (validateBeforeAdd()) {
-                    changeRepeatDayOfWeek();
-                    if (isEditMode) {
-                        updateToRoomDB();
-                    } else {
-                        insertToRoomDB();
+                long tempTime = System.currentTimeMillis();
+                long intervalTime = tempTime - backPressedTime;
+                backPressedTime = tempTime;
+                if(intervalTime>FINISH_INTERVAL_TIME){
+                    if (validateBeforeAdd()) {
+                        changeRepeatDayOfWeek();
+                        if (isEditMode) {
+                            updateToRoomDB();
+                        } else {
+                            insertToRoomDB();
+                        }
                     }
                 }
                 break;

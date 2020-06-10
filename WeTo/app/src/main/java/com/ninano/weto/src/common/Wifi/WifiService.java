@@ -34,6 +34,8 @@ import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
+import static com.ninano.weto.src.common.util.Util.getLocationNotificationContent;
+import static com.ninano.weto.src.common.util.Util.getWifiNotificationContent;
 import static com.ninano.weto.src.common.util.Util.sendNotification;
 
 public class WifiService extends JobService {
@@ -65,7 +67,7 @@ public class WifiService extends JobService {
                             if (wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())) {
                                 //타임슬롯 확인
                                 if (compareTimeSlot(toDoWithDataList.get(i).getTimeSlot())) {
-                                    sendNotification(toDoWithDataList.get(i).getTitle(), toDoWithDataList.get(i).getContent());
+                                    sendNotification(getWifiNotificationContent(toDoWithDataList.get(i)), toDoWithDataList.get(i).getContent());
                                     jobFinished(jobParameters, false);
                                 }
                             }

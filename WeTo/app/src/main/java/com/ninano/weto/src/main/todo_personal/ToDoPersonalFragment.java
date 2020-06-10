@@ -113,22 +113,24 @@ public class ToDoPersonalFragment extends BaseFragment {
         mFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isSearchMode) {
-                    mFrameLayout.setBackgroundResource(R.drawable.bg_round_edit);
-                    mImageViewSearch.setVisibility(View.GONE);
-                    mEditTextSearch.setVisibility(View.VISIBLE);
-                    mImageViewXCircle.setVisibility(View.VISIBLE);
-                    mEditTextSearch.requestFocus();
-                    isSearchMode = true;
-                }
+                showCustomToast(mContext, "준비중입니다.");
+//                if (!isSearchMode) {
+//                    mFrameLayout.setBackgroundResource(R.drawable.bg_round_edit);
+//                    mImageViewSearch.setVisibility(View.GONE);
+//                    mEditTextSearch.setVisibility(View.VISIBLE);
+//                    mImageViewXCircle.setVisibility(View.VISIBLE);
+//                    mEditTextSearch.requestFocus();
+//                    isSearchMode = true;
+//                }
             }
         });
 
         mImageViewSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, TestActivity.class);
-                startActivity(intent);
+                showCustomToast(mContext, "준비중입니다.");
+//                Intent intent = new Intent(mContext, TestActivity.class);
+//                startActivity(intent);
             }
         });
 

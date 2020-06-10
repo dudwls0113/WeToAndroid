@@ -80,7 +80,17 @@ public class Util {
         } else if (toDoWithData.getLocationMode() == AT_START) {
             return (toDoWithData.getLocationName() + "에서 출발하였습니다");
         } else {
-            return (toDoWithData.getLocationName() + "을(를) 지나치고 있습니");
+            return (toDoWithData.getLocationName() + "을(를) 지나치고 있습니다");
+        }
+    }
+
+    public static String getWifiNotificationContent(ToDoWithData toDoWithData) {
+        if (toDoWithData.getLocationMode() == AT_ARRIVE) {
+            return (toDoWithData.getLocationName() + "에 연결되었습니다");
+        } else if (toDoWithData.getLocationMode() == AT_START) {
+            return (toDoWithData.getLocationName() + "에서 연결해제되었습니다.");
+        } else {
+            return (toDoWithData.getLocationName() + "을(를) 지나치고 있습니다");
         }
     }
 
