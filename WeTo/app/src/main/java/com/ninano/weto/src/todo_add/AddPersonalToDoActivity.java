@@ -9,12 +9,8 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,8 +26,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.OptionsPickerView;
+import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
@@ -42,12 +44,10 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.DeviceBootReceiver;
+import com.ninano.weto.src.main.MainActivity;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.todo_add.adpater.FavoritePlaceAdapter;
-
-import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
 
 
 import java.text.SimpleDateFormat;
@@ -62,9 +62,13 @@ import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
+import static com.ninano.weto.src.ApplicationClass.DAYREPEAT;
+import static com.ninano.weto.src.ApplicationClass.DAY_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
+import static com.ninano.weto.src.ApplicationClass.MINUTE_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
+import static com.ninano.weto.src.ApplicationClass.MONTH_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.NO_DATA;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
@@ -76,7 +80,9 @@ import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
+import static com.ninano.weto.src.ApplicationClass.TIME_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
+import static com.ninano.weto.src.ApplicationClass.YEAR_FORMAT;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
@@ -187,7 +193,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                             mRepeatType = WEEK_DAY;
                             mRepeatDayOfWeek = mToDoWithData.getRepeatDayOfWeek();
                             findRepeatDayOfWeek(mRepeatDayOfWeek);
-                            mRepeatDayOfWeek=""; // 확인버튼누를때 다시 확인함
+                            mRepeatDayOfWeek = ""; // 확인버튼누를때 다시 확인함
                             mTextViewTime.setText(mToDoWithData.getTime());
                             mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
                             mIsTimePick = true;
@@ -489,7 +495,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(ToDoData toDoData) {
+        protected void onPostExecute(final ToDoData toDoData) {
             super.onPostExecute(toDoData);
             if (toDoData == null) {
                 return;
@@ -498,7 +504,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
             if (toDoData.getIsWiFi() == 'Y') {//와이파이
                 getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
                 Log.d("와이파이 일정 등록", mWifiMode + " " + mLocationMode + " " + mWifiConnected);
-                showCustomToast("와이파이 일정 등록");
                 finish();
 //                registerWifi();
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
@@ -517,7 +522,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
+                                showCustomToast(getString(R.string.cant_geofence));
+                                new DeleteToDoAsyncTask().execute(toDoData.getTodoNo(), toDoData.getTodoDataNo());
                                 Log.e("지오펜스 등록 실패", e.toString());
                                 //지오펜스 실패하면 db에사도 지워줘야함
                             }
@@ -533,14 +539,14 @@ public class AddPersonalToDoActivity extends BaseActivity {
         toDoData.setTodoNo(mToDoNo);
         toDoData.setTodoDataNo(mToDoDataNo);
         System.out.println("넘버: " + mToDoNo + ", " + mToDoDataNo + ", " + todo.getTitle());
-        new updateAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+        new UpdateAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private class updateAsyncTask extends AsyncTask<Object, Void, ToDoData> {
+    private class UpdateAsyncTask extends AsyncTask<Object, Void, ToDoData> {
         private ToDoDao mTodoDao;
 
-        updateAsyncTask(ToDoDao mTodoDao) {
+        UpdateAsyncTask(ToDoDao mTodoDao) {
             this.mTodoDao = mTodoDao;
         }
 
@@ -552,7 +558,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(ToDoData toDoData) {
+        protected void onPostExecute(final ToDoData toDoData) {
             //수정로직 돌리기
             super.onPostExecute(toDoData);
             if (toDoData == null) {
@@ -583,12 +589,31 @@ public class AddPersonalToDoActivity extends BaseActivity {
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                showCustomToast("수정 할 수 없습니다. 다시 시도해주세요");
+                                showCustomToast(getString(R.string.cant_geofence));
+                                new DeleteToDoAsyncTask().execute(toDoData.getTodoNo(), toDoData.getTodoDataNo());
                                 Log.e("지오펜스 등록 실패", e.toString());
-                                //지오펜스 실패하면 db에사도 지워줘야함
                             }
                         });
             }
+        }
+    }
+
+    private class DeleteToDoAsyncTask extends AsyncTask<Integer, Void, Void> {
+        DeleteToDoAsyncTask() {
+        }
+
+        @Override
+        protected Void doInBackground(Integer... todoNo) {
+            mDatabase.todoDao().deleteToDo(todoNo[0]);
+            mDatabase.todoDao().deleteToDoData(todoNo[1]);
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            showCustomToast("디비 삭제 성공");
         }
     }
 
@@ -808,8 +833,8 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    void changeIcon(int iconNum){
-        switch (iconNum){
+    void changeIcon(int iconNum) {
+        switch (iconNum) {
             case 1:
                 mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
                 break;
@@ -853,41 +878,71 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     void setDate() {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SetTextI18n")
+        Calendar today = Calendar.getInstance();
+
+        TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                mYear = i;
-                mMonth = i1 + 1;
-                mDay = i2;
-                mTextViewDate.setText(i + "년 " + (i1 + 1) + "월 " + i2 + "일");
+            public void onTimeSelect(Date date, View v) {//选中事件回调
+                mYear = Integer.parseInt(YEAR_FORMAT.format(date));
+                mMonth = Integer.parseInt(MONTH_FORMAT.format(date));
+                mDay = Integer.parseInt(DAY_FORMAT.format(date));
+                mTextViewDate.setText(mYear + "년 " + mMonth + "월 " + mDay + "일");
                 mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
                 mIsDatePick = true;
             }
-        };
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
-        SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
-        SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.getDefault());
-        DatePickerDialog dialog = new DatePickerDialog(this, R.style.DatePickerTheme, dateSetListener, Integer.parseInt(yearFormat.format(currentTime)), Integer.parseInt(monthFormat.format(currentTime)) - 1, Integer.parseInt(dayFormat.format(currentTime)));
-        dialog.show();
+        })
+                .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
+                .setCancelText("취소")//取消按钮文字
+                .setSubmitText("확인")//确认按钮文字
+                .setTitleSize(20)//标题文字大小
+                .setTitleText("")//标题文字
+                .setOutSideCancelable(false)//点击屏幕，点在控件外部范围时，是否取消显示
+                .isCyclic(true)//是否循环滚动
+                .setTitleColor(getResources().getColor(R.color.colorBlack))//标题文字颜色
+                .setSubmitColor(getResources().getColor(R.color.colorBlack))//确定按钮文字颜色
+                .setCancelColor(getResources().getColor(R.color.colorBlack))//取消按钮文字颜色
+                .setTitleBgColor(getResources().getColor(R.color.colorWhite))//标题背景颜色 Night mode
+                .setBgColor(getResources().getColor(R.color.colorWhite))//滚轮背景颜色 Night mode
+                .setTextColorOut(getResources().getColor(R.color.colorBlackGray))
+                .setTextColorCenter(getResources().getColor(R.color.colorBlack))
+                .setLabel("년", "월", "일", "시", "분", "秒")//默认设置为年月日时分秒
+                .setDate(today)
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .isDialog(false)//是否显示为对话框样式
+                .build();
+        pvTime.show();
     }
 
     void setTime() {
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @SuppressLint("SetTextI18n")
+        TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
-            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                mHour = i;
-                mMinute = i1;
-                mTextViewTime.setText(i + "시 " + i1 + "분");
+            public void onTimeSelect(Date date, View v) {//选中事件回调
+                mHour = Integer.parseInt(TIME_FORMAT.format(date));
+                mMinute = Integer.parseInt(MINUTE_FORMAT.format(date));
+                mTextViewTime.setText(mHour + "시 " + mMinute + "분");
                 mTextViewTime.setTextColor(getResources().getColor(R.color.colorBlack));
                 mIsTimePick = true;
             }
-        };
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, R.style.DatePickerTheme, timeSetListener, 06, 00, true);
-        timePickerDialog.show();
+        })
+                .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
+                .setCancelText("취소")//取消按钮文字
+                .setSubmitText("확인")//确认按钮文字
+                .setTitleSize(20)//标题文字大小
+                .setTitleText("")//标题文字
+                .setOutSideCancelable(false)//点击屏幕，点在控件外部范围时，是否取消显示
+                .isCyclic(true)//是否循环滚动
+                .setTitleColor(getResources().getColor(R.color.colorBlack))//标题文字颜色
+                .setSubmitColor(getResources().getColor(R.color.colorBlack))//确定按钮文字颜色
+                .setCancelColor(getResources().getColor(R.color.colorBlack))//取消按钮文字颜色
+                .setTitleBgColor(getResources().getColor(R.color.colorWhite))//标题背景颜色 Night mode
+                .setBgColor(getResources().getColor(R.color.colorWhite))//滚轮背景颜色 Night mode
+                .setTextColorOut(getResources().getColor(R.color.colorBlackGray))
+                .setTextColorCenter(getResources().getColor(R.color.colorBlack))
+                .setLabel("년", "월", "일", "시", "분", "秒")//默认设置为年月日时分秒
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .isDialog(false)//是否显示为对话框样式
+                .build();
+        pvTime.show();
     }
 
     void setLocationModeView(TextView selectedView) {
@@ -904,6 +959,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             setVineOffMode(mTextViewArrive);
             setVineOnMode(mTextViewNear);
         }
+
     }
 
     void setLocationTimeView(TextView selectedView) {
@@ -1005,7 +1061,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     boolean validateBeforeAdd() {
-        if (mIcon==-1){
+        if (mIcon == -1) {
             showSnackBar(mEditTextTitle, "아이콘을 선택해주세요.");
             return false;
         }
@@ -1033,7 +1089,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 }
 
             } else if (mRepeatType == WEEK_DAY) {
-                if(!validateRepeatDayOfWeek(selectedDayList)){
+                if (!validateRepeatDayOfWeek(selectedDayList)) {
                     showSnackBar(mEditTextTitle, "반복요일을 선택해주세요");
                     return false;
                 }
@@ -1202,47 +1258,47 @@ public class AddPersonalToDoActivity extends BaseActivity {
         }
     }
 
-    private boolean validateRepeatDayOfWeek(boolean[] list){
-        for(int i=0; i<list.length; i++){
-            if(list[i]){
+    private boolean validateRepeatDayOfWeek(boolean[] list) {
+        for (int i = 0; i < list.length; i++) {
+            if (list[i]) {
                 return true;
             }
         }
         return false;
     }
 
-    private void findRepeatDayOfWeek(String repeatDayOfWeek){
-        if(repeatDayOfWeek.contains("일")){
+    private void findRepeatDayOfWeek(String repeatDayOfWeek) {
+        if (repeatDayOfWeek.contains("일")) {
             selectedDayList[0] = true;
             mTextViewSun.setSelected(true);
             setVineOnMode(mTextViewSun);
         }
-        if(repeatDayOfWeek.contains("월")){
+        if (repeatDayOfWeek.contains("월")) {
             selectedDayList[1] = true;
             mTextViewMon.setSelected(true);
             setVineOnMode(mTextViewMon);
         }
-        if(repeatDayOfWeek.contains("화")){
+        if (repeatDayOfWeek.contains("화")) {
             selectedDayList[2] = true;
             mTextViewTue.setSelected(true);
             setVineOnMode(mTextViewTue);
         }
-        if(repeatDayOfWeek.contains("수")){
+        if (repeatDayOfWeek.contains("수")) {
             selectedDayList[3] = true;
             mTextViewWed.setSelected(true);
             setVineOnMode(mTextViewWed);
         }
-        if(repeatDayOfWeek.contains("목")){
+        if (repeatDayOfWeek.contains("목")) {
             selectedDayList[4] = true;
             mTextViewThu.setSelected(true);
             setVineOnMode(mTextViewThu);
         }
-        if(repeatDayOfWeek.contains("금")){
+        if (repeatDayOfWeek.contains("금")) {
             selectedDayList[5] = true;
             mTextViewFri.setSelected(true);
             setVineOnMode(mTextViewFri);
         }
-        if(repeatDayOfWeek.contains("토")){
+        if (repeatDayOfWeek.contains("토")) {
             selectedDayList[6] = true;
             mTextViewSat.setSelected(true);
             setVineOnMode(mTextViewSat);
@@ -1278,7 +1334,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
             }
         }
 
-        if(mRepeatDayOfWeek.length()>1){
+        if (mRepeatDayOfWeek.length() > 1) {
             mRepeatDayOfWeek = mRepeatDayOfWeek.substring(0, mRepeatDayOfWeek.length() - 1);
         }
     }

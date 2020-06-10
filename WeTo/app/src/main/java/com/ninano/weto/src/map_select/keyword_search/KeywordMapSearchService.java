@@ -49,7 +49,7 @@ class KeywordMapSearchService {
     //sort: distance 또는 accuracy, 기본 accuracy
     void getKeywordLocation(String keyword, double longitude, double latitude, String sort) {
         final KeywordMapSearchRetrofitInterface mainRetrofitInterface = getKakaoRenulltrofit().create(KeywordMapSearchRetrofitInterface.class);
-        mainRetrofitInterface.getKeywordLocation(keyword, latitude, longitude, sort).enqueue(new Callback<LocationResponse>() {
+        mainRetrofitInterface.getKeywordLocation(keyword, longitude, latitude, sort).enqueue(new Callback<LocationResponse>() {
             @Override
             public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
                 final LocationResponse locationResponse = response.body();
@@ -59,7 +59,6 @@ class KeywordMapSearchService {
                     return;
                 } else {
                     Log.e("에러", response.toString());
-
                     keywordMapSearchActivityView.validateSuccess(locationResponse.getLocations());
                 }
             }

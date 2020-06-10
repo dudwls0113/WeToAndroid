@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
@@ -316,16 +320,14 @@ public class ToDoPersonalFragment extends BaseFragment {
 //                mTodoList.remove(mDeletePosition);
                 if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
-                }
-                else if (toDoWithData.getType() == TIME) {
+                } else if (toDoWithData.getType() == TIME) {
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                 }
 //                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
             } else if (toDoWithData.getStatus().equals("DONE")) { // DONE 리스트
                 if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
-                }
-                else if (toDoWithData.getType() == TIME) {
+                } else if (toDoWithData.getType() == TIME) {
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                 }
             }
@@ -351,7 +353,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         @Override
         protected void onPostExecute(ToDoWithData toDoWithData) {
             super.onPostExecute(toDoWithData);
-            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+            if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                 getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
             } else if (toDoWithData.getType() == TIME) {
                 getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
@@ -375,10 +377,26 @@ public class ToDoPersonalFragment extends BaseFragment {
         }
 
         @Override
-        protected void onPostExecute(ToDoWithData toDoWithData) {
+        protected void onPostExecute(final ToDoWithData toDoWithData) {
             super.onPostExecute(toDoWithData);
-            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+            if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                 // 지오펜스 추가
+                getGeofenceMaker().addGeoFenceOne(toDoWithData.getTodoNo(), toDoWithData.getLatitude(), toDoWithData.getLongitude(), toDoWithData.getLocationMode(), toDoWithData.getRadius(),
+                        new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+
+                            }
+                        },
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showCustomToast(mContext, getString(R.string.cant_geofence));
+                                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(toDoWithData);
+                                Log.e("지오펜스 등록 실패", e.toString());
+                            }
+                        });
+
             } else if (toDoWithData.getType() == TIME) {
                 getAlarmMaker().registerAlarm(toDoWithData.getTodoNo(), toDoWithData.getRepeatType(), toDoWithData.getYear(), toDoWithData.getMonth(), toDoWithData.getDay(), toDoWithData.getHour(), toDoWithData.getMinute(), toDoWithData.getTitle(), toDoWithData.getContent(), toDoWithData.getRepeatDayOfWeek());
             }
@@ -427,25 +445,6 @@ public class ToDoPersonalFragment extends BaseFragment {
                 }
             }
         });
-    }
-
-    void setToDoTempData() {
-//        mData.add(new ToDoPersonalData(1, "비타민 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
-//        mData.add(new ToDoPersonalData(1, "형광펜 사기", "집, 매일, 아침 8시", 1, 0));
-//        mData.add(new ToDoPersonalData(1, "우유 사기", "집, 매일, 아침 8시", 1, 0));
-//        mData.add(new ToDoPersonalData(1, "우산 챙기기", "집, 매일, 아침 8시", 1, 0));
-
-        mToDoPersonalListAdapter.notifyDataSetChanged();
-    }
-
-    void setToDoDoneTempData() {
-//        mDoneData.add(new ToDoPersonalData(1, "밥 챙겨먹기", "집, 매일, 아침 8시", 1, 0));
-//        mDoneData.add(new ToDoPersonalData(1, "볼펜 사기", "집, 매일, 아침 8시", 1, 0));
-//        mDoneData.add(new ToDoPersonalData(1, "콜라 사기", "집, 매일, 아침 8시", 1, 0));
-//        mDoneData.add(new ToDoPersonalData(1, "마스크 챙기기", "집, 매일, 아침 8시", 1, 0));
-
-        mToDoPersonalDoneListAdapter.notifyDataSetChanged();
-
     }
 
     private void showDoneLayout() {

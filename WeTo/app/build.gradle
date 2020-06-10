@@ -68,4 +68,8 @@ dependencies {
     //viewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.google.android.material:material:1.1.0'
+
+    //TimePicker
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
 }

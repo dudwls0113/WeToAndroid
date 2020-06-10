@@ -1,5 +1,6 @@
 package com.ninano.weto.src;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,6 +38,16 @@ public class ApplicationClass extends Application {
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH");
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("mm");
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy");
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MM");
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd");
 
     //알림 채널
     public static final String CHANNEL_ID = "we_to_channel";
@@ -81,6 +92,7 @@ public class ApplicationClass extends Application {
     public static String fcmToken = "";
 
     private static ApplicationClass applicationClass;
+
     public static ApplicationClass getApplicationClassContext() {
         if (applicationClass == null)
             throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
@@ -106,7 +118,7 @@ public class ApplicationClass extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        applicationClass=null;
+        applicationClass = null;
     }
 
     public static Retrofit getRetrofit() {

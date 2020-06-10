@@ -89,7 +89,10 @@ public class SplashActivity extends BaseActivity {
             }, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    showCustomToast("지오펜스 재등록에 실패");
+                    showCustomToast(getString(R.string.cant_geofence_when_splash));
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

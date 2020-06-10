@@ -263,9 +263,7 @@ public class ToDoDetailActivity extends BaseActivity {
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                 }
             }
-
             finish();
-
         }
     }
 
