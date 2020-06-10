@@ -46,6 +46,8 @@ public class GroupDetailActivity extends BaseActivity {
 
     private float density;
 
+    private int mGroupNo = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class GroupDetailActivity extends BaseActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
+        mGroupNo = getIntent().getIntExtra("groupId", 0);
         init();
         setGroupMemberTempData();
     }
@@ -66,12 +69,7 @@ public class GroupDetailActivity extends BaseActivity {
             @Override
             public void itemClick(int pos) {
                 if (pos==mMemberData.size()-1){
-                    GroupInviteDialog groupInviteDialog = new GroupInviteDialog(mContext, new GroupInviteDialog.InviteClickLIstener() {
-                        @Override
-                        public void inviteClick() {
-
-                        }
-                    });
+                    GroupInviteDialog groupInviteDialog = new GroupInviteDialog(mContext, mGroupNo);
                     groupInviteDialog.show();
                 }
             }

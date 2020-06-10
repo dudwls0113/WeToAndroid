@@ -21,6 +21,7 @@ import com.ninano.weto.src.main.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.ACTION_VIEW;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
@@ -32,6 +33,9 @@ public class SplashActivity extends BaseActivity {
     private ToDoDao mTodoDao;
     private AppDatabase mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
     private Context mContext;
+    private boolean isKakaoShare;
+    private int mGroupId;
+    private String nickName, profileUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +43,24 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         mContext = this;
 
+        if(getIntent()!=null){
+            if(getIntent().getAction()!=null){
+                if(getIntent().getAction().equals(ACTION_VIEW)){
+                    isKakaoShare = true;
+                    String value = getIntent().getData().getQueryParameter("key1");
+                    String groupId = value.substring(0,value.indexOf(","));
+                    mGroupId = Integer.parseInt(groupId);
+                    nickName = value.substring(value.indexOf(",") + 2, value.indexOf("/"));
+                    profileUrl = value.substring(value.indexOf("/") + 2, value.length());
+                }
+            }
+        }
+
         getGeofenceMaker().removeAllGeofence();
 
         SplashAsyncTask splashAsyncTask = new SplashAsyncTask(mDatabase.todoDao());
         splashAsyncTask.execute();
+
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -75,30 +93,58 @@ public class SplashActivity extends BaseActivity {
             }
 
             if (geofenceList.size() == 0) {
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
-                finish();
+                if (isKakaoShare){
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    intent.putExtra("groupId", mGroupId);
+                    intent.putExtra("nickName", nickName);
+                    intent.putExtra("profileUrl", profileUrl);
+                    intent.putExtra("kakaoShare", true);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 return;
             }
             getGeofenceMaker().addGeoFenceList(geofenceList, new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (isKakaoShare){
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putExtra("groupId", mGroupId);
+                        intent.putExtra("nickName", nickName);
+                        intent.putExtra("profileUrl", profileUrl);
+                        intent.putExtra("kakaoShare", true);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(mContext, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    System.out.println("에러: " + e.toString());
-                    showCustomToast(getString(R.string.cant_geofence_when_splash));
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (isKakaoShare){
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putExtra("groupId", mGroupId);
+                        intent.putExtra("nickName", nickName);
+                        intent.putExtra("profileUrl", profileUrl);
+                        intent.putExtra("kakaoShare", true);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        System.out.println("에러: " + e.toString());
+                        showCustomToast(getString(R.string.cant_geofence_when_splash));
+                        Intent intent = new Intent(mContext, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
         }
-
-
     }
 }

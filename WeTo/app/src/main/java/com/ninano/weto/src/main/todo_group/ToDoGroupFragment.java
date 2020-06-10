@@ -154,6 +154,7 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             @Override
             public void itemClick(int pos) {
                 Intent intent = new Intent(mContext, GroupDetailActivity.class);
+                intent.putExtra("groupId", mData.get(pos).getNo());
                 startActivity(intent);
             }
 
@@ -287,6 +288,8 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
                         profileUrl = result.getKakaoAccount().getProfile().getProfileImageUrl();
                         SharedPreferences.Editor editor = sSharedPreferences.edit();
                         editor.putString(X_ACCESS_TOKEN, String.valueOf(kakaoId));
+                        editor.putString("kakaoNickName", nickName);
+                        editor.putString("profileUrl", profileUrl);
                         editor.apply();
                         postIsExistUser(kakaoId);
                         System.out.println("성공: " + nickName + ", " + profileUrl + ", " + fcmToken);

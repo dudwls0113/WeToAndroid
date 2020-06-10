@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WeTo</string>
     <string name="kakao_app_key">1924ea890a9d3dc1786add9ec27cb511</string>
+    <string name="kakaolink_host">kakaolink</string>
+    <string name="kakao_scheme">kakao1924ea890a9d3dc1786add9ec27cb511</string>
+    <string name="kakao_login">카카오톡 로그인하기</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
     <string name="insert_todo_error">일정 추가 실패</string>
     <string name="add_todo_title">새로운 할 일</string>
@@ -70,4 +73,8 @@
     <string name="geofence_transition_notification_text">
         Click notification to return to app
     </string>
+
+    <string name="group_invite_content_login">초대 받으신 그룹에 참여하기 위해\n카카오톡 연동 로그인을 하시길 바랍니다.</string>
+    <string name="group_invite_content_invite">초대 받으신 그룹에 참여하기 위해\n‘그룹에 참여하기’로 계속하여 주세요.</string>
+    <string name="group_invite_button_invite">그룹에 참여하기</string>
 </resources>

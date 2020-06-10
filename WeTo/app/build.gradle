@@ -60,7 +60,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:17.0.0")
 
     // 카카오 로그인
-    implementation group: 'com.kakao.sdk', name: 'usermgmt', version: '1.27.0'//
+    implementation group: 'com.kakao.sdk', name: 'usermgmt', version: '1.27.0'
+    implementation group: 'com.kakao.sdk', name: 'kakaolink', version: '1.18.0'
 
     // Firebase SDK
     implementation 'com.google.firebase:firebase-core:17.4.3'

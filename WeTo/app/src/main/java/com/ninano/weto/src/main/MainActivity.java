@@ -36,6 +36,8 @@ import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.NonSwipeViewPager;
+import com.ninano.weto.src.group_detail.GroupDetailActivity;
+import com.ninano.weto.src.group_invite.GroupInviteActivity;
 import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
@@ -105,6 +107,14 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 //                        Log.d("Firebase", "token: " + fcmToken);
                     }
                 });
+        if (getIntent().getBooleanExtra("kakaoShare",false)){
+            Intent intent = new Intent(MainActivity.this, GroupInviteActivity.class);
+            intent.putExtra("groupId", getIntent().getIntExtra("groupId", 0));
+            intent.putExtra("nickName", getIntent().getStringExtra("nickName"));
+            intent.putExtra("profileUrl", getIntent().getStringExtra("profileUrl"));
+            intent.putExtra("kakaoShare", true);
+            startActivity(intent);
+        }
     }
 
     private void getAppKeyHash() {
