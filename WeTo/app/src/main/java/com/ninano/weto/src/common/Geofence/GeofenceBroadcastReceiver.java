@@ -21,6 +21,7 @@ import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
+import com.ninano.weto.src.common.util.Util;
 import com.ninano.weto.src.main.MainActivity;
 
 import java.util.List;
@@ -29,13 +30,15 @@ import java.util.concurrent.ExecutionException;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
+import static com.ninano.weto.src.common.util.Util.getLocationNotificationContent;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     AppDatabase mDatabase;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("지오", "수신 첫번째" );
+        Log.d("지오", "수신 첫번째");
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.getErrorCode());
@@ -65,10 +68,11 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             try {
                 List<ToDoWithData> toDoWithDataList = new DbAsyncTask(mDatabase.todoDao()).execute(Integer.valueOf(triggeringGeofences.get(0).getRequestId())).get();
                 if (toDoWithDataList.size() > 0) {
-                    Log.d("지오", toDoWithDataList.get(0).toString());
-                    if (toDoWithDataList.get(0).getStatus().equals("ACTIVATE")) { //활성중인 일정이면 알림보내기다
+                    if (toDoWithDataList.get(0).getStatus().equals("ACTIVATE")) {
                         //시간조건 추가 필요
-                        sendNotification(context, toDoWithDataList.get(0));
+                        if (compareTimeSlot(toDoWithDataList.get(0).getTimeSlot())) {
+                            Util.sendNotification(toDoWithDataList.get(0).getTitle(), getLocationNotificationContent(toDoWithDataList.get(0)));
+                        }
                     }
                 }
             } catch (ExecutionException | InterruptedException e) {
@@ -102,49 +106,6 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             }
 
             return toDoWithData;
-        }
-    }
-
-    private void sendNotification(Context context, ToDoWithData toDoWithData) {
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        final String CHANNEL_ID = "채널ID";
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final String CHANNEL_NAME = "채널이름";
-            final String CHANNEL_DESCRIPTION = "채널 Description";
-            final int importance = NotificationManager.IMPORTANCE_HIGH;
-
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-            mChannel.setDescription(CHANNEL_DESCRIPTION);
-            mChannel.enableLights(true);
-            mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 100, 200});
-            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(mChannel);
-            }
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setWhen(System.currentTimeMillis());
-        builder.setContentTitle(toDoWithData.getTitle());
-        if (toDoWithData.getLocationMode() == AT_ARRIVE) {
-            builder.setContentText(toDoWithData.getLocationName() + "에 도착하였습니다");
-        } else if (toDoWithData.getLocationMode() == AT_START) {
-            builder.setContentText(toDoWithData.getLocationName() + "에서 출발하였습니다");
-        } else {
-            builder.setContentText(toDoWithData.getLocationName() + "을(를) 지나치고 있습니");
-        }
-        builder.setContentIntent(pendingIntent);
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        builder.setAutoCancel(true);
-        if (notificationManager != null) {
-            notificationManager.notify(1, builder.build());
         }
     }
 }
