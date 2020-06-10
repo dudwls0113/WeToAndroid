@@ -53,8 +53,9 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
 
     @Override
     public void onItemSwipe(int position) {
-        mData.remove(position);
-        notifyItemRemoved(position);
+//        mData.remove(position);
+//        notifyItemRemoved(position);
+        mItemClickLIstener.swipeDelete(position);
     }
 
     @Override
@@ -77,6 +78,8 @@ public class ToDoPersonalListAdapter extends RecyclerView.Adapter<ToDoPersonalLi
         void onStartDrag(CustomViewHolder holder);
 
         void doneClick(int pos);
+
+        void swipeDelete(int pos);
     }
 
     @NonNull

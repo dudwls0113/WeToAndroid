@@ -39,7 +39,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static com.ninano.weto.src.ApplicationClass.LOCATION;
+import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
+import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 
 
 public class ToDoPersonalFragment extends BaseFragment {
@@ -76,6 +79,8 @@ public class ToDoPersonalFragment extends BaseFragment {
     AppDatabase mDatabase;
 
     private float currentHeight = 0;
+
+    private int mDeletePosition = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,6 +169,17 @@ public class ToDoPersonalFragment extends BaseFragment {
             public void doneClick(int pos) {
                 new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos).getTodoNo());
             }
+
+            @Override
+            public void swipeDelete(int pos) {
+                mDeletePosition = pos;
+                if (mTodoList.get(pos).getType()==TIME){
+                    getAlarmMaker().removeAlarm(mTodoList.get(pos).getTodoNo());
+                } else if(mTodoList.get(pos).getType()==LOCATION){
+
+                }
+                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos).getTodoNo(), mTodoList.get(pos).getTodoDataNo(), 0);
+            }
         });
 
         ToDoPersonalItemTouchHelperCallback mCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoPersonalListAdapter, mContext);
@@ -250,6 +266,11 @@ public class ToDoPersonalFragment extends BaseFragment {
             public void doneClick(int pos) {
                 new UpdateActivateAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos).getTodoNo());
             }
+
+            @Override
+            public void swipeDelete(int pos) {
+
+            }
         });
 
         mRecyclerViewDone.setAdapter(mToDoPersonalDoneListAdapter);
@@ -274,6 +295,34 @@ public class ToDoPersonalFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    private class DeleteToDoAsyncTask extends AsyncTask<Integer, Void, Integer>{
+
+        private ToDoDao mTodoDao;
+
+        DeleteToDoAsyncTask(ToDoDao mTodoDao){
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... integers) {
+            mDatabase.todoDao().deleteToDo(integers[0]);
+            mDatabase.todoDao().deleteToDoData(integers[1]);
+            return integers[2];
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (integer==0){ // ACTIVATE 리스트
+                mTodoList.remove(mDeletePosition);
+                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
+            } else if (integer==1){ // DONE 리스트
+
+            }
+
+        }
     }
 
     private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void>{

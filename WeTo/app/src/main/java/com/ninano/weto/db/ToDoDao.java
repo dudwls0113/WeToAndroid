@@ -26,10 +26,10 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and Todo.todoNo = :todoNo")
     public abstract List<ToDoWithData> getTodoWithTodoNo(int todoNo);
 
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode")
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode AND Todo.status = 'ACTIVATE'")
     public abstract List<ToDoWithData> getTodoWithWifi(char isWifi, int locationMode);
 
-    @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode")
+    @Query("SELECT count(*) FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo and ToDoData.isWiFi = :isWifi and ToDoData.locationMode = :locationMode AND Todo.status = 'ACTIVATE'")
     public abstract int getTodoWithWifiCount(char isWifi, int locationMode);
 
     //활성중인 일정조회
@@ -64,6 +64,14 @@ public abstract class ToDoDao {
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.type == 77 ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getActivatedLocationTodoList();
 
+    // Todo 삭제
+    @Query("DELETE FROM ToDo WHERE todoNo = :todoNo")
+    public abstract void deleteToDo(int todoNo);
+
+    //ToDoData 삭제
+    @Query("DELETE FROM ToDoData WHERE todoDataNo = :toDoDataNo")
+    public abstract void deleteToDoData(int toDoDataNo);
+
     //종료된 일정조회
 //    @Query("SELECT todoNo, latitude, longitude, locationMode, radius FROM  ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
 //    public abstract LiveData<List<ToDoData>> getGpsTodo();
@@ -82,11 +90,11 @@ public abstract class ToDoDao {
         updateTodoData(toDoData);
     }
 
-    @Transaction
-    public void deleteTodo(ToDo todo, ToDoData toDoData) {
-        delete(todo);
-        deleteTodoData(toDoData);
-    }
+//    @Transaction
+//    public void deleteTodo(ToDo todo, ToDoData toDoData) {
+//        delete(todo);
+//        deleteTodoData(toDoData);
+//    }
 
     @Insert
     abstract long insert(ToDo todo);
