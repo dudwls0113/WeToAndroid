@@ -33,6 +33,8 @@ import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
+import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
 public class ToDoDetailActivity extends BaseActivity {
 
@@ -184,7 +186,7 @@ public class ToDoDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_personal_todo_btn_done:
-                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mToDoWithData.getTodoNo());
+                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mToDoWithData);
                 break;
             case R.id.add_personal_todo_btn_modify:
                 Intent intent = new Intent(mContext, AddPersonalToDoActivity.class);
@@ -194,11 +196,12 @@ public class ToDoDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_personal_todo_btn_delete:
+                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mToDoWithData);
                 break;
         }
     }
 
-    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void> {
+    private class UpdateDoneAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
         private ToDoDao mTodoDao;
 
@@ -208,16 +211,63 @@ public class ToDoDetailActivity extends BaseActivity {
 
 
         @Override
-        protected Void doInBackground(Integer... integers) {
-            mDatabase.todoDao().updateStatusDone(integers[0]);
-            return null;
+        protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
+            mDatabase.todoDao().updateStatusDone(toDoWithData[0].getTodoNo());
+            return toDoWithData[0];
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(ToDoWithData toDoWithData) {
+            super.onPostExecute(toDoWithData);
+            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+                getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+            } else if (toDoWithData.getType() == TIME) {
+                getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+            }
             finish();
         }
     }
+
+    private class DeleteToDoAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
+
+        private ToDoDao mTodoDao;
+
+        DeleteToDoAsyncTask(ToDoDao mTodoDao) {
+            this.mTodoDao = mTodoDao;
+        }
+
+        @Override
+        protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
+            mDatabase.todoDao().deleteToDo(toDoWithData[0].getTodoNo());
+            mDatabase.todoDao().deleteToDoData(toDoWithData[0].getTodoDataNo());
+            return toDoWithData[0];
+        }
+
+        @Override
+        protected void onPostExecute(ToDoWithData toDoWithData) {
+            super.onPostExecute(toDoWithData);
+            if (toDoWithData.getStatus().equals("ACTIVATE")) { // ACTIVATE 리스트
+//                mTodoList.remove(mDeletePosition);
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
+                    getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+                }
+                else if (toDoWithData.getType() == TIME) {
+                    getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+                }
+//                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
+            } else if (toDoWithData.getStatus().equals("DONE")) { // DONE 리스트
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
+                    getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+                }
+                else if (toDoWithData.getType() == TIME) {
+                    getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+                }
+            }
+
+            finish();
+
+        }
+    }
+
 
 }

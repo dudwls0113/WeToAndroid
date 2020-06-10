@@ -8,6 +8,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -75,6 +77,9 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 
     private int MY_PERMISSIONS_REQ_ACCESS_FINE_LOCATION = 100;
     private int MY_PERMISSIONS_REQ_ACCESS_BACKGROUND_LOCATION = 101;
+
+    private long backPressedTime = 0;
+    public static long FINISH_INTERVAL_TIME = 2000; // 두번 눌러 종료
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,5 +271,17 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            super.onBackPressed();
+        } else {
+            backPressedTime = tempTime;
+            Toast.makeText(this, "뒤로가기를 한번 더 누르면 앱을 종료합니다", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -183,8 +183,12 @@ public class AlarmMaker {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationClassContext(), todoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if(pendingIntent!=null){
             if (mAlarmManager != null) {
-                mAlarmManager.cancel(pendingIntent);
-                System.out.println("cancel, " + todoNo);
+                try{
+                    mAlarmManager.cancel(pendingIntent);
+                    System.out.println("cancel, " + todoNo);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             pendingIntent.cancel();
         }

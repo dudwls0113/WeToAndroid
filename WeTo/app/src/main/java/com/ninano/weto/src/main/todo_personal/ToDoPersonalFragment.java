@@ -168,7 +168,7 @@ public class ToDoPersonalFragment extends BaseFragment {
 
             @Override
             public void doneClick(int pos) {
-                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos).getTodoNo());
+                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos));
             }
 
             @Override
@@ -226,10 +226,6 @@ public class ToDoPersonalFragment extends BaseFragment {
         mLInearHiddenDone = v.findViewById(R.id.todo_personal_fragment_layout_hidden_done);
         mRecyclerViewDone = v.findViewById(R.id.todo_personal_fragment_rv_done);
 
-        ToDoPersonalItemTouchHelperCallback mDoneCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoPersonalDoneListAdapter, mContext);
-        mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
-        mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
-
         mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext) {
             @Override
             public boolean canScrollHorizontally() {
@@ -260,14 +256,19 @@ public class ToDoPersonalFragment extends BaseFragment {
 
             @Override
             public void doneClick(int pos) {
-                new UpdateActivateAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos).getTodoNo());
+                new UpdateActivateAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos));
             }
 
             @Override
             public void swipeDelete(int pos) {
-
+                mDeletePosition = pos;
+                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos));
             }
         });
+
+        ToDoPersonalItemTouchHelperCallback mDoneCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoPersonalDoneListAdapter, mContext);
+        mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
+        mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
 
         mRecyclerViewDone.setAdapter(mToDoPersonalDoneListAdapter);
 
@@ -312,7 +313,7 @@ public class ToDoPersonalFragment extends BaseFragment {
         protected void onPostExecute(ToDoWithData toDoWithData) {
             super.onPostExecute(toDoWithData);
             if (toDoWithData.getStatus().equals("ACTIVATE")) { // ACTIVATE 리스트
-                mTodoList.remove(mDeletePosition);
+//                mTodoList.remove(mDeletePosition);
                 if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
                 }
@@ -321,13 +322,18 @@ public class ToDoPersonalFragment extends BaseFragment {
                 }
 //                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
             } else if (toDoWithData.getStatus().equals("DONE")) { // DONE 리스트
-
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
+                    getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+                }
+                else if (toDoWithData.getType() == TIME) {
+                    getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+                }
             }
 
         }
     }
 
-    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void> {
+    private class UpdateDoneAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
         private ToDoDao mTodoDao;
 
@@ -337,18 +343,23 @@ public class ToDoPersonalFragment extends BaseFragment {
 
 
         @Override
-        protected Void doInBackground(Integer... integers) {
-            mDatabase.todoDao().updateStatusDone(integers[0]);
-            return null;
+        protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
+            mDatabase.todoDao().updateStatusDone(toDoWithData[0].getTodoNo());
+            return toDoWithData[0];
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(ToDoWithData toDoWithData) {
+            super.onPostExecute(toDoWithData);
+            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+                getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+            } else if (toDoWithData.getType() == TIME) {
+                getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+            }
         }
     }
 
-    private class UpdateActivateAsyncTask extends AsyncTask<Integer, Void, Void> {
+    private class UpdateActivateAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
         private ToDoDao mTodoDao;
 
@@ -356,10 +367,21 @@ public class ToDoPersonalFragment extends BaseFragment {
             this.mTodoDao = mTodoDao;
         }
 
+
         @Override
-        protected Void doInBackground(Integer... integers) {
-            mDatabase.todoDao().updateStatusActivate(integers[0]);
-            return null;
+        protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
+            mDatabase.todoDao().updateStatusActivate(toDoWithData[0].getTodoNo());
+            return toDoWithData[0];
+        }
+
+        @Override
+        protected void onPostExecute(ToDoWithData toDoWithData) {
+            super.onPostExecute(toDoWithData);
+            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+                // 지오펜스 추가
+            } else if (toDoWithData.getType() == TIME) {
+                getAlarmMaker().registerAlarm(toDoWithData.getTodoNo(), toDoWithData.getRepeatType(), toDoWithData.getYear(), toDoWithData.getMonth(), toDoWithData.getDay(), toDoWithData.getHour(), toDoWithData.getMinute(), toDoWithData.getTitle(), toDoWithData.getContent(), toDoWithData.getRepeatDayOfWeek());
+            }
         }
     }
 
