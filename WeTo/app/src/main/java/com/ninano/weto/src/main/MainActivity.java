@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
@@ -37,8 +38,10 @@ import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.NonSwipeViewPager;
 import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
+import com.ninano.weto.src.main.interfaces.MainActivityView;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
+import com.ninano.weto.src.main.todo_group.ToDoGroupService;
 import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
 import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.pedro.library.AutoPermissions;
@@ -55,8 +58,10 @@ import devlight.io.library.ntb.NavigationTabBar;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
+import static com.ninano.weto.src.ApplicationClass.fcmToken;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
-public class MainActivity extends BaseActivity implements AutoPermissionsListener {
+public class MainActivity extends BaseActivity implements AutoPermissionsListener, MainActivityView {
 
     private Context mContext;
 
@@ -101,8 +106,12 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
                 new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
-                        ApplicationClass.fcmToken = instanceIdResult.getToken();
-//                        Log.d("Firebase", "token: " + fcmToken);
+                        fcmToken = instanceIdResult.getToken();
+                        Log.d("Firebase", "token: " + fcmToken);
+                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
+                            Log.d("로그인", "token: " + fcmToken);
+                            tryPostFcmToken(fcmToken);
+                        }
                     }
                 });
     }
@@ -121,6 +130,21 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
             // TODO Auto-generated catch block
 //            Log.e("name not found", e.toString());
         }
+    }
+
+    private void tryPostFcmToken(String fcmToken) {
+        MainService mainService = new MainService(mContext, this);
+        mainService.postFcmToken(fcmToken);
+    }
+
+    @Override
+    public void updateFcmTokenSuccess() {
+        Log.d("MainActivity", "fcm업데이트 성공");
+    }
+
+    @Override
+    public void updateFcmTokenFail() {
+        Log.d("MainActivity", "fcm업데이트 실패");
     }
 
 
@@ -267,7 +291,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);

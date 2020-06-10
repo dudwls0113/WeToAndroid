@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5860037-df8e-4f98-a5f4-c8bd4d8c1b3b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/MainService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/interfaces/MainActivityView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/interfaces/MainRetrofitInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoData.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/ApplicationClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/ApplicationClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/res/layout/fragment_to_do_group.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/res/layout/fragment_to_do_group.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +36,74 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/UserPdo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="950">
+              <caret line="160" column="25" selection-start-line="160" selection-start-column="25" selection-end-line="160" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="453">
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/UserController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="116" column="43" selection-start-line="116" selection-start-column="43" selection-end-line="116" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="438">
+              <caret line="126" column="42" selection-start-line="126" selection-start-column="42" selection-end-line="126" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/logs/access-2020-06-11.log">
+          <provider selected="true" editor-type-id="LogFileEditorProvider">
+            <state relative-caret-position="721">
+              <caret line="203" column="139" selection-start-line="203" selection-end-line="204" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="true">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="543">
+              <caret line="263" column="40" lean-forward="true" selection-start-line="263" selection-start-column="40" selection-end-line="263" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-925">
+              <caret line="69" column="17" lean-forward="true" selection-start-line="69" selection-start-column="17" selection-end-line="69" selection-end-column="17" />
+              <folding>
+                <element signature="e#7#28#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -42,6 +112,8 @@
       <find>isDuplicateGroupMember</find>
       <find>getGroupMember</find>
       <find>getGroupList</find>
+      <find>makeTimeTodo</find>
+      <find>send</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -57,12 +129,13 @@
         <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/index.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/MainPdo.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/MainController.php" />
-        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/UserController.php" />
-        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/UserPdo.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/DatabasePdo.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/UserPdo.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/UserController.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php" />
-        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php" />
       </list>
     </option>
   </component>
@@ -74,7 +147,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1680" />
     <option name="height" value="977" />
@@ -84,7 +157,10 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -138,14 +214,16 @@
       <workItem from="1590603508881" duration="7106000" />
       <workItem from="1590647505345" duration="12403000" />
       <workItem from="1590732193163" duration="144000" />
+      <workItem from="1591814159475" duration="4331000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31649000" />
+    <option name="totallyTimeSpent" value="35980000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="977" extended-state="6" />
+    <frame x="0" y="23" width="1680" height="976" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.26190478" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
