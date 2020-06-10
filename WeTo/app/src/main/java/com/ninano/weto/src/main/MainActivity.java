@@ -163,40 +163,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         }
     }
 
-
-    private PendingIntent geofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        PendingIntent geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return geofencePendingIntent;
-    }
-
-    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        // Geofence 이벤트는 진입시 부터 처리할 때
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(list);  // Geofence 리스트 추가
-        return builder.build();
-    }
-
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-        int GEOFENCE_TRANSITION;
-        if (type == 1) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == 2) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-        } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-        }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
-    }
-
     void init() {
         mMapFragment = new MapFragment();
         mToDoPersonalFragment = new ToDoPersonalFragment();

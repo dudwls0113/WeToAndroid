@@ -118,8 +118,8 @@ public class GeofenceMaker {
     }
 
     public void addGeoFenceOne(int todoNo, double latitude, double longitude,
-                               int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener
-                                       onFailureListener) {
+                                    int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener
+                                            onFailureListener) {
         if (ActivityCompat.checkSelfPermission(getApplicationClassContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -132,6 +132,23 @@ public class GeofenceMaker {
         }
         geofencingClient.addGeofences(getGeofencingRequest(getGeofence(locationMode, String.valueOf(todoNo), new Pair<>(latitude, longitude), (float) radius), locationMode), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
+
+    public void addGeoFenceOneForGroupTodo(String todoNo, double latitude, double longitude,
+                               int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener
+                                       onFailureListener) {
+        if (ActivityCompat.checkSelfPermission(getApplicationClassContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        geofencingClient.addGeofences(getGeofencingRequest(getGeofence(locationMode, todoNo, new Pair<>(latitude, longitude), (float) radius), locationMode), geofencePendingIntent()).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+    }
+
 
     public void removeAllGeofence() {
         geofencingClient.removeGeofences(geofencePendingIntent());

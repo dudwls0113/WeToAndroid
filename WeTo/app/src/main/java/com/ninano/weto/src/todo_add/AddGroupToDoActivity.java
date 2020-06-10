@@ -1,9 +1,11 @@
 package com.ninano.weto.src.todo_add;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -247,11 +249,12 @@ public class AddGroupToDoActivity extends BaseActivity {
     }
 
     private void addGeofencesToClient() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         geofencingClient.addGeofences(getGeofencingRequest(geofenceList), geofencePendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-//                showSnackBar(mEditTextMemo, "일정 등록에 성공하였습니다.");
-//                finish();
             }
         }).addOnFailureListener(this, new OnFailureListener() {
             @Override
@@ -260,8 +263,6 @@ public class AddGroupToDoActivity extends BaseActivity {
                 Log.d("에러", e.toString());
             }
         });
-        //        removeGeofences -> List<String> 을 매개변수로 넘겨서 id(string)값으로 지오펜싱 제거
-//                geofencingClient.removeGeofences(new List<String>())
     }
 
     private void insertToRoomDB() {
