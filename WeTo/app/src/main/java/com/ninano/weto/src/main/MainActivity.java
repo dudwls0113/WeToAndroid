@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
@@ -39,8 +40,10 @@ import com.ninano.weto.src.custom.NonSwipeViewPager;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.group_invite.GroupInviteActivity;
 import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
+import com.ninano.weto.src.main.interfaces.MainActivityView;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
+import com.ninano.weto.src.main.todo_group.ToDoGroupService;
 import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
 import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.pedro.library.AutoPermissions;
@@ -57,8 +60,10 @@ import devlight.io.library.ntb.NavigationTabBar;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
+import static com.ninano.weto.src.ApplicationClass.fcmToken;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
-public class MainActivity extends BaseActivity implements AutoPermissionsListener {
+public class MainActivity extends BaseActivity implements AutoPermissionsListener, MainActivityView {
 
     private Context mContext;
 
@@ -103,8 +108,12 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
                 new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
-                        ApplicationClass.fcmToken = instanceIdResult.getToken();
-//                        Log.d("Firebase", "token: " + fcmToken);
+                        fcmToken = instanceIdResult.getToken();
+                        Log.d("Firebase", "token: " + fcmToken);
+                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
+                            Log.d("로그인", "token: " + fcmToken);
+                            tryPostFcmToken(fcmToken);
+                        }
                     }
                 });
         if (getIntent().getBooleanExtra("kakaoShare",false)){
@@ -133,6 +142,21 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         }
     }
 
+    private void tryPostFcmToken(String fcmToken) {
+        MainService mainService = new MainService(mContext, this);
+        mainService.postFcmToken(fcmToken);
+    }
+
+    @Override
+    public void updateFcmTokenSuccess() {
+        Log.d("MainActivity", "fcm업데이트 성공");
+    }
+
+    @Override
+    public void updateFcmTokenFail() {
+        Log.d("MainActivity", "fcm업데이트 실패");
+    }
+
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
     private static class InsertAsyncTask extends AsyncTask<Object, Void, Void> {
@@ -147,40 +171,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
             mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
             return null;
         }
-    }
-
-
-    private PendingIntent geofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        PendingIntent geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return geofencePendingIntent;
-    }
-
-    private GeofencingRequest getGeofencingRequest(List<Geofence> list) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        // Geofence 이벤트는 진입시 부터 처리할 때
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(list);  // Geofence 리스트 추가
-        return builder.build();
-    }
-
-    private Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter, int LoiteringDelay) {
-        int GEOFENCE_TRANSITION;
-        if (type == 1) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == 2) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
-        } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
-        }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LoiteringDelay)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
     }
 
     void init() {
@@ -277,7 +267,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
