@@ -34,6 +34,7 @@ import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
+import static com.ninano.weto.src.common.util.Util.sendNotification;
 
 public class WifiService extends JobService {
 
@@ -48,57 +49,23 @@ public class WifiService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         try {
-            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char)22).get();
+            List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) 22).get();
             SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
-            String recentWifi = sf.getString("recentWifi","");
+            String recentWifi = sf.getString("recentWifi", "");
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             final WifiInfo wifiInfo;
             if (wifiManager != null) {
                 wifiInfo = wifiManager.getConnectionInfo();
                 if (wifiInfo != null && wifiInfo.getBSSID() != null) {
-                    if (!wifiInfo.getBSSID().equals(recentWifi)){ // 현재연결와이파이와 recentWifi가 다르면 노티 보내야함
+                    if (!wifiInfo.getBSSID().equals(recentWifi)) { // 현재연결와이파이와 recentWifi가 다르면 노티 보내야함
                         SharedPreferences.Editor editor = sf.edit();
                         editor.putString("recentWifi", wifiInfo.getBSSID());
                         editor.apply();
-                        for(int i=0; i<toDoWithDataList.size(); i++){
-                            if(wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())){
+                        for (int i = 0; i < toDoWithDataList.size(); i++) {
+                            if (wifiInfo.getBSSID().equals(toDoWithDataList.get(i).getSsid())) {
                                 //타임슬롯 확인
-                                if(compareTimeSlot(toDoWithDataList.get(i).getTimeSlot())){
-                                    Intent notificationIntent = new Intent(this, MainActivity.class);
-                                    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                    final String CHANNEL_ID = "채널ID";
-                                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        final String CHANNEL_NAME = "채널이름";
-                                        final String CHANNEL_DESCRIPTION = "채널 Description";
-                                        final int importance = NotificationManager.IMPORTANCE_HIGH;
-
-                                        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-                                        mChannel.setDescription(CHANNEL_DESCRIPTION);
-                                        mChannel.enableLights(true);
-                                        mChannel.enableVibration(true);
-                                        mChannel.setVibrationPattern(new long[]{100, 200, 100, 200});
-                                        mChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-                                        if (notificationManager != null) {
-                                            notificationManager.createNotificationChannel(mChannel);
-                                        }
-                                    }
-
-
-                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-                                    builder.setSmallIcon(R.mipmap.ic_launcher);
-                                    builder.setWhen(System.currentTimeMillis());
-                                    builder.setContentTitle(toDoWithDataList.get(i).getTitle());
-                                    builder.setContentText(toDoWithDataList.get(i).getContent());
-                                    builder.setContentIntent(pendingIntent);
-                                    builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                                    builder.setAutoCancel(true);
-                                    if (notificationManager != null) {
-                                        notificationManager.notify(1, builder.build());
-                                    }
+                                if (compareTimeSlot(toDoWithDataList.get(i).getTimeSlot())) {
+                                    sendNotification(toDoWithDataList.get(i).getTitle(), toDoWithDataList.get(i).getContent());
                                     jobFinished(jobParameters, false);
                                 }
                             }
@@ -106,8 +73,7 @@ public class WifiService extends JobService {
                     }
                 }
             }
-        }
-        catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             Toast.makeText(getApplicationContext(), "연결실패", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -200,9 +166,10 @@ public class WifiService extends JobService {
         DBWifiAsyncTask(ToDoDao mTodoDao) {
             this.mTodoDao = mTodoDao;
         }
+
         @Override
         protected List<ToDoWithData> doInBackground(Character... characters) {
-            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int)characters[1]);
+            List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int) characters[1]);
             return toDoWithData;
         }
     }
