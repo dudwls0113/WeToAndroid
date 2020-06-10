@@ -914,9 +914,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
                 .setCancelText("취소")//取消按钮文字
                 .setSubmitText("확인")//确认按钮文字
-                .setTitleSize(20)//标题文字大小
+                .setTitleSize(15)//标题文字大小
                 .setContentTextSize(20)
-                .setSubCalSize(20)
+                .setSubCalSize(15)
                 .setTitleText("")//标题文字
                 .setOutSideCancelable(false)//点击屏幕，点在控件外部范围时，是否取消显示
                 .isCyclic(true)//是否循环滚动
@@ -949,9 +949,9 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
                 .setCancelText("취소")//取消按钮文字
                 .setSubmitText("확인")//确认按钮文字
-                .setTitleSize(20)//标题文字大小
+                .setTitleSize(15)//标题文字大小
                 .setContentTextSize(20)
-                .setSubCalSize(20)
+                .setSubCalSize(15)
                 .setTitleText("")//标题文字
                 .setOutSideCancelable(false)//点击屏幕，点在控件外部范围时，是否取消显示
                 .isCyclic(true)//是否循环滚动
