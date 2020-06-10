@@ -52,6 +52,8 @@ public class GeofenceMaker {
             builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         } else if (locationMode == AT_ARRIVE) {
             builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_EXIT);
+        } else { //들를 때
+            builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         }
 //        builder.addGeofences(geofence);  // Geofence 리스트 추가
         builder.addGeofence(geofence);
@@ -73,21 +75,27 @@ public class GeofenceMaker {
 
     public Geofence getGeofence(int type, String reqId, Pair<Double, Double> geo, Float radiusMeter) {
         int GEOFENCE_TRANSITION;
-        if (type == AT_ARRIVE) {
+        if (type == AT_ARRIVE || type == AT_START) {
             GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_ENTER;  // 진입 감지시
-        } else if (type == AT_START) {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_EXIT;  // 이탈 감지시
+            return new Geofence.Builder()
+                    .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
+                    .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
+                    .setLoiteringDelay(LOITERING_DELAY)                            // 머물기 체크 시간 -> 10초
+                    .setNotificationResponsiveness(120000)      //위치감지하는 텀 120000 = 120초
+                    .setTransitionTypes(GEOFENCE_TRANSITION)
+                    .build();
         } else {
-            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시
+            GEOFENCE_TRANSITION = GEOFENCE_TRANSITION_DWELL; // 머물기 감지시, LOITERING_DELAY를 좀더 낮게설정(인식이 잘되도록)
+            return new Geofence.Builder()
+                    .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
+                    .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
+                    .setLoiteringDelay(3000)                            // 머물기 체크 시간 -> 3초
+                    .setNotificationResponsiveness(120000)      //위치감지하는 텀 120000 = 120초
+                    .setTransitionTypes(GEOFENCE_TRANSITION)
+                    .build();
         }
-        return new Geofence.Builder()
-                .setRequestId(reqId)    // 이벤트 발생시 BroadcastReceiver에서 구분할 id
-                .setCircularRegion(geo.first, geo.second, radiusMeter)    // 위치및 반경(m)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)        // Geofence 만료 시간
-                .setLoiteringDelay(LOITERING_DELAY)                            // 머물기 체크 시간
-                .setNotificationResponsiveness(120000)      //위치감지하는 텀 180000 = 180초
-                .setTransitionTypes(GEOFENCE_TRANSITION)
-                .build();
     }
 
     private PendingIntent geofencePendingIntent() {
@@ -95,7 +103,9 @@ public class GeofenceMaker {
         return PendingIntent.getBroadcast(getApplicationClassContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public void addGeoFenceOne(int todoNo, double latitude, double longitude, int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
+    public void addGeoFenceOne(int todoNo, double latitude, double longitude,
+                               int locationMode, int radius, OnSuccessListener onSuccessListener, OnFailureListener
+                                       onFailureListener) {
         if (ActivityCompat.checkSelfPermission(getApplicationClassContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -119,7 +129,8 @@ public class GeofenceMaker {
         geofencingClient.removeGeofences(idList);
     }
 
-    public void addGeoFenceList(List<Geofence> geofenceList, OnSuccessListener onSuccessListener, OnFailureListener onFailureListener) {
+    public void addGeoFenceList(List<Geofence> geofenceList, OnSuccessListener
+            onSuccessListener, OnFailureListener onFailureListener) {
         if (ActivityCompat.checkSelfPermission(getApplicationClassContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions

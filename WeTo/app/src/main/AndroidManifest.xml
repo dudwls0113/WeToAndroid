@@ -24,11 +24,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".src.splash.SplashActivity">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
         </activity>
         <activity android:name=".src.todo_add.AddGroupToDoActivity" /> <!-- <activity android:name=".src.todo_detail.ToDoDetailActivity" /> -->
         <activity android:name=".src.group_add.GroupAddActivity" />
@@ -44,11 +44,6 @@
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
         <activity android:name=".src.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"

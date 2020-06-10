@@ -43,6 +43,7 @@ import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
 
 public class ToDoPersonalFragment extends BaseFragment {
@@ -173,11 +174,6 @@ public class ToDoPersonalFragment extends BaseFragment {
             @Override
             public void swipeDelete(int pos) {
                 mDeletePosition = pos;
-                if (mTodoList.get(pos).getType()==TIME){
-                    getAlarmMaker().removeAlarm(mTodoList.get(pos).getTodoNo());
-                } else if(mTodoList.get(pos).getType()==LOCATION){
-
-                }
                 new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos));
             }
         });
@@ -297,11 +293,11 @@ public class ToDoPersonalFragment extends BaseFragment {
         });
     }
 
-    private class DeleteToDoAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData>{
+    private class DeleteToDoAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
         private ToDoDao mTodoDao;
 
-        DeleteToDoAsyncTask(ToDoDao mTodoDao){
+        DeleteToDoAsyncTask(ToDoDao mTodoDao) {
             this.mTodoDao = mTodoDao;
         }
 
@@ -315,17 +311,23 @@ public class ToDoPersonalFragment extends BaseFragment {
         @Override
         protected void onPostExecute(ToDoWithData toDoWithData) {
             super.onPostExecute(toDoWithData);
-            if (toDoWithData.getStatus().equals("ACTIVATE")){ // ACTIVATE 리스트
+            if (toDoWithData.getStatus().equals("ACTIVATE")) { // ACTIVATE 리스트
                 mTodoList.remove(mDeletePosition);
-                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
-            } else if (toDoWithData.getStatus().equals("DONE")){ // DONE 리스트
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
+                    getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
+                }
+                else if (toDoWithData.getType() == TIME) {
+                    getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
+                }
+//                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
+            } else if (toDoWithData.getStatus().equals("DONE")) { // DONE 리스트
 
             }
 
         }
     }
 
-    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void>{
+    private class UpdateDoneAsyncTask extends AsyncTask<Integer, Void, Void> {
 
         private ToDoDao mTodoDao;
 
@@ -346,11 +348,11 @@ public class ToDoPersonalFragment extends BaseFragment {
         }
     }
 
-    private class UpdateActivateAsyncTask extends AsyncTask<Integer, Void, Void>{
+    private class UpdateActivateAsyncTask extends AsyncTask<Integer, Void, Void> {
 
         private ToDoDao mTodoDao;
 
-        UpdateActivateAsyncTask(ToDoDao mTodoDao){
+        UpdateActivateAsyncTask(ToDoDao mTodoDao) {
             this.mTodoDao = mTodoDao;
         }
 
@@ -361,11 +363,11 @@ public class ToDoPersonalFragment extends BaseFragment {
         }
     }
 
-    private class UpdateOrderAsyncTask extends AsyncTask<Integer, Void, Void>{
+    private class UpdateOrderAsyncTask extends AsyncTask<Integer, Void, Void> {
 
         private ToDoDao mTodoDao;
 
-        UpdateOrderAsyncTask(ToDoDao mTodoDao){
+        UpdateOrderAsyncTask(ToDoDao mTodoDao) {
             this.mTodoDao = mTodoDao;
         }
 
@@ -398,7 +400,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                 mDoneTodoList.clear();
                 mDoneTodoList.addAll(todoList);
                 mToDoPersonalDoneListAdapter.notifyDataSetChanged();
-                if (isExpandable){
+                if (isExpandable) {
                     showDoneLayout();
                 }
             }
@@ -440,9 +442,9 @@ public class ToDoPersonalFragment extends BaseFragment {
         anim1.start();
     }
 
-    private void showPlusDoneLayout(){
+    private void showPlusDoneLayout() {
         System.out.println(currentHeight + ", " + mDoneTodoList.size());
-        ValueAnimator anim1 = ValueAnimator.ofInt(mLInearHiddenDone.getLayoutParams().height, (int) (mLInearHiddenDone.getLayoutParams().height + 66 * density  + 15 * density));
+        ValueAnimator anim1 = ValueAnimator.ofInt(mLInearHiddenDone.getLayoutParams().height, (int) (mLInearHiddenDone.getLayoutParams().height + 66 * density + 15 * density));
         currentHeight = (66 * density * mDoneTodoList.size() + 15 * density);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);

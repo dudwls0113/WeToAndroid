@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     private ArrayList<ToDoWithData> toDoWithDataArrayList = new ArrayList<>();
     private MapLocationTodoAdapter mMapLocationTodoAdapter;
     private AppDatabase mDatabase;
+    private int currentPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,13 +117,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
             @Override
             public void onPageSelected(int position) {
-                CameraUpdate cameraUpdate = CameraUpdate.zoomTo(12);
+                CameraUpdate cameraUpdate = CameraUpdate.zoomTo(13);
                 naverMap.moveCamera(cameraUpdate);
                 CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(toDoWithDataArrayList.get(position).getLatitude(), toDoWithDataArrayList.get(position).getLongitude()))
                         .animate(CameraAnimation.Fly);
                 naverMap.moveCamera(cameraUpdate2);
-
                 mMapLocationTodoAdapter.getItem(position);
+                currentPosition = position;
+                Log.d("currentPosition = ", currentPosition + "");
             }
 
             @Override
@@ -141,6 +144,15 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                 mMapLocationTodoAdapter.setArrayList(todoList);
                 mMapLocationTodoAdapter.notifyDataSetChanged();
                 addTodoMarker(todoList);
+
+                //지도의 첫위치 셋팅
+                if (currentPosition < toDoWithDataArrayList.size()) {
+                    CameraUpdate cameraUpdate = CameraUpdate.zoomTo(13);
+                    naverMap.moveCamera(cameraUpdate);
+                    CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(toDoWithDataArrayList.get(currentPosition).getLatitude(), toDoWithDataArrayList.get(currentPosition).getLongitude()))
+                            .animate(CameraAnimation.Fly);
+                    naverMap.moveCamera(cameraUpdate2);
+                }
             }
         });
     }
@@ -282,7 +294,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             public void onLocationChange(@NonNull Location location) {
                 mCircleOverlay.setMap(null);
                 mCircleOverlay.setCenter(new LatLng(location.getLatitude(), location.getLongitude()));
-                mCircleOverlay.setRadius(60);
+                mCircleOverlay.setRadius(150);
                 mCircleOverlay.setColor(getResources().getColor(R.color.colorMapGpsTransBlue));
                 mCircleOverlay.setMap(naverMap);
             }
@@ -295,10 +307,18 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         uiSettings.setScaleBarEnabled(false);
         uiSettings.setLogoGravity(Gravity.TOP);
         uiSettings.setLogoMargin((int) (12 * density), (int) (12 * density), 0, 0);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
         setDatabase();
 
-//        naverMap.setLightness(0.3f);
-
+        //첫화면의 위치 설
+        Log.d("AAA currentPosition = ", currentPosition + "");
+        Log.d("AAA size()", toDoWithDataArrayList.size() + "");
+//        if (currentPosition < toDoWithDataArrayList.size()) {
+//            CameraUpdate cameraUpdate = CameraUpdate.zoomTo(12);
+//            naverMap.moveCamera(cameraUpdate);
+//            CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(toDoWithDataArrayList.get(currentPosition).getLatitude(), toDoWithDataArrayList.get(currentPosition).getLongitude()))
+//                    .animate(CameraAnimation.Fly);
+//            naverMap.moveCamera(cameraUpdate2);
+//        }
     }
 }
