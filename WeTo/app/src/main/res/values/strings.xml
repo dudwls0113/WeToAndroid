@@ -20,6 +20,8 @@
     <string name="favorite_place_home_title">집으로 등록할 장소를 선택해주세요.</string>
     <string name="favorite_place_company_title">회사로 등록할 장소를 선택\n해주세요.</string>
     <string name="favorite_place_school_title">학교로 등록할 장소를 선택\n해주세요.</string>
+    <string name="cant_geofence">"완료 할 수 없습니다.\n위치서비스를 활성화 해 주세요"</string>
+    <string name="cant_geofence_when_splash">"위치서비스를 활성하지 않으면\n위치알림을 받을 수 없습니다"</string>
 
     <string name="group_invite_title">그룹에 초대하기</string>
     <string name="group_invite_button">카카오톡 친구 초대하기</string>

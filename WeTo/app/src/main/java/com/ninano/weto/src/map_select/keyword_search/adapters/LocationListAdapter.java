@@ -48,8 +48,16 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         holder.mTextViewAddressName.setText(mDataArrayList.get(position).getAddressName());
         holder.mTextViewCategory.setText(mDataArrayList.get(position).getCategoryGroupName());
         try {
-            int disKm = Integer.parseInt(mDataArrayList.get(position).getDistanceStr()) / 1000;
-            holder.mTextViewDistance.setText(disKm + "Km");
+            int distance = Integer.parseInt(mDataArrayList.get(position).getDistanceStr());
+            if(distance>1000){
+                int disKm = distance / 1000;
+                holder.mTextViewDistance.setText(disKm + "Km");
+            }
+            else{
+                int disM = distance;
+                holder.mTextViewDistance.setText(disM + "m");
+            }
+
         } catch (NumberFormatException e) {
 
         }

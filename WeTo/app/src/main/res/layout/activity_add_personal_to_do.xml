@@ -28,6 +28,7 @@
 
         <ImageView
             android:id="@+id/add_personal_todo_iv_back"
+            android:onClick="customOnClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -170,7 +171,6 @@
                             android:id="@+id/add_personal_todo_tv_week_repeat"
                             android:layout_width="0dp"
                             android:layout_height="33dp"
-                            android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
                             android:gravity="center"
@@ -183,6 +183,7 @@
 
                         <TextView
                             android:id="@+id/add_personal_todo_tv_month_repeat"
+                            android:visibility="gone"
                             android:layout_width="0dp"
                             android:layout_height="33dp"
                             android:layout_weight="1"

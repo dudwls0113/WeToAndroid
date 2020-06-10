@@ -89,9 +89,11 @@ public class SplashActivity extends BaseActivity {
             }, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    showCustomToast("GPS기반 일정기능을 이용하기 위해서는 GPS를 켜주세요.");
-//                    Intent i = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                    startActivity(i);
+                    System.out.println("에러: " + e.toString());
+                    showCustomToast(getString(R.string.cant_geofence_when_splash));
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

@@ -94,7 +94,6 @@ public class Util {
         }
     }
 
-
     public static void sendNotification(String title, String content) {
         Intent notificationIntent = new Intent(getApplicationClassContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

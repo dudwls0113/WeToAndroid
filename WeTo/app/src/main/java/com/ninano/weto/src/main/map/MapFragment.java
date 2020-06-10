@@ -307,7 +307,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         uiSettings.setScaleBarEnabled(false);
         uiSettings.setLogoGravity(Gravity.TOP);
         uiSettings.setLogoMargin((int) (12 * density), (int) (12 * density), 0, 0);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         setDatabase();
 
         //첫화면의 위치 설

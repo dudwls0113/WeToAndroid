@@ -25,6 +25,7 @@
     <color name="colorGroup11">#ff6f00</color>
     <color name="colorGroup12">#915039</color>
     <color name="colorGroup13">#657884</color>
+    <color name="colorTrans">#00FFFFFF</color>
 
     <color name="colorMapGpsTransBlue">#1a0809ff</color>
     <color name="colorMarker">#0809ff</color>

@@ -324,8 +324,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mMarker.setMap(null);
         mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
         mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
-        mMarker.setWidth(200);
-        mMarker.setHeight(230);
+//        mMarker.setWidth(200);
+//        mMarker.setHeight(230);
         mMarker.setMap(naverMap);
     }
 
@@ -341,8 +341,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mMarker.setMap(null);
         mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
         mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
-        mMarker.setWidth(200);
-        mMarker.setHeight(230);
+//        mMarker.setWidth(200);
+//        mMarker.setHeight(230);
         mMarker.setMap(naverMap);
     }
 
@@ -357,8 +357,8 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mMarker.setMap(null);
         mMarker.setPosition(new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLongitude())));
         mMarker.setIcon(OverlayImage.fromResource(R.drawable.img_gps));
-        mMarker.setWidth(200);
-        mMarker.setHeight(230);
+//        mMarker.setWidth(200);
+//        mMarker.setHeight(230);
         mMarker.setMap(naverMap);
     }
 

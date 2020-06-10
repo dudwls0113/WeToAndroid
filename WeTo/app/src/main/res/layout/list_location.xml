@@ -76,13 +76,14 @@
             android:id="@+id/list_location_tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="end"
+            android:layout_gravity="end"
             android:layout_marginTop="5dp"
             android:lineSpacingExtra="5sp"
             android:textColor="@color/colorSearchGray"
             android:textSize="10sp"
             android:textStyle="bold"
-            tools:text="1,2km" />
+            tools:text="1.2km" />
     </LinearLayout>
 
 
