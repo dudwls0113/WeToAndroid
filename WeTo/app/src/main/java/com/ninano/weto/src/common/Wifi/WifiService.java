@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
+import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
 
 public class WifiService extends JobService {
 
@@ -203,26 +204,6 @@ public class WifiService extends JobService {
         protected List<ToDoWithData> doInBackground(Character... characters) {
             List<ToDoWithData> toDoWithData = mDatabase.todoDao().getTodoWithWifi(characters[0], (int)characters[1]);
             return toDoWithData;
-        }
-    }
-
-    private boolean compareTimeSlot(int timeSlot){
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfNow = new SimpleDateFormat("HH");
-        String hour = sdfNow.format(date);
-        int currentHour = Integer.parseInt(hour);
-        System.out.println("시간: " + currentHour);
-        if (timeSlot==100){
-            return true;
-        } else if(timeSlot==200){
-            return currentHour >= 6 && currentHour < 12;
-        } else if(timeSlot==300){
-            return currentHour >= 12 && currentHour < 21;
-        } else if(timeSlot==400){
-            return currentHour >= 21 && currentHour < 24 || currentHour>=0 && currentHour<6;
-        } else {
-            return false;
         }
     }
 }

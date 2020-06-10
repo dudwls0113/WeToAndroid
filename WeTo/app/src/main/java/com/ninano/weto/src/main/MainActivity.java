@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 //        if(sSharedPreferences.getBoolean("kakaoLogin",false)){
 //            Session.getCurrentSession().checkAndImplicitOpen();
 //        }
-        showCustomToast(Session.getCurrentSession().getTokenInfo().getAccessToken());
+//        showCustomToast(Session.getCurrentSession().getTokenInfo().getAccessToken());
         System.out.println(Session.getCurrentSession().getTokenInfo().getAccessToken());
         mContext = this;
         AutoPermissions.Companion.loadAllPermissions(this, 100);
