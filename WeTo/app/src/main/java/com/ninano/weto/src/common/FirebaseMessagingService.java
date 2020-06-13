@@ -103,7 +103,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 longitude = Double.parseDouble(data.get("longitude"));
                 radius = Integer.parseInt(data.get("radius"));
                 isWiFi = data.get("isWiFi");
-                ssid = data.get("ssid");
+                   ssid = data.get("ssid");
             } else if (type == 66) {
                 repeatDayOfWeek = data.get("repeatDayOfWeek");
                 repeatDay = Integer.parseInt(data.get("repeatDay"));
