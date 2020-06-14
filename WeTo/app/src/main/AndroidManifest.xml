@@ -23,6 +23,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".src.tutorial.TutorialActivity"></activity>
         <activity android:name=".src.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,8 +36,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/kakao_scheme"
-                    android:host="@string/kakaolink_host"/>
+                <data
+                    android:host="@string/kakaolink_host"
+                    android:scheme="@string/kakao_scheme" />
             </intent-filter>
         </activity>
         <activity android:name=".src.todo_add.AddGroupToDoActivity" /> <!-- <activity android:name=".src.todo_detail.ToDoDetailActivity" /> -->
@@ -52,12 +54,11 @@
         <activity android:name=".src.group_detail.GroupDetailActivity" />
         <activity android:name=".src.todo_add.AddPersonalToDoActivity" />
         <activity android:name=".src.wifi_search.WifiSearchActivity" />
-        <activity android:name=".src.main.MainActivity"></activity>
+        <activity android:name=".src.main.MainActivity" />
         <activity
             android:name=".src.map_select.keyword_search.KeywordMapSearchActivity"
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".src.map_select.MapSelectActivity" />
-
 
         <receiver android:name=".src.common.Alarm.AlarmBroadcastReceiver" />
 
@@ -94,7 +95,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>
