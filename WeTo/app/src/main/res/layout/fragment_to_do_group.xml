@@ -219,18 +219,18 @@
             android:padding="13dp" />
     </LinearLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/colorWhite">-->
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="준비중입니다."-->
-<!--            android:textColor="@color/colorBlack"-->
-<!--            android:textSize="34sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:layout_centerInParent="true"/>-->
-<!--    </RelativeLayout>-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="준비중입니다."
+            android:textColor="@color/colorBlack"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
 </FrameLayout>
