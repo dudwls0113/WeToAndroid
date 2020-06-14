@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Pair;
@@ -17,6 +18,7 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.MainActivity;
+import com.ninano.weto.src.tutorial.TutorialActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import static android.content.Intent.ACTION_VIEW;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 
@@ -42,6 +45,16 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mContext = this;
+
+        boolean isFirst = sSharedPreferences.getBoolean("firstConnect", true);
+        if (isFirst){
+//            SharedPreferences.Editor editor = sSharedPreferences.edit();
+//            editor.putBoolean("firstConnect", false);
+//            editor.apply();
+            startActivity(new Intent(SplashActivity.this, TutorialActivity.class));
+            finish();
+            return;
+        }
 
         if(getIntent()!=null){
             if(getIntent().getAction()!=null){
