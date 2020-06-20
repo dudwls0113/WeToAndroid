@@ -40,6 +40,7 @@ public class GroupToDoAddDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 mGroupToDoAddListener.todoClick();
+                dismiss();
             }
         });
 
@@ -48,6 +49,7 @@ public class GroupToDoAddDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 mGroupToDoAddListener.meetClick();
+                dismiss();
             }
         });
     }

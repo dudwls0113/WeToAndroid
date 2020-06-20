@@ -3,6 +3,7 @@ package com.ninano.weto.src.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -178,7 +179,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         mToDoPersonalFragment = new ToDoPersonalFragment();
         mToDoGroupFragment = new ToDoGroupFragment();
 
-        mMainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
+        mMainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mMainViewPagerAdapter.addFragment(mMapFragment, "1");
         mMainViewPagerAdapter.addFragment(mToDoPersonalFragment, "2");
         mMainViewPagerAdapter.addFragment(mToDoGroupFragment, "3");

@@ -84,10 +84,10 @@ public class ApplicationClass extends Application {
     public static final int NO_DATA = -1;          //의미없는값표시
 
 
-    public static final int HOME_SELECT_MODE = 500;      //매달반복
-    public static final int COMPANY_SELECT_MODE = 600;      //매달반복
-    public static final int SCHOOL_SELECT_MODE = 700;      //매달반복
-    public static final int OTHER_SELECT_MODE = 800;      //매달반복
+    public static final int HOME_SELECT_MODE = 500;
+    public static final int COMPANY_SELECT_MODE = 600;
+    public static final int SCHOOL_SELECT_MODE = 700;
+    public static final int OTHER_SELECT_MODE = 800;
 
     public static String fcmToken = "";
 

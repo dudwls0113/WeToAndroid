@@ -26,6 +26,15 @@ public class ToDoWithData implements Serializable {
     private int repeatDay;
     private String date;
     private char isImportant;
+    private String groupTodoCreator;
+
+    public String getGroupTodoCreator() {
+        return groupTodoCreator;
+    }
+
+    public void setGroupTodoCreator(String groupTodoCreator) {
+        this.groupTodoCreator = groupTodoCreator;
+    }
 
     public String getDate() {
         return date;

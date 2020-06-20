@@ -2,6 +2,7 @@ package com.ninano.weto.src.main.adpater;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -16,9 +17,10 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> mFragments = new ArrayList<>();
     private List<String> mFragmentTitles = new ArrayList<>();
 
-    public MainViewPagerAdapter(FragmentManager fm) {
-        super(fm);
+    public MainViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+        super(fm, behavior);
     }
+
 
     public void addFragment(Fragment fragment, String title){
         mFragments.add(fragment);

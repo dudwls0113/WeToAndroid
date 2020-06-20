@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/dialog_make_group_input_name"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="312dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_round_dialog"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:lineSpacingExtra="9sp"
+            android:textStyle="bold"
+            android:text="그룹 생성하기"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/dialog_make_group_iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="35dp"
+            android:paddingTop="37dp"
+            android:paddingBottom="40dp"
+            android:src="@drawable/btn_close_x" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:text="아이콘 선택"
+        android:layout_marginStart="30dp"
+        android:lineSpacingExtra="9sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="14dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group1_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group2_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group3_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group4_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group5_off" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group6_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group7_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group8_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group9_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group10_off" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_11"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group11_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group12_off"
+            android:layout_marginEnd="11dp"/>
+        <ImageView
+            android:id="@+id/dialog_personal_todo_icon_iv_13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:src="@drawable/group13_off"
+            android:layout_marginEnd="11dp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="11dp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/dialog_make_group_input_name_et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_rec_trans_gray"
+        android:singleLine="true"
+        android:hint="그룹명을 입력해주세요"
+        android:maxLength="15"
+        android:padding="15dp"
+        android:textColor="@color/colorBlack"
+        android:textColorHint="@color/colorGray"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_make_group_input_name_btn_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_round_back_gray"
+            android:gravity="center"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:text="등록하기"
+            android:textColor="@color/colorGroup13"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

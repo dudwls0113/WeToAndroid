@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ninano.weto.R;
@@ -20,7 +21,7 @@ public class NameSelectDialog extends Dialog {
 
     private NameSelectDialogClickListener mNameSelectDialogClickListener;
     private EditText mEditTextName;
-
+    private ImageView mImageViewBack;
     private Context mContext;
 
     public interface NameSelectDialogClickListener {
@@ -39,6 +40,14 @@ public class NameSelectDialog extends Dialog {
         GradientDrawable drawable = (GradientDrawable) mContext.getDrawable(R.drawable.bg_round_dialog);
         mView.setBackground(drawable);
         mView.setClipToOutline(true);
+
+        mImageViewBack = findViewById(R.id.dialog_favorite_place_iv_back);
+        mImageViewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         TextView mTextViewYes = findViewById(R.id.dialog_favorite_place_input_name_btn_ok);
         mEditTextName = findViewById(R.id.dialog_favorite_place_input_name_et_name);

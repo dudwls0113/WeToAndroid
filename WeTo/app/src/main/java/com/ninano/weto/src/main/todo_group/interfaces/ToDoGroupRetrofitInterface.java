@@ -1,6 +1,7 @@
 package com.ninano.weto.src.main.todo_group.interfaces;
 
 import com.ninano.weto.src.DefaultResponse;
+import com.ninano.weto.src.DefaultResponse2;
 import com.ninano.weto.src.main.todo_group.models.GroupResponse;
 
 import okhttp3.RequestBody;
@@ -18,4 +19,7 @@ public interface ToDoGroupRetrofitInterface {
 
     @GET("/group")
     Call<GroupResponse> getGroup();
+
+    @POST("/group")
+    Call<DefaultResponse2> postGroup(@Body RequestBody params);
 }

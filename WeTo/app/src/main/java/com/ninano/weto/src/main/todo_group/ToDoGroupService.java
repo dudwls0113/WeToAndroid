@@ -3,6 +3,8 @@ package com.ninano.weto.src.main.todo_group;
 import android.content.Context;
 
 import com.ninano.weto.src.DefaultResponse;
+import com.ninano.weto.src.DefaultResponse2;
+import com.ninano.weto.src.group_add.interfaces.GroupAddRetrofitInterface;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupRetrofitInterface;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupView;
 import com.ninano.weto.src.main.todo_group.models.GroupResponse;
@@ -109,6 +111,36 @@ public class ToDoGroupService {
 
             @Override
             public void onFailure(Call<GroupResponse> call, Throwable t) {
+                mToDoGroupView.validateFailure(null);
+            }
+        });
+    }
+
+    void postGroup(int icon, String name){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", name);
+            params.put("icon", icon);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final ToDoGroupRetrofitInterface toDoGroupRetrofitInterface = getRetrofit().create(ToDoGroupRetrofitInterface.class);
+        toDoGroupRetrofitInterface.postGroup(RequestBody.create(params.toString(), MEDIA_TYPE_JSON)).enqueue(new Callback<DefaultResponse2>() {
+            @Override
+            public void onResponse(Call<DefaultResponse2> call, Response<DefaultResponse2> response) {
+                final DefaultResponse2 defaultResponse2 = response.body();
+                if(defaultResponse2==null){
+                    mToDoGroupView.validateFailure(null);
+                } else if(defaultResponse2.getCode()==100){
+                    mToDoGroupView.groupAddSuccess();
+                } else {
+                    mToDoGroupView.validateFailure(defaultResponse2.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResponse2> call, Throwable t) {
                 mToDoGroupView.validateFailure(null);
             }
         });

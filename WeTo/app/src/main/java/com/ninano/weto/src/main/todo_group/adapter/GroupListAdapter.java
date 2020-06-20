@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ninano.weto.R;
 import com.ninano.weto.src.main.todo_group.models.GroupData;
+import com.ninano.weto.src.main.todo_group.models.Member;
 
 import java.util.ArrayList;
 
@@ -94,100 +95,100 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
 //                count = "일정 " + mData.get(position).getToDoCount()+"개";
 //            }
 //            holder.mTextViewCount.setText(count);
-//
-//            switch (mData.get(position).getIconType()){
-//                case 1:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip1);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_1);
-//                    break;
-//                case 2:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip2);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_2);
-//                    break;
-//                case 3:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip3);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_3);
-//                    break;
-//                case 4:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip4);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_4);
-//                    break;
-//                case 5:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip5);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_5);
-//                    break;
-//                case 6:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip6);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_6);
-//                    break;
-//                case 7:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip7);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_7);
-//                    break;
-//                case 8:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip8);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_8);
-//                    break;
-//                case 9:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip9);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_9);
-//                    break;
-//                case 10:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip10);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_10);
-//                    break;
-//                case 11:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip11);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_11);
-//                    break;
-//                case 12:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip12);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_12);
-//                    break;
-//                case 13:
-//                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip13);
-//                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
-//                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
-//                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
-//                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_13);
-//                    break;
-//            }
+
+            switch (mData.get(position).getIcon()){
+                case 1:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip1);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup1));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_1);
+                    break;
+                case 2:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip2);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup2));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_2);
+                    break;
+                case 3:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip3);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup3));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_3);
+                    break;
+                case 4:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip4);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup4));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_4);
+                    break;
+                case 5:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip5);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup5));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_5);
+                    break;
+                case 6:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip6);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup6));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_6);
+                    break;
+                case 7:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip7);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup7));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_7);
+                    break;
+                case 8:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip8);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup8));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_8);
+                    break;
+                case 9:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip9);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup9));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_9);
+                    break;
+                case 10:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip10);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup10));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_10);
+                    break;
+                case 11:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip11);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup11));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_11);
+                    break;
+                case 12:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip12);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup12));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_12);
+                    break;
+                case 13:
+                    holder.mImageViewType.setImageResource(R.drawable.ic_paperclip13);
+                    holder.mTextViewTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
+                    holder.mTextViewMember.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
+                    holder.mTextViewCount.setTextColor(ContextCompat.getColor(mContext, R.color.colorGroup13));
+                    holder.mLinearFront.setBackgroundResource(R.drawable.bg_round_group_13);
+                    break;
+            }
         }
     }
 
