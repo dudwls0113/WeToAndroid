@@ -64,10 +64,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 // Handle message within 10 seconds
                 //handleNow();
             }
-
         }
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 
     private void receiveFcmData(Map<String, String> data) {
@@ -103,7 +100,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 longitude = Double.parseDouble(data.get("longitude"));
                 radius = Integer.parseInt(data.get("radius"));
                 isWiFi = data.get("isWiFi");
-                ssid = data.get("ssid");
+                   ssid = data.get("ssid");
             } else if (type == 66) {
                 repeatDayOfWeek = data.get("repeatDayOfWeek");
                 repeatDay = Integer.parseInt(data.get("repeatDay"));
