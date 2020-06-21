@@ -1,5 +1,6 @@
 package com.ninano.weto.src.main.todo_group;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ReceiverCallNotAllowedException;
@@ -40,15 +41,18 @@ import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.User;
 import com.kakao.util.exception.KakaoException;
 import com.ninano.weto.R;
+import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_add.GroupAddActivity;
+import com.ninano.weto.src.group_add.GroupAddService;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.main.todo_group.adapter.GroupListAdapter;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupView;
 import com.ninano.weto.src.main.todo_group.models.GroupData;
+import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.main.todo_group.models.ToDoGroupData;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
 
@@ -79,8 +83,19 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
 
     private RecyclerView mRecyclerViewList;
     private ToDoGroupListAdapter mToDoGroupListAdapter;
-    private ArrayList<ToDoGroupData> mGroupListData = new ArrayList<>();
+    private ArrayList<ToDoWithData> mGroupListData = new ArrayList<>();
     private ItemTouchHelper mItemTouchHelper;
+
+    private LinearLayout mLinearHiddenDone;
+    private RecyclerView mRecyclerViewDone;
+    private ToDoGroupListAdapter mToDoGroupDoneListAdapter;
+    private ArrayList<ToDoWithData> mGroupListDoneData = new ArrayList<>();
+    private ItemTouchHelper mDoneItemTouchHelper;
+
+    private LinearLayout mLinearExpand;
+    private boolean isExpandable;
+    private TextView mTextViewExpand;
+    private ImageView mImageViewExpand;
 
     private ImageView mImageViewDrag, mImageViewAddAndDragConfirm;
     private boolean isEditMode = true;
@@ -91,6 +106,8 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
     private Button mButtonLogin;
 
     private float density;
+
+    private GroupMakeDialog groupMakeDialog;
 
     //카카오 로그인
     private ISessionCallback mKakaoCallback;
@@ -118,7 +135,6 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             mLayoutButton.setVisibility(View.GONE);
             mLayoutLogin.setVisibility(View.VISIBLE);
         }
-        setToDoTempData();
         setConfigureKakao();
         return v;
     }
@@ -155,20 +171,22 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             public void itemClick(int pos) {
                 Intent intent = new Intent(mContext, GroupDetailActivity.class);
                 intent.putExtra("groupId", mData.get(pos).getNo());
+                intent.putExtra("members", mData.get(pos).getMembers());
                 startActivity(intent);
             }
 
             @Override
             public void backItemClick(int pos) {
-                Intent intent = new Intent(mContext, GroupAddActivity.class);
-                startActivity(intent);
+                groupMakeDialog = new GroupMakeDialog(mContext, new GroupMakeDialog.GroupMakeDialogClickListener() {
+                    @Override
+                    public void okClicked(String name, int groupIcon) {
+                        postGroup(groupIcon, name);
+                    }
+                });
+                groupMakeDialog.show();
             }
         });
 
-//        PagerSnapHelper snapHelper = new PagerSnapHelper();
-//        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
-//        SnapHelper snapHelper = new StartSnapHelper();
-//        snapHelper.attachToRecyclerView(mRecyclerViewGroup);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -240,6 +258,59 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             }
         });
 
+        mLinearHiddenDone = v.findViewById(R.id.todo_group_fragment_layout_hidden_done);
+        mRecyclerViewDone = v.findViewById(R.id.todo_group_fragment_rv_done);
+        mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
+        mToDoGroupDoneListAdapter = new ToDoGroupListAdapter(mContext, mGroupListDoneData, new ToDoGroupListAdapter.ItemClickListener() {
+            @Override
+            public void itemClick(int pos) {
+
+            }
+
+            @Override
+            public void onStartDrag(ToDoGroupListAdapter.CustomViewHolder holder) {
+                mDoneItemTouchHelper.startDrag(holder);
+            }
+        });
+
+        ToDoPersonalItemTouchHelperCallback mDoneCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoGroupDoneListAdapter, mContext);
+        mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
+        mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
+
+        mRecyclerViewDone.setAdapter(mToDoGroupDoneListAdapter);
+
+        mTextViewExpand = v.findViewById(R.id.todo_group_tv_expand);
+        mImageViewExpand = v.findViewById(R.id.todo_group_iv_expand);
+
+        mLinearExpand = v.findViewById(R.id.todo_group_fragment_layout_expandable);
+        mLinearExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isExpandable) {
+                    hideDoneLayout();
+                    mTextViewExpand.setText("완료된 항목");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_down_blue);
+                    isExpandable = false;
+                } else {
+                    showDoneLayout();
+                    mTextViewExpand.setText("접기");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_up);
+                    isExpandable = true;
+                }
+            }
+        });
+
         mLayoutLogin = v.findViewById(R.id.todo_group_fragment_layout_login);
         mLayoutButton = v.findViewById(R.id.todo_group_fragment_layout_button);
         mButtonLogin = v.findViewById(R.id.dialog_group_login_btn_login);
@@ -250,6 +321,12 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
                 Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, getActivity());
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getGroup();
     }
 
     private void getCurrentTime(){
@@ -309,14 +386,34 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         Session.getCurrentSession().checkAndImplicitOpen();
     }
 
-    void setToDoTempData(){
-        mGroupListData.clear();
-        mGroupListData.add(new ToDoGroupData(1, "비타민 챙겨먹기", "집, 매일, 아침 8시", "나",1, 0));
-        mGroupListData.add(new ToDoGroupData(1, "형광펜 사기", "집, 매일, 아침 8시","문영진", 1, 0));
-        mGroupListData.add(new ToDoGroupData(1, "우유 사기", "집, 매일, 아침 8시", "모영민",1, 0));
-        mGroupListData.add(new ToDoGroupData(1, "우산 챙기기", "집, 매일, 아침 8시", "나",1, 0));
+    private void showDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, (int) (66 * density * mGroupListDoneData.size() + 15 * density));
+        anim1.setDuration(500);
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Integer value = (Integer) valueAnimator.getAnimatedValue();
+                mLinearHiddenDone.getLayoutParams().height = value.intValue();
+                mLinearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
+    }
 
-        mToDoGroupListAdapter.notifyDataSetChanged();
+    private void hideDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt((int) (66 * density * mGroupListDoneData.size() + 15 * density), 0);
+        anim1.setDuration(500); // duration 5 seconds
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                mLinearHiddenDone.getLayoutParams().height = value.intValue();
+                mLinearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
     }
 
     @Override
@@ -341,6 +438,11 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         toDoGroupService.getGroup();
     }
 
+    private void postGroup(int icon, String name){
+        ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
+        toDoGroupService.postGroup(icon, name);
+    }
+
     @Override
     public void existUser() {
         mLayoutButton.setVisibility(View.VISIBLE);
@@ -348,6 +450,7 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         SharedPreferences.Editor editor = sSharedPreferences.edit();
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
+        getGroup();
     }
 
     @Override
@@ -369,8 +472,14 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
     public void getGroupSuccess(ArrayList<GroupData> arrayList) {
         mData.clear();
         mData.addAll(arrayList);
-        mData.add(new GroupData(-1,null,-1,null));
+        mData.add(new GroupData(-1,null,-1,-1, -1, null));
         mGroupListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void groupAddSuccess() {
+        groupMakeDialog.dismiss();
+        getGroup();
     }
 
     @Override

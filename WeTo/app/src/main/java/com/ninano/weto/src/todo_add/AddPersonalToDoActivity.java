@@ -625,7 +625,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void showTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 170 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 160 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -640,7 +640,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideTimeLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(170 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(160 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -655,7 +655,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void showGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(0, 260 * (int) dpUnit);
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, 210 * (int) dpUnit);
         anim1.setDuration(500);
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -671,7 +671,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
     }
 
     private void hideGpsLayout() {
-        ValueAnimator anim1 = ValueAnimator.ofInt(250 * (int) dpUnit, 0);
+        ValueAnimator anim1 = ValueAnimator.ofInt(210 * (int) dpUnit, 0);
         anim1.setDuration(500); // duration 5 seconds
         anim1.setRepeatMode(ValueAnimator.REVERSE);
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

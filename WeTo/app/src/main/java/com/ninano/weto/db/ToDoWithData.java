@@ -37,6 +37,16 @@ public class ToDoWithData implements Serializable {
         this.meetRemindTime = meetRemindTime;
     }
 
+    private String groupTodoCreator;
+
+    public String getGroupTodoCreator() {
+        return groupTodoCreator;
+    }
+
+    public void setGroupTodoCreator(String groupTodoCreator) {
+        this.groupTodoCreator = groupTodoCreator;
+    }
+
     public String getDate() {
         return date;
     }

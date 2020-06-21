@@ -140,8 +140,8 @@
 
                         <TextView
                             android:id="@+id/add_personal_todo_tv_no_repeat"
-                            android:layout_width="0dp"
-                            android:layout_height="33dp"
+                            android:layout_width="117dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_on"

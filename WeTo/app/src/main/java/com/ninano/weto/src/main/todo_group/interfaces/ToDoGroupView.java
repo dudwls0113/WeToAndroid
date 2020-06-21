@@ -14,5 +14,7 @@ public interface ToDoGroupView {
 
     void getGroupSuccess(ArrayList<GroupData> arrayList);
 
+    void groupAddSuccess();
+
     void validateFailure(String message);
 }

@@ -20,6 +20,7 @@ public class ToDo {
 
     //그룹 일정용
     private char isGroup; // 그룹아니면 N
+    private String groupTodoCreator;
 
     //그룹용 생성자
     public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup) {
@@ -33,6 +34,20 @@ public class ToDo {
         this.isGroup = isGroup;
     }
 
+//    //그룹용 생성자(ToDo생성자 포함)
+//    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo, String groupTodoCreator) {
+//        this.title = title;
+//        this.content = content;
+//        this.icon = icon;
+//        this.type = type;
+//        this.status = "ACTIVATE";
+//        this.ordered = 0;
+//        this.isImportant = isImportant;
+//        this.isGroup = isGroup;
+//        this.serverTodoNo = serverTodoNo;
+//        this.groupTodoCreator = groupTodoCreator;
+//    }
+
     //로컬용 생성자
     @Ignore
     public ToDo(String title, String content, int icon, int type, char isImportant) {
@@ -44,6 +59,14 @@ public class ToDo {
         this.ordered = 0;
         this.isImportant = isImportant;
         this.isGroup = 'N';
+    }
+
+    public String getGroupTodoCreator() {
+        return groupTodoCreator;
+    }
+
+    public void setGroupTodoCreator(String groupTodoCreator) {
+        this.groupTodoCreator = groupTodoCreator;
     }
 
     public void setTodoNo(int todoNo) {

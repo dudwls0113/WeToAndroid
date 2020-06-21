@@ -2,7 +2,7 @@
 <LinearLayout
     android:id="@+id/dialog_favorite_place_input_name"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
+    android:layout_width="312dp"
     android:layout_height="260dp"
     android:background="@drawable/bg_round_dialog"
     android:orientation="vertical">
@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:textStyle="bold"
             android:layout_weight="1"
             android:lineSpacingExtra="9sp"
             android:text="자주 가는 장소"
@@ -24,6 +25,7 @@
             android:textSize="18sp" />
 
         <ImageView
+            android:id="@+id/dialog_favorite_place_iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="35dp"

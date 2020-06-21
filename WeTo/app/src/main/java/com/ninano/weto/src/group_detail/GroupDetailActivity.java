@@ -6,25 +6,33 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.ninano.weto.R;
+import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_detail.adpater.GroupMemberListAdapter;
 import com.ninano.weto.src.group_detail.models.GroupMemberData;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
+import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.main.todo_group.models.ToDoGroupData;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
+import com.ninano.weto.src.todo_add.AddGroupToDoActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GroupDetailActivity extends BaseActivity {
 
@@ -38,15 +46,28 @@ public class GroupDetailActivity extends BaseActivity {
 
     private RecyclerView mRecyclerViewList;
     private ToDoGroupListAdapter mToDoGroupListAdapter;
-    private ArrayList<ToDoGroupData> mGroupListData = new ArrayList<>();
+    private ArrayList<ToDoWithData> mGroupListData = new ArrayList<>();
     private ItemTouchHelper mItemTouchHelper;
+
+    private LinearLayout mLinearHiddenDone;
+    private RecyclerView mRecyclerViewDone;
+    private ToDoGroupListAdapter mToDoGroupDoneListAdapter;
+    private ArrayList<ToDoWithData> mGroupListDoneData = new ArrayList<>();
+    private ItemTouchHelper mDoneItemTouchHelper;
 
     private ImageView mImageViewDrag, mImageViewAddAndDragConfirm;
     private boolean isEditMode = true;
 
     private float density;
 
+    private LinearLayout mLinearExpand;
+    private boolean isExpandable;
+    private TextView mTextViewExpand;
+    private ImageView mImageViewExpand;
+
     private int mGroupNo = 0;
+
+    private ArrayList<Member> members = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +78,9 @@ public class GroupDetailActivity extends BaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
         mGroupNo = getIntent().getIntExtra("groupId", 0);
+        members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
         init();
-        setGroupMemberTempData();
+        setGroupMemberData(members);
     }
 
     void init(){
@@ -147,7 +169,8 @@ public class GroupDetailActivity extends BaseActivity {
                     GroupToDoAddDialog groupToDoAddDialog = new GroupToDoAddDialog(mContext, new GroupToDoAddDialog.GroupToDoAddListener() {
                         @Override
                         public void todoClick() {
-
+                            Intent intent = new Intent(GroupDetailActivity.this, AddGroupToDoActivity.class);
+                            startActivity(intent);
                         }
 
                         @Override
@@ -159,16 +182,103 @@ public class GroupDetailActivity extends BaseActivity {
                 }
             }
         });
+
+        mLinearHiddenDone = findViewById(R.id.group_detail_layout_hidden_done);
+        mRecyclerViewDone = findViewById(R.id.group_detail_rv_done);
+        mRecyclerViewDone.setLayoutManager(new LinearLayoutManager(mContext) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
+        mToDoGroupDoneListAdapter = new ToDoGroupListAdapter(mContext, mGroupListDoneData, new ToDoGroupListAdapter.ItemClickListener() {
+            @Override
+            public void itemClick(int pos) {
+
+            }
+
+            @Override
+            public void onStartDrag(ToDoGroupListAdapter.CustomViewHolder holder) {
+                mDoneItemTouchHelper.startDrag(holder);
+            }
+        });
+
+        ToDoPersonalItemTouchHelperCallback mDoneCallBack = new ToDoPersonalItemTouchHelperCallback(mToDoGroupDoneListAdapter, mContext);
+        mDoneItemTouchHelper = new ItemTouchHelper(mDoneCallBack);
+        mDoneItemTouchHelper.attachToRecyclerView(mRecyclerViewDone);
+
+        mRecyclerViewDone.setAdapter(mToDoGroupDoneListAdapter);
+
+        mTextViewExpand = findViewById(R.id.group_detail_tv_expand);
+        mImageViewExpand = findViewById(R.id.group_detail_iv_expand);
+
+        mLinearExpand = findViewById(R.id.group_detail_layout_expandable);
+        mLinearExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isExpandable) {
+                    hideDoneLayout();
+                    mTextViewExpand.setText("완료된 항목");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_down_blue);
+                    isExpandable = false;
+                } else {
+                    showDoneLayout();
+                    mTextViewExpand.setText("접기");
+                    mImageViewExpand.setImageResource(R.drawable.ic_chevron_up);
+                    isExpandable = true;
+                }
+            }
+        });
     }
 
-    void setGroupMemberTempData(){
+    private void showDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt(0, (int) (66 * density * mGroupListDoneData.size() + 15 * density));
+        anim1.setDuration(500);
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Integer value = (Integer) valueAnimator.getAnimatedValue();
+                mLinearHiddenDone.getLayoutParams().height = value.intValue();
+                mLinearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
+    }
+
+    private void hideDoneLayout() {
+        ValueAnimator anim1 = ValueAnimator.ofInt((int) (66 * density * mGroupListDoneData.size() + 15 * density), 0);
+        anim1.setDuration(500); // duration 5 seconds
+        anim1.setRepeatMode(ValueAnimator.REVERSE);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                mLinearHiddenDone.getLayoutParams().height = value.intValue();
+                mLinearHiddenDone.requestLayout();
+            }
+        });
+        anim1.start();
+    }
+
+    void setGroupMemberData(ArrayList<Member> members){
         mMemberData.clear();
-        mMemberData.add(new GroupMemberData("", "나", false));
-        mMemberData.add(new GroupMemberData("", "문영진", false));
-        mMemberData.add(new GroupMemberData("", "모영민", false));
-        mMemberData.add(new GroupMemberData("", "신민재", false));
-        mMemberData.add(new GroupMemberData("", "이재학", false));
-        mMemberData.add(new GroupMemberData("", "조현우", false));
+
+        for(int i=0; i<members.size(); i++){
+            mMemberData.add(new GroupMemberData(members.get(i).getProfileUrl(), members.get(i).getNickName(), false));
+        }
+//        mMemberData.add(new GroupMemberData("", "나", false));
+//        mMemberData.add(new GroupMemberData("", "문영진", false));
+//        mMemberData.add(new GroupMemberData("", "모영민", false));
+//        mMemberData.add(new GroupMemberData("", "신민재", false));
+//        mMemberData.add(new GroupMemberData("", "이재학", false));
+//        mMemberData.add(new GroupMemberData("", "조현우", false));
 
         mMemberData.add(new GroupMemberData("","",true));
 

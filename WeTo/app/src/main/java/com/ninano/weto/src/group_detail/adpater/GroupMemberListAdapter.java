@@ -66,7 +66,7 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
             ShapeDrawable oval = new ShapeDrawable(new OvalShape());
             oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
             oval.getPaint().setAntiAlias(true);
-            oval.setPadding(90,90,90,90);
+            oval.setPadding((int) (30*mDensity),(int) (30*mDensity),(int) (30*mDensity),(int) (30*mDensity));
             holder.mImageViewProfile.setBackground(oval);
             holder.mImageViewProfile.setImageResource(R.drawable.ic_group_member_plus);
         }
@@ -78,11 +78,12 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
                             .placeholder(R.drawable.img_profile_default)
                             .error(R.drawable.img_profile_default)
                             .diskCacheStrategy(DiskCacheStrategy.DATA);
+            mRequestManager.load(mData.get(position).getImgUrl()).apply(sharedOptions).into(holder.mImageViewProfile);
             ShapeDrawable oval = new ShapeDrawable(new OvalShape());
             oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
             oval.getPaint().setAntiAlias(true);
             holder.mImageViewProfile.setBackground(oval);
-            mRequestManager.load(mData.get(position).getImgUrl()).apply(sharedOptions).into(holder.mImageViewProfile);
+            holder.mImageViewProfile.setClipToOutline(true);
         }
     }
 
