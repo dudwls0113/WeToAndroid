@@ -61,6 +61,7 @@ public class ApplicationClass extends Application {
     public static final int NONE = 55;             // 정보없는 일정
     public static final int TIME = 66;             // 시간일정
     public static final int LOCATION = 77;         // 위치일정
+    public static final int MEET = 88;         // 약속일정
 
     public static final int AT_START = 11;         // 출발
     public static final int AT_ARRIVE = 22;        // 도착
@@ -83,11 +84,10 @@ public class ApplicationClass extends Application {
 
     public static final int NO_DATA = -1;          //의미없는값표시
 
-
-    public static final int HOME_SELECT_MODE = 500;
-    public static final int COMPANY_SELECT_MODE = 600;
-    public static final int SCHOOL_SELECT_MODE = 700;
-    public static final int OTHER_SELECT_MODE = 800;
+    public static final int HOME_SELECT_MODE = 500;      //매달반복
+    public static final int COMPANY_SELECT_MODE = 600;      //매달반복
+    public static final int SCHOOL_SELECT_MODE = 700;      //매달반복
+    public static final int OTHER_SELECT_MODE = 800;      //매달반복
 
     public static String fcmToken = "";
 

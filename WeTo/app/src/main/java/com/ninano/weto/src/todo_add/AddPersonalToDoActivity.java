@@ -529,10 +529,10 @@ public class AddPersonalToDoActivity extends BaseActivity {
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                //지오펜스 실패하면 db에사도 지워줘야함
                                 showCustomToast(getString(R.string.cant_geofence));
                                 new DeleteToDoAsyncTask().execute(toDoData.getTodoNo(), toDoData.getTodoDataNo());
                                 Log.e("지오펜스 등록 실패", e.toString());
-                                //지오펜스 실패하면 db에사도 지워줘야함
                             }
                         });
             }
@@ -1367,7 +1367,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
 
 
     private ToDo makeTodoObject() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N', 0);
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mIcon, mTodoCategory, mImportantMode, 'N');
 //        todo.setTodoNo(mToDoNo);
         return todo;
     }
