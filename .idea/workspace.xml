@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5860037-df8e-4f98-a5f4-c8bd4d8c1b3b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseRetrofitInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoData.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoWithData.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoWithData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/ApplicationClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/ApplicationClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_personal/ToDoPersonalFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_personal/ToDoPersonalFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddPersonalToDoActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddPersonalToDoActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/res/layout/fragment_to_do_group.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/res/layout/fragment_to_do_group.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -54,8 +43,8 @@
       <file pinned="true" current-in-tab="false">
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/logs/access-2020-06-21.log">
           <provider selected="true" editor-type-id="LogFileEditorProvider">
-            <state relative-caret-position="714">
-              <caret line="439" column="340" selection-start-line="439" selection-start-column="66" selection-end-line="439" selection-end-column="340" />
+            <state relative-caret-position="685">
+              <caret line="673" column="66" selection-start-line="673" selection-start-column="66" selection-end-line="673" selection-end-column="344" />
             </state>
           </provider>
         </entry>
@@ -72,8 +61,8 @@
       <file pinned="true" current-in-tab="true">
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="171" column="33" selection-start-line="171" selection-start-column="33" selection-end-line="171" selection-end-column="33" />
+            <state relative-caret-position="288">
+              <caret line="169" column="35" lean-forward="true" selection-start-line="169" selection-start-column="35" selection-end-line="169" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -82,7 +71,7 @@
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="549">
-              <caret line="68" column="19" lean-forward="true" selection-start-line="68" selection-start-column="19" selection-end-line="68" selection-end-column="19" />
+              <caret line="68" column="19" selection-start-line="68" selection-start-column="19" selection-end-line="68" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -143,7 +132,7 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1680" />
-    <option name="height" value="976" />
+    <option name="height" value="975" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -208,12 +197,12 @@
       <workItem from="1591850369171" duration="273000" />
       <workItem from="1591954409511" duration="386000" />
       <workItem from="1592520492532" duration="794000" />
-      <workItem from="1592665617093" duration="8416000" />
+      <workItem from="1592665617093" duration="9018000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47654000" />
+    <option name="totallyTimeSpent" value="48256000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="975" extended-state="6" />
