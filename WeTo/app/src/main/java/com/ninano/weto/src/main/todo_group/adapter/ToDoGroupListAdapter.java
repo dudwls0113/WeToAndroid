@@ -162,85 +162,85 @@ public class ToDoGroupListAdapter extends RecyclerView.Adapter<ToDoGroupListAdap
         if (mData.get(position).getStatus().equals("ACTIVATE")){
             switch (mData.get(position).getIcon()){
                 case 1:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_1);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group1_off);
                     break;
                 case 2:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_2);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group2_off);
                     break;
                 case 3:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_3);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group3_off);
                     break;
                 case 4:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_4);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group4_off);
                     break;
                 case 5:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_5);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group5_off);
                     break;
                 case 6:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_6);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group6_off);
                     break;
                 case 7:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_7);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group7_off);
                     break;
                 case 8:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_8);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group8_off);
                     break;
                 case 9:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_9);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group9_off);
                     break;
                 case 10:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_10);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group10_off);
                     break;
                 case 11:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_11);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group11_off);
                     break;
                 case 12:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_12);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group12_off);
                     break;
                 case 13:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_13);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group13_off);
                     break;
             }
         } else if(mData.get(position).getStatus().equals("DONE")){
             switch (mData.get(position).getIcon()){
                 case 1:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_1_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group1_on);
                     break;
                 case 2:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_2_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group2_on);
                     break;
                 case 3:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_3_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group3_on);
                     break;
                 case 4:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_4_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group4_on);
                     break;
                 case 5:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_5_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group5_on);
                     break;
                 case 6:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_6_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group6_on);
                     break;
                 case 7:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_7_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group7_on);
                     break;
                 case 8:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_8_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group8_on);
                     break;
                 case 9:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_9_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group9_on);
                     break;
                 case 10:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_10_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group10_on);
                     break;
                 case 11:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_11_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group11_on);
                     break;
                 case 12:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_12_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group12_on);
                     break;
                 case 13:
-                    holder.mImageViewIcon.setImageResource(R.drawable.personal_icon_13_on);
+                    holder.mImageViewIcon.setImageResource(R.drawable.group13_on);
                     break;
             }
         }

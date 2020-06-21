@@ -106,28 +106,28 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         init();
 
         //배포를 위해 아래부분 주석처리(그룹용없으면 필요없는부분)
-//        getAppKeyHash();
-//        FirebaseApp.initializeApp(this);
-//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,
-//                new OnSuccessListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onSuccess(InstanceIdResult instanceIdResult) {
-//                        fcmToken = instanceIdResult.getToken();
-//                        Log.d("Firebase", "token: " + fcmToken);
-//                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
-//                            Log.d("로그인", "token: " + fcmToken);
-//                            tryPostFcmToken(fcmToken);
-//                        }
-//                    }
-//                });
-//        if (getIntent().getBooleanExtra("kakaoShare",false)){
-//            Intent intent = new Intent(MainActivity.this, GroupInviteActivity.class);
-//            intent.putExtra("groupId", getIntent().getIntExtra("groupId", 0));
-//            intent.putExtra("nickName", getIntent().getStringExtra("nickName"));
-//            intent.putExtra("profileUrl", getIntent().getStringExtra("profileUrl"));
-//            intent.putExtra("kakaoShare", true);
-//            startActivity(intent);
-//        }
+        getAppKeyHash();
+        FirebaseApp.initializeApp(this);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,
+                new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        fcmToken = instanceIdResult.getToken();
+                        Log.d("Firebase", "token: " + fcmToken);
+                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
+                            Log.d("로그인", "token: " + fcmToken);
+                            tryPostFcmToken(fcmToken);
+                        }
+                    }
+                });
+        if (getIntent().getBooleanExtra("kakaoShare",false)){
+            Intent intent = new Intent(MainActivity.this, GroupInviteActivity.class);
+            intent.putExtra("groupId", getIntent().getIntExtra("groupId", 0));
+            intent.putExtra("nickName", getIntent().getStringExtra("nickName"));
+            intent.putExtra("profileUrl", getIntent().getStringExtra("profileUrl"));
+            intent.putExtra("kakaoShare", true);
+            startActivity(intent);
+        }
     }
 
     private void getAppKeyHash() {

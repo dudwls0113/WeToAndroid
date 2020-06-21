@@ -2,6 +2,9 @@ package com.ninano.weto.src.main.todo_group.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.ninano.weto.R;
 import com.ninano.weto.src.main.todo_group.models.GroupData;
 import com.ninano.weto.src.main.todo_group.models.Member;
@@ -94,7 +100,61 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
 //            } else if (mData.get(position).getMeetCount()==0){
 //                count = "일정 " + mData.get(position).getToDoCount()+"개";
 //            }
-//            holder.mTextViewCount.setText(count);
+            holder.mTextViewCount.setText("일정 " + mData.get(position).getTodoCount()+"개");
+
+            RequestOptions sharedOptions =
+                    new RequestOptions()
+                            .placeholder(R.drawable.img_profile_default)
+                            .error(R.drawable.img_profile_default)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA);
+
+            if (mData.get(position).getMemberCount()==1){
+                Glide.with(mContext).load(mData.get(position).getMembers().get(0).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage1);
+                ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+                oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
+                oval.getPaint().setAntiAlias(true);
+                holder.mImageViewImage1.setBackground(oval);
+                holder.mImageViewImage1.setClipToOutline(true);
+            } else if(mData.get(position).getMemberCount()==2){
+                Glide.with(mContext).load(mData.get(position).getMembers().get(0).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage1);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(1).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage2);
+                ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+                oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
+                oval.getPaint().setAntiAlias(true);
+                holder.mImageViewImage1.setBackground(oval);
+                holder.mImageViewImage1.setClipToOutline(true);
+                holder.mImageViewImage2.setBackground(oval);
+                holder.mImageViewImage2.setClipToOutline(true);
+            } else if(mData.get(position).getMemberCount()==3){
+                Glide.with(mContext).load(mData.get(position).getMembers().get(0).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage1);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(1).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage2);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(2).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage3);
+                ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+                oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
+                oval.getPaint().setAntiAlias(true);
+                holder.mImageViewImage1.setBackground(oval);
+                holder.mImageViewImage1.setClipToOutline(true);
+                holder.mImageViewImage2.setBackground(oval);
+                holder.mImageViewImage2.setClipToOutline(true);
+                holder.mImageViewImage3.setBackground(oval);
+                holder.mImageViewImage3.setClipToOutline(true);
+            } else {
+                Glide.with(mContext).load(mData.get(position).getMembers().get(0).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage1);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(1).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage2);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(2).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage3);
+                Glide.with(mContext).load(mData.get(position).getMembers().get(2).getProfileUrl()).apply(sharedOptions).into(holder.mImageViewImage4);
+                ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+                oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
+                oval.getPaint().setAntiAlias(true);
+                holder.mImageViewImage1.setBackground(oval);
+                holder.mImageViewImage1.setClipToOutline(true);
+                holder.mImageViewImage2.setBackground(oval);
+                holder.mImageViewImage2.setClipToOutline(true);
+                holder.mImageViewImage3.setBackground(oval);
+                holder.mImageViewImage3.setClipToOutline(true);
+                holder.mImageViewImage4.setBackground(oval);
+                holder.mImageViewImage4.setClipToOutline(true);
+            }
 
             switch (mData.get(position).getIcon()){
                 case 1:
@@ -199,7 +259,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView mImageViewType;
+        ImageView mImageViewType, mImageViewImage1, mImageViewImage2, mImageViewImage3, mImageViewImage4;
         TextView mTextViewTitle, mTextViewMember, mTextViewCount;
         LinearLayout mLinearFront;
         FrameLayout mFrameBack;
@@ -226,6 +286,11 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Cust
                     }
                 }
             });
+
+            mImageViewImage1 = itemView.findViewById(R.id.list_group_iv_image1);
+            mImageViewImage2 = itemView.findViewById(R.id.list_group_iv_image2);
+            mImageViewImage3 = itemView.findViewById(R.id.list_group_iv_image3);
+            mImageViewImage4 = itemView.findViewById(R.id.list_group_iv_image4);
         }
     }
 }
