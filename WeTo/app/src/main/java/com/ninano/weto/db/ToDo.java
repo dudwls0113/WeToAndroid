@@ -20,10 +20,9 @@ public class ToDo {
 
     //그룹 일정용
     private char isGroup; // 그룹아니면 N
-    private int serverTodoNo; // 그룹아니면 0
 
     //그룹용 생성자
-    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo) {
+    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup) {
         this.title = title;
         this.content = content;
         this.icon = icon;
@@ -32,7 +31,6 @@ public class ToDo {
         this.ordered = 0;
         this.isImportant = isImportant;
         this.isGroup = isGroup;
-        this.serverTodoNo = serverTodoNo;
     }
 
     //로컬용 생성자
@@ -46,7 +44,6 @@ public class ToDo {
         this.ordered = 0;
         this.isImportant = isImportant;
         this.isGroup = 'N';
-        this.serverTodoNo = 0;
     }
 
     public void setTodoNo(int todoNo) {
@@ -140,13 +137,6 @@ public class ToDo {
         this.isGroup = isGroup;
     }
 
-    public int getServerTodoNo() {
-        return serverTodoNo;
-    }
-
-    public void setServerTodoNo(int serverTodoNo) {
-        this.serverTodoNo = serverTodoNo;
-    }
 
     @NonNull
     @Override

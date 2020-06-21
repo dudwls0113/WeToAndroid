@@ -132,9 +132,9 @@ public class ToDoPersonalFragment extends BaseFragment {
         mImageViewSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCustomToast(mContext, "준비중입니다.");
-//                Intent intent = new Intent(mContext, TestActivity.class);
-//                startActivity(intent);
+//                showCustomToast(mContext, "준비중입니다.");
+                Intent intent = new Intent(mContext, TestActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -26,6 +26,16 @@ public class ToDoWithData implements Serializable {
     private int repeatDay;
     private String date;
     private char isImportant;
+    private int severTodoNo;
+    private int meetRemindTime;
+
+    public int getMeetRemindTime() {
+        return meetRemindTime;
+    }
+
+    public void setMeetRemindTime(int meetRemindTime) {
+        this.meetRemindTime = meetRemindTime;
+    }
 
     public String getDate() {
         return date;
@@ -255,6 +265,13 @@ public class ToDoWithData implements Serializable {
         this.isImportant = isImportant;
     }
 
+    public int getSeverTodoNo() {
+        return severTodoNo;
+    }
+
+    public void setSeverTodoNo(int severTodoNo) {
+        this.severTodoNo = severTodoNo;
+    }
 
     @NonNull
     @Override
@@ -263,7 +280,7 @@ public class ToDoWithData implements Serializable {
                 " locationName: " + locationName + " latitude: " + latitude + " longitude: " + longitude +
                 " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
                 " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay +
-                "date: " + date +  " time:" + time + "year: " + year + "month: " + month + "day: " + day + "hour: " + hour + "minute: " + minute +
+                "date: " + date + " time:" + time + "year: " + year + "month: " + month + "day: " + day + "hour: " + hour + "minute: " + minute +
                 " isGroup: " + String.valueOf(isGroup) + "\n";
     }
 

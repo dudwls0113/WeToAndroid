@@ -1,6 +1,7 @@
 package com.ninano.weto.db;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "ToDoData")
@@ -41,6 +42,33 @@ public class ToDoData {
     private int day;
     private int hour;
     private int minute;
+    private int severTodoNo;
+    private char isMeet;
+    private int meetRemindTime;
+
+    public char getIsMeet() {
+        return isMeet;
+    }
+
+    public void setIsMeet(char isMeet) {
+        this.isMeet = isMeet;
+    }
+
+    public int getMeetRemindTime() {
+        return meetRemindTime;
+    }
+
+    public void setMeetRemindTime(int meetRemindTime) {
+        this.meetRemindTime = meetRemindTime;
+    }
+
+    public int getSeverTodoNo() {
+        return severTodoNo;
+    }
+
+    public void setSeverTodoNo(int severTodoNo) {
+        this.severTodoNo = severTodoNo;
+    }
 
     public int getYear() {
         return year;
@@ -110,6 +138,30 @@ public class ToDoData {
         this.day = day;
         this.hour = hour;
         this.minute = minute;
+    }
+
+    @Ignore
+    public ToDoData(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time
+            , int year, int month, int day, int hour, int minute, int severTodoNo) {
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationMode = locationMode;
+        this.radius = radius;
+        this.ssid = ssid;
+        this.isWiFi = isWiFi;
+        this.timeSlot = timeSlot;
+        this.repeatType = repeatType;
+        this.repeatDayOfWeek = repeatDayOfWeek;
+        this.repeatDay = repeatDay;
+        this.date = date;
+        this.time = time;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.severTodoNo = severTodoNo;
     }
 
     public String getDate() {
