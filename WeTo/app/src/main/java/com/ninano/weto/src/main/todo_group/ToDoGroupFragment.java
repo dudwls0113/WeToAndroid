@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -41,6 +42,7 @@ import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.User;
 import com.kakao.util.exception.KakaoException;
 import com.ninano.weto.R;
+import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseFragment;
@@ -60,10 +62,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static com.ninano.weto.src.ApplicationClass.X_ACCESS_TOKEN;
 import static com.ninano.weto.src.ApplicationClass.fcmToken;
+import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 
 public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
@@ -114,6 +118,8 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
     long kakaoId;
     String nickName, profileUrl;
 
+    AppDatabase mDatabase;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -135,8 +141,32 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             mLayoutButton.setVisibility(View.GONE);
             mLayoutLogin.setVisibility(View.VISIBLE);
         }
+        setDatabase();
         setConfigureKakao();
         return v;
+    }
+
+    private void setDatabase() {
+        mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
+        mDatabase.todoDao().getActivatedGroupTodoList().observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mGroupListData.clear();
+                mGroupListData.addAll(todoList);
+                mToDoGroupListAdapter.notifyDataSetChanged();
+            }
+        });
+        mDatabase.todoDao().getDoneGroupTodoList().observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mGroupListDoneData.clear();
+                mGroupListDoneData.addAll(todoList);
+                mToDoGroupDoneListAdapter.notifyDataSetChanged();
+                if (isExpandable) {
+                    showDoneLayout();
+                }
+            }
+        });
     }
 
     @Override
@@ -171,6 +201,7 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
             public void itemClick(int pos) {
                 Intent intent = new Intent(mContext, GroupDetailActivity.class);
                 intent.putExtra("groupId", mData.get(pos).getNo());
+                intent.putExtra("groupIcon", mData.get(pos).getIcon());
                 intent.putExtra("members", mData.get(pos).getMembers());
                 startActivity(intent);
             }

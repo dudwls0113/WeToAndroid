@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,25 +43,25 @@ public class AddGroupToDoMemberAdapter extends RecyclerView.Adapter<AddGroupToDo
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        if (position==0){
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mTextViewName.getLayoutParams();
-            params.leftMargin = (int)(24*mDensity);
-            holder.mTextViewName.setLayoutParams(params);
-        } else{
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mTextViewName.getLayoutParams();
-            params.leftMargin = 0;
-            holder.mTextViewName.setLayoutParams(params);
-        }
-
-        if (position==mData.size()-1){
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mTextViewName.getLayoutParams();
-            params.rightMargin = (int)(24*mDensity);
-            holder.mTextViewName.setLayoutParams(params);
-        } else{
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mTextViewName.getLayoutParams();
-            params.rightMargin = (int)(12*mDensity);
-            holder.mTextViewName.setLayoutParams(params);
-        }
+//        if (position==0){
+//            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mItem.getLayoutParams();
+//            params.leftMargin = (int)(24*mDensity);
+//            holder.mItem.setLayoutParams(params);
+//        } else{
+//            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mItem.getLayoutParams();
+//            params.leftMargin = 0;
+//            holder.mItem.setLayoutParams(params);
+//        }
+//
+//        if (position==mData.size()-1){
+//            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mItem.getLayoutParams();
+//            params.rightMargin = (int)(24*mDensity);
+//            holder.mItem.setLayoutParams(params);
+//        } else{
+//            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mItem.getLayoutParams();
+//            params.rightMargin = (int)(12*mDensity);
+//            holder.mItem.setLayoutParams(params);
+//        }
 
         if (mData.get(position).isSelected()){
             holder.mTextViewName.setBackgroundResource(R.drawable.bg_round_button_on);
@@ -80,10 +81,12 @@ public class AddGroupToDoMemberAdapter extends RecyclerView.Adapter<AddGroupToDo
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout mItem;
         TextView mTextViewName;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
+            mItem = itemView.findViewById(R.id.list_like_location_item);
             mTextViewName = itemView.findViewById(R.id.list_like_location_tv_name);
             mTextViewName.setOnClickListener(new View.OnClickListener() {
                 @Override

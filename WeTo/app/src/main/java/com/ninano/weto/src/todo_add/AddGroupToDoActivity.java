@@ -50,6 +50,7 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.DeviceBootReceiver;
+import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
@@ -57,6 +58,7 @@ import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.AddGroupToDoMemberAdapter;
 //import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.adpater.FavoritePlaceAdapter;
+import com.ninano.weto.src.todo_add.interfaces.AddGroupToDoView;
 import com.ninano.weto.src.todo_add.models.AddGroupToDoMemberData;
 //import com.ninano.weto.src.todo_add.models.LikeLocationData;
 
@@ -71,6 +73,7 @@ import java.util.Objects;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
+import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
@@ -83,20 +86,27 @@ import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MINUTE_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.MONTHREPEAT;
+import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.MONTH_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.NONE;
 import static com.ninano.weto.src.ApplicationClass.NOREPEAT;
 import static com.ninano.weto.src.ApplicationClass.NO_DATA;
+import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.SCHOOL_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.TIME_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.WEEKREPEAT;
+import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.YEAR_FORMAT;
+import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
+import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.main.MainActivity.FINISH_INTERVAL_TIME;
 
-public class AddGroupToDoActivity extends BaseActivity {
+public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoView {
 
     private Context mContext;
 
@@ -158,6 +168,17 @@ public class AddGroupToDoActivity extends BaseActivity {
 
     private int mRepeatMode;
 
+    //intent로 받아온 멤버
+    private int mGroupId = 0;
+    private int mGroupIcon = -1;
+    private ArrayList<Member> members = new ArrayList<>();
+
+    //중복클릭 방지
+    private long backPressedTime = 0;
+
+    //친구 선택 밸리데이션
+    ArrayList<AddGroupToDoMemberData> friendList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,8 +188,23 @@ public class AddGroupToDoActivity extends BaseActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
+        mGroupId = getIntent().getIntExtra("groupId", 0);
+        mGroupIcon = getIntent().getIntExtra("groupIcon", -1);
+        System.out.println("그룹 정보: " + mGroupId + ", " + mGroupIcon);
+        members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
         init();
         initGeoFence();
+        setGroupMemberData(members);
+    }
+
+    void setGroupMemberData(ArrayList<Member> members){
+        mData.clear();
+        for(int i=0; i<members.size(); i++){
+            if (!members.get(i).getNickName().equals(sSharedPreferences.getString("kakaoNickName", ""))){
+                mData.add(new AddGroupToDoMemberData(members.get(i).getUserNo(), members.get(i).getNickName(), false));
+            }
+        }
+        mAddGroupToDoMemberAdapter.notifyDataSetChanged();
     }
 
     void init() {
@@ -182,6 +218,19 @@ public class AddGroupToDoActivity extends BaseActivity {
 
         mTextViewDate = findViewById(R.id.add_group_todo_tv_date);
         mTextViewTime = findViewById(R.id.add_group_todo_tv_time);
+
+        mTextViewSun = findViewById(R.id.week_repeat_tv_sun);
+        mTextViewMon = findViewById(R.id.week_repeat_tv_mon);
+        mTextViewTue = findViewById(R.id.week_repeat_tv_tue);
+        mTextViewWed = findViewById(R.id.week_repeat_tv_wed);
+        mTextViewThu = findViewById(R.id.week_repeat_tv_thu);
+        mTextViewFri = findViewById(R.id.week_repeat_tv_fri);
+        mTextViewSat = findViewById(R.id.week_repeat_tv_sat);
+
+        mFrameHiddenTimeDate = findViewById(R.id.add_group_todo_frame_hidden_time_date);
+        mLinearHiddenTimeDate = findViewById(R.id.add_group_todo_layout_hidden_time_date);
+        mLinearHiddenTimeTime = findViewById(R.id.add_group_todo_layout_hidden_time_time);
+        mLinearHiddenTimeWeekRepeat = findViewById(R.id.add_group_todo_layout_hidden_time_date_week_repeat);
 
         mLinearHiddenTime = findViewById(R.id.add_group_todo_layout_hidden_time);
         mLinearHiddenGps = findViewById(R.id.add_group_todo_layout_hidden_gps);
@@ -206,7 +255,13 @@ public class AddGroupToDoActivity extends BaseActivity {
         mAddGroupToDoMemberAdapter = new AddGroupToDoMemberAdapter(mContext, mData, density, new AddGroupToDoMemberAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
+                if(mData.get(pos).isSelected()){
+                    mData.get(pos).setSelected(false);
+                } else {
+                    mData.get(pos).setSelected(true);
+                }
 
+                mAddGroupToDoMemberAdapter.notifyDataSetChanged();
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -372,23 +427,37 @@ public class AddGroupToDoActivity extends BaseActivity {
     }
 
     private void insertToRoomDB() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), 1, mTodoCategory, mImportantMode);
+        ToDo todo = makeTodoObject();
+        ToDoData toDoData = makeTodoDataObject();
         switch (mLocationMode) {
             case NONE:
                 break;
             case TIME:
                 break;
             case LOCATION:
-                ToDoData toDoData = new ToDoData(mTextViewLocation.getText().toString(),
-                        longitude, latitude, mLocationMode, mLadius,
-                        mWifiBssid, mWifiMode, mLocationTime, 0, "", 0, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
-                new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
                 break;
         }
+        new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+    }
+
+    private void postToDoLocation(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
+                          double latitude, double longitude, int locationMode, String locationName, int radius, String ssid, char isWiFi, int timeSlot){
+        AddGroupToDoService addGroupToDoService = new AddGroupToDoService(this);
+        addGroupToDoService.postToDoLocation(groupNo, title, content, icon, type, friendList, isImportant, latitude, longitude, locationMode, locationName, radius, ssid, isWiFi, timeSlot);
+    }
+
+    @Override
+    public void postToDoSuccess() {
+        insertToRoomDB();
+    }
+
+    @Override
+    public void validateFailure(String message) {
+        showCustomToast(message!=null ? message : getString(R.string.network_error));
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private class InsertAsyncTask extends AsyncTask<Object, Void, Integer> {
+    private class InsertAsyncTask extends AsyncTask<Object, Void, ToDoData> {
         private ToDoDao mTodoDao;
 
         InsertAsyncTask(ToDoDao mTodoDao) {
@@ -396,44 +465,65 @@ public class AddGroupToDoActivity extends BaseActivity {
         }
 
         @Override
-        protected Integer doInBackground(Object... toDos) {
-            int todoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = " + todoNo);
-
-            if (((ToDo) toDos[0]).getType() == LOCATION) { //위치기반 일정
-                if (((ToDoData) toDos[1]).getIsWiFi() == 'Y') {
-                    return 1;
-                } else {
-                    ToDoData toDoData = (ToDoData) toDos[1];
-//                    geofenceList.add(getGeofence(toDoData.getLocationMode(), String.valueOf(todoNo), new Pair<>(toDoData.getLatitude(), toDoData.getLongitude()), (float) toDoData.getRadius(), 1000));
-//                    addGeofencesToClient();
-                    getGeofenceMaker().addGeoFenceOne(todoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
-                            new OnSuccessListener() {
-                                @Override
-                                public void onSuccess(Object o) {
-                                    showCustomToast("할 일이 추가되었습니다");
-                                    finish();
-                                }
-                            },
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    showCustomToast("추가할 수 없습니다. 다시 시도해주세요");
-                                    Log.e("지오펜스 등록 실패", e.toString());
-                                }
-                            });
-                }
-            }
-
-            return null;
+        protected ToDoData doInBackground(Object... toDos) {
+            mToDoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
+            Log.d("추가된 todoNo", " = " + mToDoNo);
+            return (ToDoData) toDos[1];
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (integer == 1) {
-                System.out.println("실행???!!!!");
+        protected void onPostExecute(final ToDoData toDoData) {
+            super.onPostExecute(toDoData);
+            if (toDoData == null) {
+                return;
             }
+
+            if (toDoData.getIsWiFi() == 'Y') {//와이파이
+                getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
+                Log.d("와이파이 일정 등록", mWifiMode + " " + mLocationMode + " " + mWifiConnected);
+                finish();
+            } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
+//                changeRepeatDayOfWeek();
+                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
+                finish();
+            } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
+                getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
+                        new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                showCustomToast("할 일이 추가되었습니다");
+                                finish();
+                            }
+                        },
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showCustomToast(getString(R.string.cant_geofence));
+                                new DeleteToDoAsyncTask().execute(toDoData.getTodoNo(), toDoData.getTodoDataNo());
+                                Log.e("지오펜스 등록 실패", e.toString());
+                                //지오펜스 실패하면 db에사도 지워줘야함
+                            }
+                        });
+            }
+        }
+    }
+
+    private class DeleteToDoAsyncTask extends AsyncTask<Integer, Void, Void> {
+        DeleteToDoAsyncTask() {
+        }
+
+        @Override
+        protected Void doInBackground(Integer... todoNo) {
+            mDatabase.todoDao().deleteToDo(todoNo[0]);
+            mDatabase.todoDao().deleteToDoData(todoNo[1]);
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            showCustomToast("디비 삭제 성공");
         }
     }
 
@@ -504,48 +594,53 @@ public class AddGroupToDoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_group_todo_tv_no_repeat:
-                mRepeatMode = NOREPEAT;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#ffffff"));
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+                setRepeatTimeView(mTextViewTimeNoRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                mRepeatType = ONE_DAY;
                 break;
             case R.id.add_group_todo_tv_day_repeat:
-                mRepeatMode = DAYREPEAT;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#ffffff"));
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+                setRepeatTimeView(mTextViewTimeDayRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.GONE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                mRepeatType = ALL_DAY;
                 break;
             case R.id.add_group_todo_tv_week_repeat:
-                mRepeatMode = WEEKREPEAT;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#ffffff"));
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#657884"));
+                setRepeatTimeView(mTextViewTimeWeekRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.GONE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.VISIBLE);
+                mRepeatType = WEEK_DAY;
                 break;
             case R.id.add_group_todo_tv_month_repeat:
-                mRepeatMode = MONTHREPEAT;
-                mTextViewTimeNoRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeNoRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeDayRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeDayRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeWeekRepeat.setBackgroundResource(R.drawable.bg_round_button_off);
-                mTextViewTimeWeekRepeat.setTextColor(Color.parseColor("#657884"));
-                mTextViewTimeMonthRepeat.setBackgroundResource(R.drawable.bg_round_button_on);
-                mTextViewTimeMonthRepeat.setTextColor(Color.parseColor("#ffffff"));
+                setRepeatTimeView(mTextViewTimeMonthRepeat);
+                mFrameHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeDate.setVisibility(View.VISIBLE);
+                mLinearHiddenTimeWeekRepeat.setVisibility(View.GONE);
+                mRepeatType = MONTH_DAY;
+                break;
+            case R.id.week_repeat_tv_sun:
+                setRepeatWeekView(mTextViewSun);
+                break;
+            case R.id.week_repeat_tv_mon:
+                setRepeatWeekView(mTextViewMon);
+                break;
+            case R.id.week_repeat_tv_tue:
+                setRepeatWeekView(mTextViewTue);
+                break;
+            case R.id.week_repeat_tv_wed:
+                setRepeatWeekView(mTextViewWed);
+                break;
+            case R.id.week_repeat_tv_thu:
+                setRepeatWeekView(mTextViewThu);
+                break;
+            case R.id.week_repeat_tv_fri:
+                setRepeatWeekView(mTextViewFri);
+                break;
+            case R.id.week_repeat_tv_sat:
+                setRepeatWeekView(mTextViewSat);
                 break;
             case R.id.add_group_todo_switch_time:
                 if (isSwitchTime) { // expand 상태
@@ -625,11 +720,22 @@ public class AddGroupToDoActivity extends BaseActivity {
                 break;
             case R.id.add_group_todo_btn_done:
                 //추가버튼
-                if (validateBeforeAdd()) {
-                    insertToRoomDB();
-//                    showCustomToast("일정이 등록되었습록니다.");
-//                    finish();
+                long tempTime = System.currentTimeMillis();
+                long intervalTime = tempTime - backPressedTime;
+                backPressedTime = tempTime;
+                if(intervalTime>FINISH_INTERVAL_TIME){
+                    if (validateBeforeAdd()) {
+                        changeRepeatDayOfWeek();
+                        postToDoLocation(mGroupId, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
+                                mImportantMode, latitude, longitude, mLocationMode, mTextViewLocation.getText().toString(), mLadius, mWifiBssid, mWifiMode, mLocationTime);
+                    }
                 }
+
+//                if (validateBeforeAdd()) {
+//                    insertToRoomDB();
+////                    showCustomToast("일정이 등록되었습록니다.");
+////                    finish();
+//                }
                 break;
             case R.id.add_group_todo_iv_icon: // 아이콘 선택버튼
                 PersonalToDoIconDialog personalToDoIconDialog = new PersonalToDoIconDialog(mContext, new PersonalToDoIconDialog.SelectClickListener() {
@@ -641,6 +747,115 @@ public class AddGroupToDoActivity extends BaseActivity {
                 });
                 personalToDoIconDialog.show();
                 break;
+        }
+    }
+
+    private void changeRepeatDayOfWeek() {
+        for (int i = 0; i < 7; i++) {
+            if (selectedDayList[i]) {
+                switch (i) {
+                    case 0:
+                        mRepeatDayOfWeek += "일,";
+                        break;
+                    case 1:
+                        mRepeatDayOfWeek += "월,";
+                        break;
+                    case 2:
+                        mRepeatDayOfWeek += "화,";
+                        break;
+                    case 3:
+                        mRepeatDayOfWeek += "수,";
+                        break;
+                    case 4:
+                        mRepeatDayOfWeek += "목,";
+                        break;
+                    case 5:
+                        mRepeatDayOfWeek += "금,";
+                        break;
+                    case 6:
+                        mRepeatDayOfWeek += "토,";
+                        break;
+                }
+            }
+        }
+
+        if (mRepeatDayOfWeek.length() > 1) {
+            mRepeatDayOfWeek = mRepeatDayOfWeek.substring(0, mRepeatDayOfWeek.length() - 1);
+        }
+    }
+
+    private ArrayList<AddGroupToDoMemberData> setFriendList(ArrayList<AddGroupToDoMemberData> data){
+        ArrayList<AddGroupToDoMemberData> temp = new ArrayList<>();
+        for(int i=0; i<data.size(); i++){
+            if(data.get(i).isSelected()){
+                temp.add(data.get(i));
+            }
+        }
+
+        return temp;
+    }
+
+    void setRepeatTimeView(TextView selectedView) {
+        if (selectedView.equals(mTextViewTimeNoRepeat)) {
+            setVineOnMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else if (selectedView.equals(mTextViewTimeDayRepeat)) {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOnMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else if (selectedView.equals(mTextViewTimeWeekRepeat)) {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOnMode(mTextViewTimeWeekRepeat);
+            setVineOffMode(mTextViewTimeMonthRepeat);
+        } else {
+            setVineOffMode(mTextViewTimeNoRepeat);
+            setVineOffMode(mTextViewTimeDayRepeat);
+            setVineOffMode(mTextViewTimeWeekRepeat);
+            setVineOnMode(mTextViewTimeMonthRepeat);
+        }
+    }
+
+    void setRepeatWeekView(TextView selectedView) {
+        if (selectedView.isSelected()) {
+            selectedView.setSelected(false);
+            setVineOffMode(selectedView);
+            if (selectedView.equals(mTextViewSun)) {
+                selectedDayList[0] = false;
+            } else if (selectedView.equals(mTextViewMon)) {
+                selectedDayList[1] = false;
+            } else if (selectedView.equals(mTextViewTue)) {
+                selectedDayList[2] = false;
+            } else if (selectedView.equals(mTextViewWed)) {
+                selectedDayList[3] = false;
+            } else if (selectedView.equals(mTextViewThu)) {
+                selectedDayList[4] = false;
+            } else if (selectedView.equals(mTextViewFri)) {
+                selectedDayList[5] = false;
+            } else if (selectedView.equals(mTextViewSat)) {
+                selectedDayList[6] = false;
+            }
+        } else {
+            selectedView.setSelected(true);
+            setVineOnMode(selectedView);
+            if (selectedView.equals(mTextViewSun)) {
+                selectedDayList[0] = true;
+            } else if (selectedView.equals(mTextViewMon)) {
+                selectedDayList[1] = true;
+            } else if (selectedView.equals(mTextViewTue)) {
+                selectedDayList[2] = true;
+            } else if (selectedView.equals(mTextViewWed)) {
+                selectedDayList[3] = true;
+            } else if (selectedView.equals(mTextViewThu)) {
+                selectedDayList[4] = true;
+            } else if (selectedView.equals(mTextViewFri)) {
+                selectedDayList[5] = true;
+            } else if (selectedView.equals(mTextViewSat)) {
+                selectedDayList[6] = true;
+            }
         }
     }
 
@@ -819,20 +1034,68 @@ public class AddGroupToDoActivity extends BaseActivity {
 
     boolean validateBeforeAdd() {
         if (mEditTextTitle.getText().length() < 1) {
-            showSnackBar(mEditTextTitle, "내용을 입력 해 주세요");
+            showSnackBar(mEditTextTitle, "내용을 입력해 주세요");
             return false;
         }
         if (mTodoCategory == LOCATION) {
+            resetTimeInfo();
             if (!mIsLocationSelected) {
-                showSnackBar(mEditTextTitle, "장소를 선택 해 주세요");
+                showSnackBar(mEditTextTitle, "장소를 선택해 주세요");
                 return false;
             }
         } else if (mTodoCategory == TIME) {
-            return true;
+            resetLocationInfo();
+            if (mRepeatType == ONE_DAY) {
+                if (!mIsDatePick || !mIsTimePick) {
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+            } else if (mRepeatType == ALL_DAY) {
+                if (!mIsTimePick) {
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+
+            } else if (mRepeatType == WEEK_DAY) {
+                if (!validateRepeatDayOfWeek(selectedDayList)) {
+                    showSnackBar(mEditTextTitle, "반복요일을 선택해주세요");
+                    return false;
+                }
+                if (!mIsTimePick) {
+                    showSnackBar(mEditTextTitle, "시간을 선택해 주세요");
+                    return false;
+                }
+            } else if (mRepeatType == MONTH_DAY) {
+
+            }
         } else {
-            return true;
+            showSnackBar(mEditTextTitle, "일정 정보를 입력해 주세요");
+            return false;
+        }
+        friendList = setFriendList(mData);
+        if (friendList.size()==0){
+            showSnackBar(mEditTextTitle, "해당 멤버를 입력해 주세요");
+            return false;
         }
         return true;
+    }
+
+    void resetLocationInfo() {
+        mIsLocationSelected = false;
+        mWifiMode = 'N';
+    }
+
+    void resetTimeInfo() {
+        mRepeatType = ONE_DAY;
+    }
+
+    private boolean validateRepeatDayOfWeek(boolean[] list) {
+        for (int i = 0; i < list.length; i++) {
+            if (list[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void setLocationInfo() {
@@ -858,6 +1121,7 @@ public class AddGroupToDoActivity extends BaseActivity {
                 mLocation = (LocationResponse.Location) Objects.requireNonNull(data.getSerializableExtra("location"));
                 longitude = Double.parseDouble(mLocation.getLongitude());
                 latitude = Double.parseDouble(mLocation.getLatitude());
+                setFavoritePlaceItem(NO_DATA);
                 setLocationInfo();
 //                getLocationAndSetMap(mLocation);
             } else if (resultCode == 111) {
@@ -969,6 +1233,29 @@ public class AddGroupToDoActivity extends BaseActivity {
             } else if (integer == COMPANY_SELECT_MODE) {
                 mFavoriteSelectedIndex = 2;
             }
+        }
+    }
+
+    private ToDo makeTodoObject() {
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y');
+//        todo.setTodoNo(mToDoNo);
+        return todo;
+    }
+
+    private ToDoData makeTodoDataObject() {
+
+        if (mTodoCategory == LOCATION) {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    latitude, longitude, mLocationMode, mLadius,
+                    mWifiBssid, mWifiMode, mLocationTime, NO_DATA, "", NO_DATA, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
+        } else if (mTodoCategory == TIME) {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
+                    "", 'N', NO_DATA, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mYear, mMonth, mDay, mHour, mMinute);
+        } else {
+            return new ToDoData(mTextViewLocation.getText().toString(),
+                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
+                    "", 'N', NO_DATA, NO_DATA, "", NO_DATA, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
         }
     }
 

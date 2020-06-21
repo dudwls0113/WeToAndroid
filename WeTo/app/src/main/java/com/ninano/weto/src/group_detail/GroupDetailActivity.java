@@ -66,7 +66,7 @@ public class GroupDetailActivity extends BaseActivity {
     private ImageView mImageViewExpand;
 
     private int mGroupNo = 0;
-
+    private int mGroupIcon = -1;
     private ArrayList<Member> members = new ArrayList<>();
 
     @Override
@@ -78,6 +78,7 @@ public class GroupDetailActivity extends BaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
         mGroupNo = getIntent().getIntExtra("groupId", 0);
+        mGroupIcon = getIntent().getIntExtra("groupIcon", -1);
         members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
         init();
         setGroupMemberData(members);
@@ -170,6 +171,9 @@ public class GroupDetailActivity extends BaseActivity {
                         @Override
                         public void todoClick() {
                             Intent intent = new Intent(GroupDetailActivity.this, AddGroupToDoActivity.class);
+                            intent.putExtra("groupId", mGroupNo);
+                            intent.putExtra("groupIcon", mGroupIcon);
+                            intent.putExtra("members", members);
                             startActivity(intent);
                         }
 
@@ -271,7 +275,7 @@ public class GroupDetailActivity extends BaseActivity {
         mMemberData.clear();
 
         for(int i=0; i<members.size(); i++){
-            mMemberData.add(new GroupMemberData(members.get(i).getProfileUrl(), members.get(i).getNickName(), false));
+            mMemberData.add(new GroupMemberData(members.get(i).getUserNo(), members.get(i).getProfileUrl(), members.get(i).getNickName(), false));
         }
 //        mMemberData.add(new GroupMemberData("", "나", false));
 //        mMemberData.add(new GroupMemberData("", "문영진", false));
@@ -280,7 +284,7 @@ public class GroupDetailActivity extends BaseActivity {
 //        mMemberData.add(new GroupMemberData("", "이재학", false));
 //        mMemberData.add(new GroupMemberData("", "조현우", false));
 
-        mMemberData.add(new GroupMemberData("","",true));
+        mMemberData.add(new GroupMemberData(-1,"","",true));
 
         mGroupMemberListAdapter.notifyDataSetChanged();
     }

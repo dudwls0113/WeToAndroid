@@ -36,13 +36,21 @@ public abstract class ToDoDao {
     @Query("SELECT count(*) FROM ToDo WHERE todoNo = :todoNo AND status = 'ACTIVATE'")
     public abstract int getTodoWithAlarmCount(int todoNo);
 
-    //활성중인 일정조회
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")
+    //활성중인 개인일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.isGroup = 78 ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getActivatedTodoList();
 
-    //종료된 일정조회
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE'")
+    //종료된 개인일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' AND Todo.isGroup = 78")
     public abstract LiveData<List<ToDoWithData>> getDoneTodoList();
+
+    //활성중인 그룹일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.isGroup = 89 ORDER BY Todo.ordered")
+    public abstract LiveData<List<ToDoWithData>> getActivatedGroupTodoList();
+
+    //종료된 그룹일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' AND Todo.isGroup = 89")
+    public abstract LiveData<List<ToDoWithData>> getDoneGroupTodoList();
 
     //활성중인 일정조회 (livedata아닌버전)
     @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' ORDER BY Todo.ordered")

@@ -92,6 +92,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteView
         oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
         oval.getPaint().setAntiAlias(true);
         mImageViewProfile.setBackground(oval);
+        mImageViewProfile.setClipToOutline(true);
         Glide.with(mContext).load(mProfileUrl).apply(sharedOptions).into(mImageViewProfile);
         mTextViewTitle = findViewById(R.id.group_invite_tv_title);
         String title = mNickName+"님께서\n그룹에 초대하셨습니다.";
