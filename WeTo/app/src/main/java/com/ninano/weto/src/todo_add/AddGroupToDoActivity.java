@@ -9,10 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,14 +21,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
@@ -49,11 +44,9 @@ import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.DeviceBootReceiver;
 import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
-import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
 import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.AddGroupToDoMemberAdapter;
 //import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
@@ -62,12 +55,10 @@ import com.ninano.weto.src.todo_add.interfaces.AddGroupToDoView;
 import com.ninano.weto.src.todo_add.models.AddGroupToDoMemberData;
 //import com.ninano.weto.src.todo_add.models.LikeLocationData;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
@@ -79,25 +70,21 @@ import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
-import static com.ninano.weto.src.ApplicationClass.DAYREPEAT;
 import static com.ninano.weto.src.ApplicationClass.DAY_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MINUTE_FORMAT;
-import static com.ninano.weto.src.ApplicationClass.MONTHREPEAT;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.MONTH_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.NONE;
-import static com.ninano.weto.src.ApplicationClass.NOREPEAT;
 import static com.ninano.weto.src.ApplicationClass.NO_DATA;
 import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.SCHOOL_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.TIME_FORMAT;
-import static com.ninano.weto.src.ApplicationClass.WEEKREPEAT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.YEAR_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
@@ -169,7 +156,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     private int mRepeatMode;
 
     //intent로 받아온 멤버
-    private int mGroupId = 0;
+    private int mGroupNo = 0;
     private int mGroupIcon = -1;
     private ArrayList<Member> members = new ArrayList<>();
 
@@ -179,6 +166,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     //친구 선택 밸리데이션
     ArrayList<AddGroupToDoMemberData> friendList = new ArrayList<>();
 
+    private int mServerTodoNo = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,9 +176,9 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         density = displayMetrics.density;
-        mGroupId = getIntent().getIntExtra("groupId", 0);
+        mGroupNo = getIntent().getIntExtra("groupId", 0);
         mGroupIcon = getIntent().getIntExtra("groupIcon", -1);
-        System.out.println("그룹 정보: " + mGroupId + ", " + mGroupIcon);
+        System.out.println("그룹 정보: " + mGroupNo + ", " + mGroupIcon);
         members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
         init();
         initGeoFence();
@@ -311,7 +299,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         mTodoCategory = NONE;
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
-        mLocationTime = AT_START;
+        mLocationTime = ALWAYS;
 //        mWifiMode = 'Y';
         mLadius = 300;
 
@@ -428,7 +416,9 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
 
     private void insertToRoomDB() {
         ToDo todo = makeTodoObject();
+        todo.setGroupNo(mGroupNo);
         ToDoData toDoData = makeTodoDataObject();
+        toDoData.setSeverTodoNo(mServerTodoNo);
         switch (mLocationMode) {
             case NONE:
                 break;
@@ -447,7 +437,9 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     @Override
-    public void postToDoSuccess() {
+    public void postToDoSuccess(int groupNo, int serverTodoNo) {
+        mGroupNo = groupNo;
+        mServerTodoNo = serverTodoNo;
         insertToRoomDB();
     }
 
@@ -726,7 +718,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
                 if(intervalTime>FINISH_INTERVAL_TIME){
                     if (validateBeforeAdd()) {
                         changeRepeatDayOfWeek();
-                        postToDoLocation(mGroupId, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
+                        postToDoLocation(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
                                 mImportantMode, latitude, longitude, mLocationMode, mTextViewLocation.getText().toString(), mLadius, mWifiBssid, mWifiMode, mLocationTime);
                     }
                 }
@@ -1238,6 +1230,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
 
     private ToDo makeTodoObject() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y');
+
 //        todo.setTodoNo(mToDoNo);
         return todo;
     }

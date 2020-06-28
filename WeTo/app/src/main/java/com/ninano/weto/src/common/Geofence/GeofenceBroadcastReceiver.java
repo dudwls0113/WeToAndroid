@@ -61,7 +61,26 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 }
-            } catch (ExecutionException | InterruptedException e) {
+            } catch (ExecutionException | InterruptedException  | NumberFormatException e) {
+                //그룹일정 (Caused by: java.lang.NumberFormatException: For input string: "group2")
+                if(triggeringGeofences.get(0).getRequestId().contains("group")){
+                    List<ToDoWithData> toDoWithDataList = null;
+                    try {
+                        toDoWithDataList = new DbAsyncTask().execute(Integer.valueOf(triggeringGeofences.get(0).getRequestId().substring(5))).get();
+                    } catch (ExecutionException | InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                    if (toDoWithDataList.size() > 0) {
+                        if (toDoWithDataList.get(0).getStatus().equals("ACTIVATE")) {
+                            if (compareTimeSlot(toDoWithDataList.get(0).getTimeSlot())) {//타임슬롯 체크
+                                Util.sendNotification(toDoWithDataList.get(0).getTitle(), getLocationNotificationContent(toDoWithDataList.get(0)));
+                            }
+                        }
+                    }
+                }
+                else{//그룹 약속
+
+                }
                 e.printStackTrace();
             }
 

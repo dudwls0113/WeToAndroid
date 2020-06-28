@@ -5,6 +5,7 @@ import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.todo_add.interfaces.AddGroupToDoRetrofitInterface;
 import com.ninano.weto.src.todo_add.interfaces.AddGroupToDoView;
 import com.ninano.weto.src.todo_add.models.AddGroupToDoMemberData;
+import com.ninano.weto.src.todo_add.models.AddGroupToResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,21 +58,21 @@ public class AddGroupToDoService {
             e.printStackTrace();
         }
         AddGroupToDoRetrofitInterface addGroupToDoRetrofitInterface = getRetrofit().create(AddGroupToDoRetrofitInterface.class);
-        addGroupToDoRetrofitInterface.postToDo(RequestBody.create(params.toString(), MEDIA_TYPE_JSON)).enqueue(new Callback<DefaultResponse2>() {
+        addGroupToDoRetrofitInterface.postToDo(RequestBody.create(params.toString(), MEDIA_TYPE_JSON)).enqueue(new Callback<AddGroupToResponse>() {
             @Override
-            public void onResponse(Call<DefaultResponse2> call, Response<DefaultResponse2> response) {
-                final DefaultResponse2 defaultResponse2 = response.body();
-                if(defaultResponse2==null){
+            public void onResponse(Call<AddGroupToResponse> call, Response<AddGroupToResponse> response) {
+                final AddGroupToResponse addGroupToResponse = response.body();
+                if(addGroupToResponse==null){
                     mAddGroupToDoView.validateFailure(null);
-                } else if(defaultResponse2.getCode()==100){
-                    mAddGroupToDoView.postToDoSuccess();
+                } else if(addGroupToResponse.getCode()==100){
+                    mAddGroupToDoView.postToDoSuccess(addGroupToResponse.getGroupNo(), addGroupToResponse.getSeverTodoNo());
                 } else {
-                    mAddGroupToDoView.validateFailure(defaultResponse2.getMessage());
+                    mAddGroupToDoView.validateFailure(addGroupToResponse.getMessage());
                 }
             }
 
             @Override
-            public void onFailure(Call<DefaultResponse2> call, Throwable t) {
+            public void onFailure(Call<AddGroupToResponse> call, Throwable t) {
                 System.out.println(t.toString());
                 mAddGroupToDoView.validateFailure(null);
             }

@@ -136,7 +136,6 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         if (isLogin){ // 로그인 되어있으면
             mLayoutButton.setVisibility(View.VISIBLE);
             mLayoutLogin.setVisibility(View.GONE);
-            getGroup();
         } else {
             mLayoutButton.setVisibility(View.GONE);
             mLayoutLogin.setVisibility(View.VISIBLE);
@@ -465,8 +464,10 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
     }
 
     private void getGroup(){
-        ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
-        toDoGroupService.getGroup();
+        if (sSharedPreferences.getBoolean("kakaoLogin", false)){ // 로그인 되어있으면
+            ToDoGroupService toDoGroupService = new ToDoGroupService(mContext, this);
+            toDoGroupService.getGroup();
+        }
     }
 
     private void postGroup(int icon, String name){

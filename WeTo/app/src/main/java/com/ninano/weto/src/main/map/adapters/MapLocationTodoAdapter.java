@@ -54,7 +54,6 @@ public class MapLocationTodoAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Log.d("프래그먼트", i+"번째 " + toDoWithDataArrayList.get(i).toString());
         if (toDoWithDataArrayList != null && toDoWithDataArrayList.size() > 0) {
             i = i % toDoWithDataArrayList.size();
             LocationTodoBannerFragment locationTodoBannerFragment = (LocationTodoBannerFragment) LocationTodoBannerFragment.newInstance(toDoWithDataArrayList.get(i));

@@ -84,6 +84,14 @@ public abstract class ToDoDao {
     @Query("DELETE FROM ToDoData WHERE todoDataNo = :toDoDataNo")
     public abstract void deleteToDoData(int toDoDataNo);
 
+    //활성중인 특정 그룹일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.isGroup = 89 ORDER BY Todo.ordered AND Todo.groupNo = :groupNo")
+    public abstract LiveData<List<ToDoWithData>> getActivatedGroupTodoList(int groupNo);
+
+    //종료된 특정 그룹일정조회
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' AND Todo.isGroup = 89 AND Todo.groupNo = :groupNo")
+    public abstract LiveData<List<ToDoWithData>> getDoneGroupTodoList(int groupNo);
+
     //종료된 일정조회
 //    @Query("SELECT todoNo, latitude, longitude, locationMode, radius FROM  ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
 //    public abstract LiveData<List<ToDoData>> getGpsTodo();
