@@ -1186,6 +1186,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);
                 latitude = data.getDoubleExtra("latitude", 0);
+                mWifiConnected = data.getBooleanExtra("connected", false);
                 String wifiName = data.getStringExtra("ssid");
                 String favoriteName = data.getStringExtra("favoriteName");
                 new FavoritePlaceInsertAsyncTask().execute(new FavoriteLocation(favoriteName, longitude, latitude), wifiName, mWifiBssid);
@@ -1198,6 +1199,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);
                 latitude = data.getDoubleExtra("latitude", 0);
+                mWifiConnected = data.getBooleanExtra("connected", false);
                 String wifiName = data.getStringExtra("ssid");
                 new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(0), latitude, longitude, HOME_SELECT_MODE, mWifiBssid, wifiName);
             }
@@ -1209,6 +1211,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);
                 latitude = data.getDoubleExtra("latitude", 0);
+                mWifiConnected = data.getBooleanExtra("connected", false);
                 String wifiName = data.getStringExtra("ssid");
                 new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(1), latitude, longitude, SCHOOL_SELECT_MODE, mWifiBssid, wifiName);
             }
@@ -1220,6 +1223,7 @@ public class AddPersonalToDoActivity extends BaseActivity {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);
                 latitude = data.getDoubleExtra("latitude", 0);
+                mWifiConnected = data.getBooleanExtra("connected", false);
                 String wifiName = data.getStringExtra("ssid");
                 new FavoritePlaceUpdateAsyncTask().execute(mFavoritePlaceList.get(2), latitude, longitude, COMPANY_SELECT_MODE, mWifiBssid, wifiName);
             }

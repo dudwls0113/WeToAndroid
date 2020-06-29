@@ -39,6 +39,7 @@ import static com.ninano.weto.src.ApplicationClass.getRetrofit;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.common.util.Util.sendNotification;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
@@ -175,6 +176,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             }
         }
+
+        sendNotification("일정에 초대되었습니다.", title);
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -201,8 +204,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
 
             if (toDoData.getIsWiFi() == 'Y') {//와이파이
-//                getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
-//                Log.d("와이파이 일정 등록", mWifiMode + " " + mLocationMode + " " + mWifiConnected);
+                getWifiMaker().registerAndUpdateWifi(getApplicationContext(), toDoData.getIsWiFi(), toDoData.getLocationMode(), true);
+                Log.d("와이파이 일정 등록", "");
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
 //                changeRepeatDayOfWeek();
 //                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);

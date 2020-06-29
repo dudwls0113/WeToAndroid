@@ -58,6 +58,7 @@ public class WifiService extends JobService {
             final WifiInfo wifiInfo;
             if (wifiManager != null) {
                 wifiInfo = wifiManager.getConnectionInfo();
+                System.out.println("와이파이 정보 비교: " + recentWifi + ", " + wifiInfo.getBSSID());
                 if (wifiInfo != null && wifiInfo.getBSSID() != null) {
                     if (!wifiInfo.getBSSID().equals(recentWifi)) { // 현재연결와이파이와 recentWifi가 다르면 노티 보내야함
                         SharedPreferences.Editor editor = sf.edit();

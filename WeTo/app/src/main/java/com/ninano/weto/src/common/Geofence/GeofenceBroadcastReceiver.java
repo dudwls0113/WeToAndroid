@@ -52,11 +52,13 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT || geofenceTransition == GEOFENCE_TRANSITION_DWELL) {
             mDatabase = AppDatabase.getAppDatabase(context);
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            System.out.println("지오펜스1");
             try {
                 List<ToDoWithData> toDoWithDataList = new DbAsyncTask().execute(Integer.valueOf(triggeringGeofences.get(0).getRequestId())).get();
                 if (toDoWithDataList.size() > 0) {
                     if (toDoWithDataList.get(0).getStatus().equals("ACTIVATE")) {
                         if (compareTimeSlot(toDoWithDataList.get(0).getTimeSlot())) {//타임슬롯 체크
+                            System.out.println("지오펜스1, 타임슬롯 체크");
                             Util.sendNotification(toDoWithDataList.get(0).getTitle(), getLocationNotificationContent(toDoWithDataList.get(0)));
                         }
                     }

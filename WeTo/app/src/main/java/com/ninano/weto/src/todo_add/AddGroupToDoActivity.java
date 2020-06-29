@@ -311,7 +311,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         mTodoCategory = NONE;
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
-        mLocationTime = AT_START;
+        mLocationTime = ALWAYS;
 //        mWifiMode = 'Y';
         mLadius = 300;
 
@@ -1237,7 +1237,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     private ToDo makeTodoObject() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y', 0);
+        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y');
 //        todo.setTodoNo(mToDoNo);
         return todo;
     }

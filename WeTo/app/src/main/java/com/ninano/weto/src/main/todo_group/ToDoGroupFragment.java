@@ -357,7 +357,9 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
     @Override
     public void onResume() {
         super.onResume();
-        getGroup();
+        if(sSharedPreferences.getBoolean("kakaoLogin", false)){
+            getGroup();
+        }
     }
 
     private void getCurrentTime(){
