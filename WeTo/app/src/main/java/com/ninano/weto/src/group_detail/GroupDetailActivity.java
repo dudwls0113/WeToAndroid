@@ -1,6 +1,7 @@
 package com.ninano.weto.src.group_detail;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.ninano.weto.R;
+import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.custom.StartSnapHelper;
@@ -32,7 +34,10 @@ import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelpe
 import com.ninano.weto.src.todo_add.AddGroupToDoActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 
 public class GroupDetailActivity extends BaseActivity {
 
@@ -69,6 +74,8 @@ public class GroupDetailActivity extends BaseActivity {
     private int mGroupIcon = -1;
     private ArrayList<Member> members = new ArrayList<>();
 
+    AppDatabase mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +89,30 @@ public class GroupDetailActivity extends BaseActivity {
         members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
         init();
         setGroupMemberData(members);
+        setDatabase();
+    }
+
+    private void setDatabase() {
+        mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
+        mDatabase.todoDao().getActivatedGroupTodoList(mGroupNo).observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mGroupListData.clear();
+                mGroupListData.addAll(todoList);
+                mToDoGroupListAdapter.notifyDataSetChanged();
+            }
+        });
+        mDatabase.todoDao().getDoneGroupTodoList(mGroupNo).observe(this, new Observer<List<ToDoWithData>>() {
+            @Override
+            public void onChanged(List<ToDoWithData> todoList) {
+                mGroupListDoneData.clear();
+                mGroupListDoneData.addAll(todoList);
+                mToDoGroupDoneListAdapter.notifyDataSetChanged();
+                if (isExpandable) {
+                    showDoneLayout();
+                }
+            }
+        });
     }
 
     void init(){
@@ -277,13 +308,6 @@ public class GroupDetailActivity extends BaseActivity {
         for(int i=0; i<members.size(); i++){
             mMemberData.add(new GroupMemberData(members.get(i).getUserNo(), members.get(i).getProfileUrl(), members.get(i).getNickName(), false));
         }
-//        mMemberData.add(new GroupMemberData("", "나", false));
-//        mMemberData.add(new GroupMemberData("", "문영진", false));
-//        mMemberData.add(new GroupMemberData("", "모영민", false));
-//        mMemberData.add(new GroupMemberData("", "신민재", false));
-//        mMemberData.add(new GroupMemberData("", "이재학", false));
-//        mMemberData.add(new GroupMemberData("", "조현우", false));
-
         mMemberData.add(new GroupMemberData(-1,"","",true));
 
         mGroupMemberListAdapter.notifyDataSetChanged();

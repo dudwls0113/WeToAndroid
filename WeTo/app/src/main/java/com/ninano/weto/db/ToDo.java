@@ -21,6 +21,7 @@ public class ToDo {
     //그룹 일정용
     private char isGroup; // 그룹아니면 N
     private String groupTodoCreator;
+    private int groupNo;
 
     //그룹용 생성자
     public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup) {
@@ -34,6 +35,13 @@ public class ToDo {
         this.isGroup = isGroup;
     }
 
+    public int getGroupNo() {
+        return groupNo;
+    }
+
+    public void setGroupNo(int groupNo) {
+        this.groupNo = groupNo;
+    }
 //    //그룹용 생성자(ToDo생성자 포함)
 //    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo, String groupTodoCreator) {
 //        this.title = title;

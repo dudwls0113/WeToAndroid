@@ -64,20 +64,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             // Check if message contains a notification payload.
             RemoteMessage.Notification notification = remoteMessage.getNotification();
-//            if (notification != null) {
-//                Log.d("FCM", "Message Notification Body: " + notification.getBody());
-////                pushNotification(this, notification.getBody(), data);
-//            }
             if (data.size() > 0) {
                 receiveFcmData(data);
-            }
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                //scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                //handleNow();
             }
         }
     }
@@ -91,6 +79,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         int ordered = Integer.parseInt(data.get("ordered"));
         String status = data.get("status");
         int serverTodoNo = Integer.parseInt(data.get("serverTodoNo"));
+        int groupNo = Integer.parseInt(data.get("groupNo"));
 
         int locationMode = 0;
         String locationName = "";
@@ -148,33 +137,35 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
 
             if (type == 77) { // LOCATION
-                ToDo todo = makeGroupTodoObject(title, content, icon, LOCATION, Objects.requireNonNull(isImportant).charAt(0), serverTodoNo);
+                ToDo todo = makeGroupTodoObject(title, content, icon, LOCATION, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, latitude, longitude, locationMode, radius, ssid, Objects.requireNonNull(isWiFi).charAt(0),
                         timeSlot, repeatType, repeatDayOfWeek, repeatDay, date, time, -1, -1, -1, -1, -1, serverTodoNo);
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             } else if (type == 88) { //MEET
-                ToDo todo = makeGroupTodoObject(title, content, icon, MEET, Objects.requireNonNull(isImportant).charAt(0), serverTodoNo);
+                ToDo todo = makeGroupTodoObject(title, content, icon, MEET, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, latitude, longitude, NO_DATA, radius, ssid, 'N',
                         NO_DATA, NO_DATA, "", NO_DATA, date, time, year, month, day, hour, minute, serverTodoNo);
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             }
+            ////와이파이랑 시간쪽 로직 추가 필요
 
         } catch (NumberFormatException numberFormatException) {
             if (type == 77) { // LOCATION
-                ToDo todo = makeGroupTodoObject(title, content, icon, LOCATION, Objects.requireNonNull(isImportant).charAt(0), serverTodoNo);
+                ToDo todo = makeGroupTodoObject(title, content, icon, LOCATION, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, latitude, longitude, locationMode, radius, ssid, Objects.requireNonNull(isWiFi).charAt(0),
                         timeSlot, repeatType, repeatDayOfWeek, repeatDay, date, time, -1, -1, -1, -1, -1, serverTodoNo);
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             } else if (type == 88) { //MEET
-                ToDo todo = makeGroupTodoObject(title, content, icon, MEET, Objects.requireNonNull(isImportant).charAt(0), serverTodoNo);
+                ToDo todo = makeGroupTodoObject(title, content, icon, MEET, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, latitude, longitude, locationMode, radius, ssid, Objects.requireNonNull(isWiFi).charAt(0),
                         timeSlot, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             }
+            ////와이파이랑 시간쪽 로직 추가 필요 (위랑똑같이쓰면댐)
         }
 
         sendNotification("일정에 초대되었습니다.", title);
@@ -262,8 +253,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         }
     }
 
-    private ToDo makeGroupTodoObject(String title, String content, int icon, int type, char importantMode, int serverTodoNo) {
+    private ToDo makeGroupTodoObject(String title, String content, int icon, int type, char importantMode, int groupNo) {
         ToDo todo = new ToDo(title, content, icon, type, importantMode, 'Y');
+        todo.setGroupNo(groupNo);
         return todo;
     }
 

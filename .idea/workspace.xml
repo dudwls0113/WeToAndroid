@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e5860037-df8e-4f98-a5f4-c8bd4d8c1b3b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/models/AddGroupToResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/Geofence/GeofenceBroadcastReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/Geofence/GeofenceBroadcastReceiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/group_detail/GroupDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/group_detail/GroupDetailActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/map/adapters/MapLocationTodoAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/map/adapters/MapLocationTodoAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_group/ToDoGroupFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_group/ToDoGroupFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoRetrofitInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoRetrofitInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoView.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoView.java" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="256">
+              <caret line="160" column="24" selection-start-line="160" selection-start-column="24" selection-end-line="160" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="30" column="16" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="true">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="567">
+              <caret line="272" column="6" selection-start-line="272" selection-start-column="5" selection-end-line="272" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/logs/access-2020-06-29.log">
+          <provider selected="true" editor-type-id="LogFileEditorProvider" />
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>makeGroup</find>
+      <find>isDuplicateGroupMember</find>
+      <find>getGroupList</find>
+      <find>send</find>
+      <find>joinGroup</find>
+      <find>inviteAccept</find>
+      <find>makeTimeTodo</find>
+      <find>getGroupMember</find>
+      <find>sendTodoFcmToMember</find>
+      <find>echo</find>
+      <find>makeLocationTodo</find>
+      <find>sendFcn</find>
+      <find>sendFcm</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/controllers/function.php" />
+        <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/pdos/DatabasePdo.php" />
+        <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/pdos/IndexPdo.php" />
+        <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/pdos/MainPdo.php" />
+        <option value="&lt;0142f8b9-f0ab-4c27-8490-3e4e8f5bb6d1&gt;/index.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/MainPdo.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/MainController.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/DatabasePdo.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/UserPdo.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/UserController.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/deployment.xml" />
+        <option value="$PROJECT_DIR$/.idea/webServers.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="1680" />
+    <option name="height" value="975" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e5860037-df8e-4f98-a5f4-c8bd4d8c1b3b" name="Default Changelist" comment="" />
+      <created>1587461964395</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587461964395</updated>
+      <workItem from="1587461965639" duration="2081000" />
+      <workItem from="1587523149327" duration="248000" />
+      <workItem from="1588086000613" duration="2341000" />
+      <workItem from="1588412193855" duration="127000" />
+      <workItem from="1588749965675" duration="166000" />
+      <workItem from="1588768110940" duration="813000" />
+      <workItem from="1588835973477" duration="203000" />
+      <workItem from="1590596037240" duration="1864000" />
+      <workItem from="1590598204225" duration="3468000" />
+      <workItem from="1590602713534" duration="685000" />
+      <workItem from="1590603508881" duration="7106000" />
+      <workItem from="1590647505345" duration="12403000" />
+      <workItem from="1590732193163" duration="144000" />
+      <workItem from="1591814159475" duration="6136000" />
+      <workItem from="1591850369171" duration="273000" />
+      <workItem from="1591954409511" duration="386000" />
+      <workItem from="1592520492532" duration="794000" />
+      <workItem from="1592665617093" duration="13302000" />
+      <workItem from="1593361006094" duration="1605000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="54145000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="1680" height="975" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" weight="0.26190478" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="File Transfer" order="12" weight="0.32842582" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info active="true" anchor="right" id="Remote Host" order="3" visible="true" weight="0.2741148" />
+      <window_info anchor="right" id="Database" order="4" weight="0.32967034" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>
