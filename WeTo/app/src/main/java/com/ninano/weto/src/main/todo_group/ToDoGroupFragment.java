@@ -69,6 +69,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.ninano.weto.src.ApplicationClass.X_ACCESS_TOKEN;
 import static com.ninano.weto.src.ApplicationClass.fcmToken;
@@ -490,7 +491,7 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
         getGroup();
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(getActivity(),
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Objects.requireNonNull(getActivity()),
                 new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
