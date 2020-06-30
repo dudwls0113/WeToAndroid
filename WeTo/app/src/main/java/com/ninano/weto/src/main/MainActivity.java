@@ -98,11 +98,10 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
 //            Session.getCurrentSession().checkAndImplicitOpen();
 //        }
 //        showCustomToast(Session.getCurrentSession().getTokenInfo().getAccessToken());
-        System.out.println(Session.getCurrentSession().getTokenInfo().getAccessToken());
+//        System.out.println(Session.getCurrentSession().getTokenInfo().getAccessToken());
         mContext = this;
         AutoPermissions.Companion.loadAllPermissions(this, 100);
 //        checkPermission();
-
         init();
 
         //배포를 위해 아래부분 주석처리(그룹용없으면 필요없는부분)
