@@ -140,6 +140,8 @@ public class ToDoGroupListAdapter extends RecyclerView.Adapter<ToDoGroupListAdap
                         break;
                 }
                 break;
+            case MEET:
+                condition.append(mData.get(position).getLocationName()).append("에서 ");
         }
         holder.mTextViewSubTitle.setText(condition);
 

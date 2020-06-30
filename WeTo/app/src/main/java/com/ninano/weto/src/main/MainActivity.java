@@ -63,6 +63,7 @@ import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
 import static com.ninano.weto.src.ApplicationClass.fcmToken;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
+import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 
 public class MainActivity extends BaseActivity implements AutoPermissionsListener, MainActivityView {
 
@@ -257,6 +258,15 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
+        if(requestCode==100){
+            if(sSharedPreferences.getBoolean("firstWifiService", true)){
+                getWifiMaker().startJobScheduler(getApplicationContext());
+                SharedPreferences.Editor editor = sSharedPreferences.edit();
+                editor.putBoolean("firstWifiService", false);
+                editor.apply();
+            }
+        }
+
     }
 
     @Override

@@ -136,6 +136,7 @@ public class WifiMaker {
                                 editor.putString("recentWifi", wifiInfo.getBSSID());
 //                                editor.putBoolean("firstWifiNoti", true);
                                 editor.apply();
+                                System.out.println("현재 연결 와이파이: " + wifiInfo.getBSSID());
                             }
                         }
                     }
@@ -171,7 +172,7 @@ public class WifiMaker {
 //                    } else {
                         System.out.println("카운트 아님");
                         if (mWifiConnected) {
-                            System.out.println("현재 연결 와이파이2");
+                            System.out.println("현재 도착 연결 와이파이2");
                             WifiManager wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                             final WifiInfo wifiInfo;
                             if (wifiManager != null) {
@@ -181,6 +182,7 @@ public class WifiMaker {
                                 editor.putString("recentWifi", wifiInfo.getBSSID());
 //                                editor.putBoolean("firstWifiNoti", true);
                                 editor.apply();
+                                System.out.println("현재 연결 와이파이: " + wifiInfo.getBSSID());
                             }
 //                        }
                     }

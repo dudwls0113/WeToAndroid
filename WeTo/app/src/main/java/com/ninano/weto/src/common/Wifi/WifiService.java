@@ -51,6 +51,7 @@ public class WifiService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         try {
+//            Toast.makeText(getApplicationContext(), "와이파이 연결", Toast.LENGTH_LONG).show();
             List<ToDoWithData> toDoWithDataList = new DBWifiAsyncTask(mDatabase.todoDao()).execute('Y', (char) 22).get();
             SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
             String recentWifi = sf.getString("recentWifi", "");

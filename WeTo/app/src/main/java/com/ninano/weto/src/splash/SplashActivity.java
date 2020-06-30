@@ -53,7 +53,7 @@ public class SplashActivity extends BaseActivity {
 //            SharedPreferences.Editor editor = sSharedPreferences.edit();
 //            editor.putBoolean("firstConnect", false);
 //            editor.apply();
-            getWifiMaker().startJobScheduler(getApplicationContext());
+//            getWifiMaker().startJobScheduler(getApplicationContext());
             startActivity(new Intent(SplashActivity.this, TutorialActivity.class));
             finish();
             return;

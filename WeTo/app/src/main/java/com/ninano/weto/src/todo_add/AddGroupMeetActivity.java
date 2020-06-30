@@ -464,13 +464,16 @@ public class AddGroupMeetActivity extends BaseActivity implements AddGroupToDoVi
                 mMonth = Integer.parseInt(MONTH_FORMAT.format(date));
                 mDay = Integer.parseInt(DAY_FORMAT.format(date));
                 calendar.set(mYear, mMonth-1, mDay);
-                if(calendar.before(Calendar.getInstance())){
-                    showCustomToast("과거의 날짜는 선택할 수 없습니다.");
-                } else {
-                    mTextViewDate.setText(mYear + "년 " + mMonth + "월 " + mDay + "일");
-                    mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
-                    mIsDatePick = true;
-                }
+//                if(calendar.before(Calendar.getInstance())){
+//                    showCustomToast("과거의 날짜는 선택할 수 없습니다.");
+//                } else {
+//                    mTextViewDate.setText(mYear + "년 " + mMonth + "월 " + mDay + "일");
+//                    mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
+//                    mIsDatePick = true;
+//                }
+                mTextViewDate.setText(mYear + "년 " + mMonth + "월 " + mDay + "일");
+                mTextViewDate.setTextColor(getResources().getColor(R.color.colorBlack));
+                mIsDatePick = true;
             }
         })
                 .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
