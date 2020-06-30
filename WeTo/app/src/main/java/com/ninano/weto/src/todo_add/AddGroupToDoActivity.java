@@ -21,6 +21,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -196,6 +197,18 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     void init() {
+        mImportantSwitch = findViewById(R.id.add_group_todo_switch_improtant);
+        mImportantSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mImportantMode = 'Y';
+                } else {
+                    mImportantMode = 'N';
+                }
+            }
+        });
+
         mImageViewIcon = findViewById(R.id.add_group_todo_iv_icon);
 
         mTextViewTimeNoRepeat = findViewById(R.id.add_group_todo_tv_no_repeat);

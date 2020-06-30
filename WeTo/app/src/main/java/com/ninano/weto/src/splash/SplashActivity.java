@@ -35,7 +35,7 @@ import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 public class SplashActivity extends BaseActivity {
 
     private ToDoDao mTodoDao;
-    private AppDatabase mDatabase = AppDatabase.getAppDatabase(getApplicationClassContext());
+    private AppDatabase mDatabase;
     private Context mContext;
     private boolean isKakaoShare;
     private int mGroupId;
@@ -46,7 +46,7 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mContext = this;
-
+        mDatabase= AppDatabase.getAppDatabase(getApplicationContext());
         boolean isFirst = sSharedPreferences.getBoolean("firstConnect", true);
         if (isFirst){
 //            SharedPreferences.Editor editor = sSharedPreferences.edit();
