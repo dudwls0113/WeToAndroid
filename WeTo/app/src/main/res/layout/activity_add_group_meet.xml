@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    tools:context=".src.todo_add.AddGroupMeetActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:lineSpacingExtra="9sp"
+            android:text="새로운 약속"
+            android:textColor="#38454c"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/add_group_meet_iv_back"
+            android:onClick="customOnClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="29dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_x" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="96dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="26dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/add_group_todo_iv_icon"
+                        android:onClick="customOnClick"
+                        android:visibility="gone"
+                        android:layout_width="42dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="21dp"
+                        android:src="@drawable/ic_todo_add_icon" />
+
+                    <EditText
+                        android:id="@+id/add_group_meet_et_title"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_round_edit"
+                        android:hint="약속명을 입력하세요."
+                        android:lineSpacingExtra="8sp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:singleLine="true"
+                        android:textColor="#38454c"
+                        android:textColorHint="#e3e7ec"
+                        android:textSize="16sp"
+                        android:theme="@style/EditTextStyle" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="8sp"
+                        android:text="날짜 및 시간"
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/add_group_meet_layout_hidden_time_date"
+                    android:onClick="customOnClick"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_round_edit"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/add_group_meet_tv_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="6sp"
+                        android:text="@string/todo_time_date"
+                        android:textColor="#e3e7ec"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="15.5dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_chevron_down" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/add_group_meet_layout_hidden_time_time"
+                    android:onClick="customOnClick"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/bg_round_edit"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/add_group_meet_tv_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="6sp"
+                        android:text="@string/todo_time_time"
+                        android:textColor="#e3e7ec"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="15.5dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_chevron_down" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="8sp"
+                        android:text="장소"
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/add_group_meet_rv_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="15dp" />
+
+                <LinearLayout
+                    android:id="@+id/add_group_meet_layout_gps"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/bg_round_edit"
+                    android:onClick="customOnClick"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_navigation" />
+
+                    <TextView
+                        android:id="@+id/add_group_meet_tv_location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="6sp"
+                        android:text="장소를 선택하세요."
+                        android:textColor="#e3e7ec"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:textColor="#38454c"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/todo_group_add_member"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="24dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/add_group_meet_rv_member"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:layout_marginBottom="30dp"/>
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="24dp"-->
+<!--                    android:layout_marginEnd="24dp"-->
+<!--                    android:layout_marginBottom="20dp"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:lineSpacingExtra="8sp"-->
+<!--                        android:text="멤버 도착시 알림"-->
+<!--                        android:textColor="#38454c"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                    <Switch-->
+<!--                        android:id="@+id/add_group_todo_switch_improtant"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="41dp"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:checked="false"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:onClick="customOnClick"-->
+<!--                        android:switchMinWidth="0dp"-->
+<!--                        android:textOff=""-->
+<!--                        android:textOn=""-->
+<!--                        android:thumb="@drawable/switch_thumb"-->
+<!--                        android:thumbTextPadding="15dp"-->
+<!--                        android:track="@drawable/switch_track_selector" />-->
+<!--                </LinearLayout>-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="8sp"
+                        android:text="@string/todo_important"
+                        android:textColor="#38454c"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Switch
+                        android:id="@+id/add_group_todo_switch_improtant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="41dp"
+                        android:layout_gravity="center_vertical"
+                        android:checked="false"
+                        android:gravity="center_vertical"
+                        android:onClick="customOnClick"
+                        android:switchMinWidth="0dp"
+                        android:textOff=""
+                        android:textOn=""
+                        android:thumb="@drawable/switch_thumb"
+                        android:thumbTextPadding="15dp"
+                        android:track="@drawable/switch_track_selector" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="15dp"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/todo_memo"
+                    android:textColor="#38454c"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/add_group_meet_et_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="36dp"
+                    android:background="@drawable/bg_round_edit"
+                    android:gravity="top"
+                    android:hint="메모를 입력하세요."
+                    android:lineSpacingExtra="6sp"
+                    android:minHeight="72dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="9dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="9dp"
+                    android:textColor="#38454c"
+                    android:textColorHint="#e3e7ec"
+                    android:textSize="12sp"
+                    android:theme="@style/EditTextStyle" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/add_group_meet_btn_done"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/bg_expand_button"
+                android:gravity="center"
+                android:lineSpacingExtra="8sp"
+                android:text="추가하기"
+                android:textColor="#0809ff"
+                android:textSize="16sp"
+                android:onClick="customOnClick"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"/>
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

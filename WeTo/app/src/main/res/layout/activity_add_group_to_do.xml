@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context=".src.todo_add.AddPersonalToDoActivity">
+    tools:context=".src.todo_add.AddGroupToDoActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

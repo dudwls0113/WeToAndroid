@@ -31,6 +31,7 @@ import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
 import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.main.todo_group.models.ToDoGroupData;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
+import com.ninano.weto.src.todo_add.AddGroupMeetActivity;
 import com.ninano.weto.src.todo_add.AddGroupToDoActivity;
 
 import java.util.ArrayList;
@@ -210,7 +211,11 @@ public class GroupDetailActivity extends BaseActivity {
 
                         @Override
                         public void meetClick() {
-
+                            Intent intent = new Intent(GroupDetailActivity.this, AddGroupMeetActivity.class);
+                            intent.putExtra("groupId", mGroupNo);
+                            intent.putExtra("groupIcon", mGroupIcon);
+                            intent.putExtra("members", members);
+                            startActivity(intent);
                         }
                     });
                     groupToDoAddDialog.show();

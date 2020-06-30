@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.tutorial.TutorialActivity"></activity>
+        <activity android:name=".src.todo_add.AddGroupMeetActivity"></activity>
+        <activity android:name=".src.tutorial.TutorialActivity" />
         <activity android:name=".src.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

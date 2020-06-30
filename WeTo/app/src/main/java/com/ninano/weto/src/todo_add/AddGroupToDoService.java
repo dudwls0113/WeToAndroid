@@ -78,4 +78,109 @@ public class AddGroupToDoService {
             }
         });
     }
+
+    void postToDoTime(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
+                      int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, int year, int month, int day, int hour, int minute){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("groupNo", groupNo);
+            params.put("title", title);
+            params.put("content", content);
+            params.put("icon", icon);
+            params.put("type", type);
+            JSONArray jsonArray = new JSONArray();
+            for(int i=0; i<friendList.size(); i++){
+                JSONObject temp = new JSONObject();
+                temp.put("userNo", friendList.get(i).getUserId());
+                jsonArray.put(temp);
+            }
+            params.put("friendList",jsonArray);
+            params.put("isImportant", Character.toString(isImportant));
+            params.put("repeatType", repeatType);
+            params.put("repeatDayOfWeek", repeatDayOfWeek);
+            params.put("repeatDay", repeatDay);
+            params.put("date", date);
+            params.put("time",time);
+            params.put("year", year);
+            params.put("month", month);
+            params.put("day", day);
+            params.put("hour", hour);
+            params.put("minute", minute);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AddGroupToDoRetrofitInterface addGroupToDoRetrofitInterface = getRetrofit().create(AddGroupToDoRetrofitInterface.class);
+        addGroupToDoRetrofitInterface.postToDo(RequestBody.create(params.toString(), MEDIA_TYPE_JSON)).enqueue(new Callback<AddGroupToResponse>() {
+            @Override
+            public void onResponse(Call<AddGroupToResponse> call, Response<AddGroupToResponse> response) {
+                final AddGroupToResponse addGroupToResponse = response.body();
+                if(addGroupToResponse==null){
+                    mAddGroupToDoView.validateFailure(null);
+                } else if(addGroupToResponse.getCode()==100){
+                    mAddGroupToDoView.postToDoSuccess(addGroupToResponse.getGroupNo(), addGroupToResponse.getSeverTodoNo());
+                } else {
+                    mAddGroupToDoView.validateFailure(addGroupToResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddGroupToResponse> call, Throwable t) {
+                System.out.println(t.toString());
+                mAddGroupToDoView.validateFailure(null);
+            }
+        });
+    }
+
+    void postMeet(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
+                  int meetRemindTime, String locationName, double latitude, double longitude, String date, String time, int year, int month, int day, int hour, int minute){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("groupNo", groupNo);
+            params.put("title", title);
+            params.put("content", content);
+            params.put("icon", icon);
+            params.put("type", type);
+            JSONArray jsonArray = new JSONArray();
+            for(int i=0; i<friendList.size(); i++){
+                JSONObject temp = new JSONObject();
+                temp.put("userNo", friendList.get(i).getUserId());
+                jsonArray.put(temp);
+            }
+            params.put("friendList",jsonArray);
+            params.put("isImportant", Character.toString(isImportant));
+            params.put("meetRemindTime", meetRemindTime);
+            params.put("locationName", locationName);
+            params.put("latitude", latitude);
+            params.put("longitude", longitude);
+            params.put("date", date);
+            params.put("time",time);
+            params.put("year", year);
+            params.put("month", month);
+            params.put("day", day);
+            params.put("hour", hour);
+            params.put("minute", minute);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AddGroupToDoRetrofitInterface addGroupToDoRetrofitInterface = getRetrofit().create(AddGroupToDoRetrofitInterface.class);
+        addGroupToDoRetrofitInterface.postToDo(RequestBody.create(params.toString(), MEDIA_TYPE_JSON)).enqueue(new Callback<AddGroupToResponse>() {
+            @Override
+            public void onResponse(Call<AddGroupToResponse> call, Response<AddGroupToResponse> response) {
+                final AddGroupToResponse addGroupToResponse = response.body();
+                if(addGroupToResponse==null){
+                    mAddGroupToDoView.validateFailure(null);
+                } else if(addGroupToResponse.getCode()==100){
+                    mAddGroupToDoView.postToDoSuccess(addGroupToResponse.getGroupNo(), addGroupToResponse.getSeverTodoNo());
+                } else {
+                    mAddGroupToDoView.validateFailure(addGroupToResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddGroupToResponse> call, Throwable t) {
+                System.out.println(t.toString());
+                mAddGroupToDoView.validateFailure(null);
+            }
+        });
+    }
 }

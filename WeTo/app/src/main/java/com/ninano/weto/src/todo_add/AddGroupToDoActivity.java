@@ -21,6 +21,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -120,7 +121,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     private boolean mIsDatePick, mIsTimePick;
     private int mYear = 0, mMonth = 0, mDay = 0, mHour = 0, mMinute = 0;
     private String mRepeatDayOfWeek = "";
-    private int mRepeatDay; // 매월 의 반복일 (1~31)
+    private int mRepeatDay = -1; // 매월 의 반복일 (1~31)
     private int mINTRepeatDayOfWeek = 1;
     private boolean[] selectedDayList = new boolean[7];
 
@@ -196,6 +197,18 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     void init() {
+        mImportantSwitch = findViewById(R.id.add_group_todo_switch_improtant);
+        mImportantSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mImportantMode = 'Y';
+                } else {
+                    mImportantMode = 'N';
+                }
+            }
+        });
+
         mImageViewIcon = findViewById(R.id.add_group_todo_iv_icon);
 
         mTextViewTimeNoRepeat = findViewById(R.id.add_group_todo_tv_no_repeat);
@@ -428,6 +441,12 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
                 break;
         }
         new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+    }
+
+    private void postToDoTime(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
+                                  int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, int year, int month, int day, int hour, int minute){
+        AddGroupToDoService addGroupToDoService = new AddGroupToDoService(this);
+        addGroupToDoService.postToDoTime(groupNo, title, content, icon, type, friendList, isImportant, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute);
     }
 
     private void postToDoLocation(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
@@ -718,8 +737,13 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
                 if(intervalTime>FINISH_INTERVAL_TIME){
                     if (validateBeforeAdd()) {
                         changeRepeatDayOfWeek();
-                        postToDoLocation(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
-                                mImportantMode, latitude, longitude, mLocationMode, mTextViewLocation.getText().toString(), mLadius, mWifiBssid, mWifiMode, mLocationTime);
+                        if (mTodoCategory==LOCATION){
+                            postToDoLocation(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
+                                    mImportantMode, latitude, longitude, mLocationMode, mTextViewLocation.getText().toString(), mLadius, mWifiBssid, mWifiMode, mLocationTime);
+                        } else if(mTodoCategory==TIME){
+                            postToDoTime(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
+                                    mImportantMode, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mYear, mMonth, mDay, mMinute, mDay);
+                        }
                     }
                 }
 
