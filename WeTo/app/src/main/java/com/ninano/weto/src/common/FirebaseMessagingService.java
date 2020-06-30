@@ -73,6 +73,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     }
 
     private void receiveFcmData(Map<String, String> data) {
+        if(Objects.equals(data.get("type"), "arrive")){
+            sendNotification(data.get("content"), data.get("title"));
+            return;
+        }
         title = data.get("title");
         content = data.get("content");
         int icon = Integer.parseInt(data.get("icon"));

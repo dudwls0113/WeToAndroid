@@ -21,15 +21,22 @@ import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
+import com.ninano.weto.src.DefaultResponse;
+import com.ninano.weto.src.common.FirebaseRetrofitInterface;
 import com.ninano.weto.src.common.util.Util;
 import com.ninano.weto.src.main.MainActivity;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
+import static com.ninano.weto.src.ApplicationClass.getRetrofit;
 import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
 import static com.ninano.weto.src.common.util.Util.getLocationNotificationContent;
 
@@ -63,9 +70,10 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 }
-            } catch (ExecutionException | InterruptedException  | NumberFormatException e) {
+            } catch (ExecutionException | InterruptedException | NumberFormatException e) {
                 //그룹일정 (Caused by: java.lang.NumberFormatException: For input string: "group2")
-                if(triggeringGeofences.get(0).getRequestId().contains("group")){
+                Log.d("리퀘스트", triggeringGeofences.get(0).getRequestId());
+                if (triggeringGeofences.get(0).getRequestId().contains("group")) {
                     List<ToDoWithData> toDoWithDataList = null;
                     try {
                         toDoWithDataList = new DbAsyncTask().execute(Integer.valueOf(triggeringGeofences.get(0).getRequestId().substring(5))).get();
@@ -79,9 +87,21 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                             }
                         }
                     }
-                }
-                else{//그룹 약속
-
+                } else {//그룹 약속
+                    //그룹일정 (Caused by: java.lang.NumberFormatException: For input string: "meet2")
+                    List<ToDoWithData> toDoWithDataList = null;
+                    try {
+                        Log.d("리퀘스트", Integer.valueOf(triggeringGeofences.get(0).getRequestId().substring(4))+"meet번호");
+                        toDoWithDataList = new DbAsyncTask().execute(Integer.valueOf(triggeringGeofences.get(0).getRequestId().substring(4))).get();
+                    } catch (ExecutionException | InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                    if (toDoWithDataList.size() > 0) {
+                        Log.d("리퀘스트", toDoWithDataList.get(0).getSeverTodoNo()+" serverTodo");
+//                        if (toDoWithDataList.get(0).getStatus().equals("ACTIVATE")) {
+                            arrivePush(toDoWithDataList.get(0).getSeverTodoNo());
+//                        }
+                    }
                 }
                 e.printStackTrace();
             }
@@ -106,5 +126,22 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             }
             return toDoWithData;
         }
+    }
+
+    void arrivePush(int todoNo) {
+        final FirebaseRetrofitInterface firebaseRetrofitInterface = getRetrofit().create(FirebaseRetrofitInterface.class);
+        firebaseRetrofitInterface.arrivePush(todoNo).enqueue(new Callback<DefaultResponse>() {
+            @Override
+            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                final DefaultResponse defaultResponse = response.body();
+                if (defaultResponse == null) {
+                } else {
+                    Log.d("", defaultResponse.toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+            }
+        });
     }
 }

@@ -2,19 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5860037-df8e-4f98-a5f4-c8bd4d8c1b3b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/models/AddGroupToResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/db/ToDoDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseMessagingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseRetrofitInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/FirebaseRetrofitInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/Geofence/GeofenceBroadcastReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/common/Geofence/GeofenceBroadcastReceiver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/group_detail/GroupDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/group_detail/GroupDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/map/adapters/MapLocationTodoAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/map/adapters/MapLocationTodoAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_group/ToDoGroupFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/main/todo_group/ToDoGroupFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/AddGroupToDoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoRetrofitInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoRetrofitInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoView.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/todo_add/interfaces/AddGroupToDoView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/splash/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/WeTo/app/src/main/java/com/ninano/weto/src/splash/SplashActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,8 +38,8 @@
       <file pinned="true" current-in-tab="false">
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="160" column="24" selection-start-line="160" selection-start-column="24" selection-end-line="160" selection-end-column="24" />
+            <state relative-caret-position="242">
+              <caret line="185" column="20" selection-start-line="185" selection-start-column="20" selection-end-line="185" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -61,23 +53,36 @@
           </provider>
         </entry>
       </file>
-      <file pinned="true" current-in-tab="true">
+      <file pinned="true" current-in-tab="false">
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="272" column="6" selection-start-line="272" selection-start-column="5" selection-end-line="272" selection-end-column="6" />
+            <state relative-caret-position="360">
+              <caret line="375" column="42" selection-start-line="375" selection-start-column="42" selection-end-line="375" selection-end-column="42" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="true" current-in-tab="false">
         <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="626">
+              <caret line="44" column="41" selection-start-line="44" selection-start-column="41" selection-end-line="44" selection-end-column="41" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="true" current-in-tab="false">
-        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/logs/access-2020-06-29.log">
-          <provider selected="true" editor-type-id="LogFileEditorProvider" />
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/MainPdo.php">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="true" current-in-tab="true">
+        <entry file="remoteDeploymentFS://&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/logs/access-2020-06-30.log">
+          <provider selected="true" editor-type-id="LogFileEditorProvider">
+            <state relative-caret-position="263">
+              <caret line="126" column="107" selection-start-line="126" selection-start-column="101" selection-end-line="126" selection-end-column="107" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -87,16 +92,17 @@
       <find>makeGroup</find>
       <find>isDuplicateGroupMember</find>
       <find>getGroupList</find>
-      <find>send</find>
       <find>joinGroup</find>
       <find>inviteAccept</find>
       <find>makeTimeTodo</find>
       <find>getGroupMember</find>
-      <find>sendTodoFcmToMember</find>
       <find>echo</find>
       <find>makeLocationTodo</find>
       <find>sendFcn</find>
       <find>sendFcm</find>
+      <find>sendTodoFcmToMember</find>
+      <find>send</find>
+      <find>arrive</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -115,8 +121,8 @@
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/DatabasePdo.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/UserPdo.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/UserController.php" />
-        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/function.php" />
+        <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/index.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/controllers/GroupController.php" />
         <option value="&lt;3ac2c168-7a99-4f84-bb44-952d28aff3cb&gt;/WeToServer/api-server/pdos/GroupPdo.php" />
       </list>
@@ -204,7 +210,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54145000" />
+    <option name="totallyTimeSpent" value="56448000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="975" extended-state="0" />

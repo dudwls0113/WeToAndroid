@@ -73,7 +73,7 @@ public abstract class ToDoDao {
     public abstract LiveData<List<FavoriteLocation>> getFavoriteLocation();
 
     //활성중인 일정조회
-    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND Todo.type == 77 ORDER BY Todo.ordered")
+    @Query("SELECT * FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'ACTIVATE' AND (Todo.type = 77 OR Todo.type = 88) ORDER BY Todo.ordered")
     public abstract LiveData<List<ToDoWithData>> getActivatedLocationTodoList();
 
     // Todo 삭제
