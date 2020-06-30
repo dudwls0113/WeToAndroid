@@ -30,6 +30,7 @@ import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 
 public class SplashActivity extends BaseActivity {
 
@@ -51,6 +52,7 @@ public class SplashActivity extends BaseActivity {
 //            SharedPreferences.Editor editor = sSharedPreferences.edit();
 //            editor.putBoolean("firstConnect", false);
 //            editor.apply();
+            getWifiMaker().startJobScheduler(getApplicationContext());
             startActivity(new Intent(SplashActivity.this, TutorialActivity.class));
             finish();
             return;

@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         }
     }
 
-    private void tryPostFcmToken(String fcmToken) {
+    public void tryPostFcmToken(String fcmToken) {
         MainService mainService = new MainService(mContext, this);
         mainService.postFcmToken(fcmToken);
     }

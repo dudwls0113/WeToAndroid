@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -50,6 +54,7 @@ import com.ninano.weto.src.custom.StartSnapHelper;
 import com.ninano.weto.src.group_add.GroupAddActivity;
 import com.ninano.weto.src.group_add.GroupAddService;
 import com.ninano.weto.src.group_detail.GroupDetailActivity;
+import com.ninano.weto.src.main.MainActivity;
 import com.ninano.weto.src.main.todo_group.adapter.GroupListAdapter;
 import com.ninano.weto.src.main.todo_group.adapter.ToDoGroupListAdapter;
 import com.ninano.weto.src.main.todo_group.interfaces.ToDoGroupView;
@@ -485,6 +490,18 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
         getGroup();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(getActivity(),
+                new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        fcmToken = instanceIdResult.getToken();
+                        Log.d("Firebase", "token: " + fcmToken);
+                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
+                            Log.d("로그인", "token: " + fcmToken);
+                            ((MainActivity)getActivity()).tryPostFcmToken(fcmToken);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -500,6 +517,18 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
         getGroup();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(getActivity(),
+                new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        fcmToken = instanceIdResult.getToken();
+                        Log.d("Firebase", "token: " + fcmToken);
+                        if (sSharedPreferences.getBoolean("kakaoLogin", false)) { // 로그인 되어있으면 토큰갱신
+                            Log.d("로그인", "token: " + fcmToken);
+                            ((MainActivity)getActivity()).tryPostFcmToken(fcmToken);
+                        }
+                    }
+                });
     }
 
     @Override

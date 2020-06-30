@@ -44,6 +44,8 @@ import static com.ninano.weto.src.common.util.Util.sendNotification;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     AppDatabase mDatabase;
+    String title;
+    String content;
 
     @Override
     public void onNewToken(@NonNull String s) {
@@ -71,8 +73,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     }
 
     private void receiveFcmData(Map<String, String> data) {
-        String title = data.get("title");
-        String content = data.get("content");
+        title = data.get("title");
+        content = data.get("content");
         int icon = Integer.parseInt(data.get("icon"));
         int type = Integer.parseInt(data.get("type"));
         String isImportant = data.get("isImportant");
@@ -148,6 +150,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+            } else if(type == 66){
+                ToDo todo = makeGroupTodoObject(title, content, icon, TIME, Objects.requireNonNull(isImportant).charAt(0), groupNo);
+                ToDoData toDoData = makeGroupTodoDataObject(type, locationName, NO_DATA, NO_DATA, NO_DATA, NO_DATA, "", 'N',
+                        NO_DATA, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
+                new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             }
             ////와이파이랑 시간쪽 로직 추가 필요
 
@@ -163,6 +170,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         timeSlot, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
+                new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+            } else if(type == 66){
+                ToDo todo = makeGroupTodoObject(title, content, icon, TIME, Objects.requireNonNull(isImportant).charAt(0), groupNo);
+                ToDoData toDoData = makeGroupTodoDataObject(type, locationName, NO_DATA, NO_DATA, NO_DATA, NO_DATA, "", 'N',
+                        NO_DATA, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
             }
             ////와이파이랑 시간쪽 로직 추가 필요 (위랑똑같이쓰면댐)
@@ -199,7 +211,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 Log.d("와이파이 일정 등록", "");
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
 //                changeRepeatDayOfWeek();
-//                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
+                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), toDoData.getRepeatType(), toDoData.getYear(), toDoData.getMonth(), toDoData.getDay(), toDoData.getHour(), toDoData.getMinute(), title, content, toDoData.getRepeatDayOfWeek());
             } else if (toDoData.getIsMeet() == 'Y') { //약속
                 //1. 약속시간 전 알람 셋팅
 
