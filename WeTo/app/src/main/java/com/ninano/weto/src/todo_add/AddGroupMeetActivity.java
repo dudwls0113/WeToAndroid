@@ -23,6 +23,8 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.FavoriteLocation;
+import com.ninano.weto.db.ToDo;
+import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.map_select.MapSelectActivity;
@@ -155,8 +157,14 @@ public class AddGroupMeetActivity extends BaseActivity implements AddGroupToDoVi
     public void postToDoSuccess(int groupNo, int serverTodoNo) {
         mGroupNo = groupNo;
         mServerTodoNo = serverTodoNo;
-        finish();
     }
+
+    private ToDo makeGroupTodoObject(String title, String content, int icon, int type, char importantMode, int groupNo) {
+        ToDo todo = new ToDo(title, content, icon, type, importantMode, 'Y');
+        todo.setGroupNo(groupNo);
+        return todo;
+    }
+
 
     @Override
     public void validateFailure(String message) {
