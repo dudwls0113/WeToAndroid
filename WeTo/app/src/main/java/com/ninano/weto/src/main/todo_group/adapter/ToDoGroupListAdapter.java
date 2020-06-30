@@ -27,6 +27,7 @@ import static com.ninano.weto.src.ApplicationClass.AT_NEAR;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
+import static com.ninano.weto.src.ApplicationClass.MEET;
 import static com.ninano.weto.src.ApplicationClass.MONTH_DAY;
 import static com.ninano.weto.src.ApplicationClass.MORNING;
 import static com.ninano.weto.src.ApplicationClass.NIGHT;
@@ -159,89 +160,177 @@ public class ToDoGroupListAdapter extends RecyclerView.Adapter<ToDoGroupListAdap
                 return false;
             }
         });
-        if (mData.get(position).getStatus().equals("ACTIVATE")){
-            switch (mData.get(position).getIcon()){
-                case 1:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group1_off);
-                    break;
-                case 2:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group2_off);
-                    break;
-                case 3:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group3_off);
-                    break;
-                case 4:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group4_off);
-                    break;
-                case 5:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group5_off);
-                    break;
-                case 6:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group6_off);
-                    break;
-                case 7:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group7_off);
-                    break;
-                case 8:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group8_off);
-                    break;
-                case 9:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group9_off);
-                    break;
-                case 10:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group10_off);
-                    break;
-                case 11:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group11_off);
-                    break;
-                case 12:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group12_off);
-                    break;
-                case 13:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group13_off);
-                    break;
+        if(mData.get(position).getType()!=MEET){
+            if (mData.get(position).getStatus().equals("ACTIVATE")){
+                switch (mData.get(position).getIcon()){
+                    case 1:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group1_off);
+                        break;
+                    case 2:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group2_off);
+                        break;
+                    case 3:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group3_off);
+                        break;
+                    case 4:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group4_off);
+                        break;
+                    case 5:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group5_off);
+                        break;
+                    case 6:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group6_off);
+                        break;
+                    case 7:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group7_off);
+                        break;
+                    case 8:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group8_off);
+                        break;
+                    case 9:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group9_off);
+                        break;
+                    case 10:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group10_off);
+                        break;
+                    case 11:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group11_off);
+                        break;
+                    case 12:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group12_off);
+                        break;
+                    case 13:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group13_off);
+                        break;
+                }
+            } else if(mData.get(position).getStatus().equals("DONE")){
+                switch (mData.get(position).getIcon()){
+                    case 1:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group1_on);
+                        break;
+                    case 2:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group2_on);
+                        break;
+                    case 3:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group3_on);
+                        break;
+                    case 4:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group4_on);
+                        break;
+                    case 5:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group5_on);
+                        break;
+                    case 6:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group6_on);
+                        break;
+                    case 7:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group7_on);
+                        break;
+                    case 8:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group8_on);
+                        break;
+                    case 9:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group9_on);
+                        break;
+                    case 10:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group10_on);
+                        break;
+                    case 11:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group11_on);
+                        break;
+                    case 12:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group12_on);
+                        break;
+                    case 13:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group13_on);
+                        break;
+                }
             }
-        } else if(mData.get(position).getStatus().equals("DONE")){
-            switch (mData.get(position).getIcon()){
-                case 1:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group1_on);
-                    break;
-                case 2:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group2_on);
-                    break;
-                case 3:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group3_on);
-                    break;
-                case 4:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group4_on);
-                    break;
-                case 5:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group5_on);
-                    break;
-                case 6:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group6_on);
-                    break;
-                case 7:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group7_on);
-                    break;
-                case 8:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group8_on);
-                    break;
-                case 9:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group9_on);
-                    break;
-                case 10:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group10_on);
-                    break;
-                case 11:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group11_on);
-                    break;
-                case 12:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group12_on);
-                    break;
-                case 13:
-                    holder.mImageViewIcon.setImageResource(R.drawable.group13_on);
-                    break;
+        } else if(mData.get(position).getType()==MEET){
+            if (mData.get(position).getStatus().equals("ACTIVATE")){
+                switch (mData.get(position).getIcon()){
+                    case 1:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group1_off);
+                        break;
+                    case 2:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group2_off);
+                        break;
+                    case 3:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group3_off);
+                        break;
+                    case 4:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group4_off);
+                        break;
+                    case 5:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group5_off);
+                        break;
+                    case 6:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group6_off);
+                        break;
+                    case 7:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group7_off);
+                        break;
+                    case 8:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group8_off);
+                        break;
+                    case 9:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group9_off);
+                        break;
+                    case 10:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group10_off);
+                        break;
+                    case 11:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group11_off);
+                        break;
+                    case 12:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group12_off);
+                        break;
+                    case 13:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group13_off);
+                        break;
+                }
+            } else if(mData.get(position).getStatus().equals("DONE")){
+                switch (mData.get(position).getIcon()){
+                    case 1:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group1_on);
+                        break;
+                    case 2:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group2_on);
+                        break;
+                    case 3:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group3_on);
+                        break;
+                    case 4:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group4_on);
+                        break;
+                    case 5:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group5_on);
+                        break;
+                    case 6:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group6_on);
+                        break;
+                    case 7:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group7_on);
+                        break;
+                    case 8:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group8_on);
+                        break;
+                    case 9:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group9_on);
+                        break;
+                    case 10:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group10_on);
+                        break;
+                    case 11:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group11_on);
+                        break;
+                    case 12:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group12_on);
+                        break;
+                    case 13:
+                        holder.mImageViewIcon.setImageResource(R.drawable.group13_on);
+                        break;
+                }
             }
         }
         if (mData.get(position).getIsImportant() == 'Y'){
