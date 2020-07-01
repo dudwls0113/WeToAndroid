@@ -313,6 +313,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         mIsLocationSelected = false;
         mLocationMode = AT_ARRIVE;
         mLocationTime = ALWAYS;
+        mRepeatType = ONE_DAY;
 //        mWifiMode = 'Y';
         mLadius = 300;
 

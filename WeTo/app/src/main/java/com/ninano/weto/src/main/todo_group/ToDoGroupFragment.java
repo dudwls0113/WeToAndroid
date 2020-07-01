@@ -491,6 +491,9 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
         editor.putBoolean("kakaoLogin", true);
         editor.apply();
         getGroup();
+        if(getActivity()==null){
+            return;
+        }
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Objects.requireNonNull(getActivity()),
                 new OnSuccessListener<InstanceIdResult>() {
                     @Override
