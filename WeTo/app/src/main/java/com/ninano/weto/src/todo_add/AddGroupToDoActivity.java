@@ -180,16 +180,16 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         mGroupNo = getIntent().getIntExtra("groupId", 0);
         mGroupIcon = getIntent().getIntExtra("groupIcon", -1);
         System.out.println("그룹 정보: " + mGroupNo + ", " + mGroupIcon);
-        members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
+        members = (ArrayList<Member>) getIntent().getSerializableExtra("members");
         init();
         initGeoFence();
         setGroupMemberData(members);
     }
 
-    void setGroupMemberData(ArrayList<Member> members){
+    void setGroupMemberData(ArrayList<Member> members) {
         mData.clear();
-        for(int i=0; i<members.size(); i++){
-            if (!members.get(i).getNickName().equals(sSharedPreferences.getString("kakaoNickName", ""))){
+        for (int i = 0; i < members.size(); i++) {
+            if (!members.get(i).getNickName().equals(sSharedPreferences.getString("kakaoNickName", ""))) {
                 mData.add(new AddGroupToDoMemberData(members.get(i).getUserNo(), members.get(i).getNickName(), false));
             }
         }
@@ -256,7 +256,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         mAddGroupToDoMemberAdapter = new AddGroupToDoMemberAdapter(mContext, mData, density, new AddGroupToDoMemberAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
-                if(mData.get(pos).isSelected()){
+                if (mData.get(pos).isSelected()) {
                     mData.get(pos).setSelected(false);
                 } else {
                     mData.get(pos).setSelected(true);
@@ -445,13 +445,13 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     private void postToDoTime(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
-                                  int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, int year, int month, int day, int hour, int minute){
+                              int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time, int year, int month, int day, int hour, int minute) {
         AddGroupToDoService addGroupToDoService = new AddGroupToDoService(this);
         addGroupToDoService.postToDoTime(groupNo, title, content, icon, type, friendList, isImportant, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute);
     }
 
     private void postToDoLocation(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
-                          double latitude, double longitude, int locationMode, String locationName, int radius, String ssid, char isWiFi, int timeSlot){
+                                  double latitude, double longitude, int locationMode, String locationName, int radius, String ssid, char isWiFi, int timeSlot) {
         AddGroupToDoService addGroupToDoService = new AddGroupToDoService(this);
         addGroupToDoService.postToDoLocation(groupNo, title, content, icon, type, friendList, isImportant, latitude, longitude, locationMode, locationName, radius, ssid, isWiFi, timeSlot);
     }
@@ -465,7 +465,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
 
     @Override
     public void validateFailure(String message) {
-        showCustomToast(message!=null ? message : getString(R.string.network_error));
+        showCustomToast(message != null ? message : getString(R.string.network_error));
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -735,13 +735,13 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
                 long tempTime = System.currentTimeMillis();
                 long intervalTime = tempTime - backPressedTime;
                 backPressedTime = tempTime;
-                if(intervalTime>FINISH_INTERVAL_TIME){
+                if (intervalTime > FINISH_INTERVAL_TIME) {
                     if (validateBeforeAdd()) {
                         changeRepeatDayOfWeek();
-                        if (mTodoCategory==LOCATION){
+                        if (mTodoCategory == LOCATION) {
                             postToDoLocation(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
                                     mImportantMode, latitude, longitude, mLocationMode, mTextViewLocation.getText().toString(), mLadius, mWifiBssid, mWifiMode, mLocationTime);
-                        } else if(mTodoCategory==TIME){
+                        } else if (mTodoCategory == TIME) {
                             postToDoTime(mGroupNo, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, friendList,
                                     mImportantMode, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mYear, mMonth, mDay, mMinute, mDay);
                         }
@@ -801,10 +801,10 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
         }
     }
 
-    private ArrayList<AddGroupToDoMemberData> setFriendList(ArrayList<AddGroupToDoMemberData> data){
+    private ArrayList<AddGroupToDoMemberData> setFriendList(ArrayList<AddGroupToDoMemberData> data) {
         ArrayList<AddGroupToDoMemberData> temp = new ArrayList<>();
-        for(int i=0; i<data.size(); i++){
-            if(data.get(i).isSelected()){
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).isSelected()) {
                 temp.add(data.get(i));
             }
         }
@@ -931,7 +931,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
                 mYear = Integer.parseInt(YEAR_FORMAT.format(date));
                 mMonth = Integer.parseInt(MONTH_FORMAT.format(date));
                 mDay = Integer.parseInt(DAY_FORMAT.format(date));
-                calendar.set(mYear, mMonth-1, mDay);
+                calendar.set(mYear, mMonth - 1, mDay);
 //                if(calendar.before(Calendar.getInstance())){
 //                    showCustomToast("과거의 날짜는 선택할 수 없습니다.");
 //                } else {
@@ -1093,7 +1093,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
             return false;
         }
         friendList = setFriendList(mData);
-        if (friendList.size()==0){
+        if (friendList.size() == 0) {
             showSnackBar(mEditTextTitle, "해당 멤버를 입력해 주세요");
             return false;
         }
@@ -1259,6 +1259,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     private ToDo makeTodoObject() {
         ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y');
 //        todo.setTodoNo(mToDoNo);
+        todo.setGroupNo(mGroupNo);
         return todo;
     }
 

@@ -276,7 +276,6 @@ public class AddGroupMeetActivity extends BaseActivity implements AddGroupToDoVi
                 latitude = Double.parseDouble(mLocation.getLatitude());
                 setFavoritePlaceItem(NO_DATA);
                 setLocationInfo();
-//                getLocationAndSetMap(mLocation);
             } else if (resultCode == 111) {
                 mWifiBssid = data.getStringExtra("bssid");
                 longitude = data.getDoubleExtra("longitude", 0);

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 
 import com.google.android.gms.location.Geofence;
@@ -18,11 +19,15 @@ import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.common.util.DBAsyncTask.AllGroupTodoAsyncTask;
 import com.ninano.weto.src.main.MainActivity;
+import com.ninano.weto.src.splash.interfaces.SplashActivityView;
+import com.ninano.weto.src.splash.models.ServerTodo;
 import com.ninano.weto.src.tutorial.TutorialActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.Intent.ACTION_VIEW;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
@@ -34,44 +39,63 @@ import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
 import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
 import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity implements SplashActivityView {
 
     private Context mContext;
     private boolean isKakaoShare;
     private int mGroupId;
     private String nickName, profileUrl;
+    private AppDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mContext = this;
-        AppDatabase mDatabase = AppDatabase.getAppDatabase(getApplicationContext());
+        mDatabase = AppDatabase.getAppDatabase(getApplicationContext());
         boolean isFirst = sSharedPreferences.getBoolean("firstConnect", true);
-        if (isFirst){
+        if (isFirst) {
             startActivity(new Intent(SplashActivity.this, TutorialActivity.class));
             finish();
             return;
         }
 
-        if(getIntent()!=null){
-            if(getIntent().getAction()!=null){
-                if(getIntent().getAction().equals(ACTION_VIEW)){
+        if (getIntent() != null) {
+            if (getIntent().getAction() != null) {
+                if (getIntent().getAction().equals(ACTION_VIEW)) {
                     isKakaoShare = true;
                     String value = getIntent().getData().getQueryParameter("key1");
-                    String groupId = value.substring(0,value.indexOf(","));
+                    String groupId = value.substring(0, value.indexOf(","));
                     mGroupId = Integer.parseInt(groupId);
                     nickName = value.substring(value.indexOf(",") + 2, value.indexOf("/"));
                     profileUrl = value.substring(value.indexOf("/") + 2, value.length());
                 }
             }
         }
+        SplashService splashService = new SplashService(this, this);
+        splashService.getAllTodo();
 
         getGeofenceMaker().removeAllGeofence();
-
         SplashAsyncTask splashAsyncTask = new SplashAsyncTask(mDatabase.todoDao());
         splashAsyncTask.execute();
+    }
 
+    @Override
+    public void successGetTodo(ArrayList<ServerTodo> serverTodos) throws InterruptedException, ExecutionException {
+        AllGroupTodoAsyncTask allGroupTodoAsyncTask = new AllGroupTodoAsyncTask(mDatabase.todoDao());
+        List<Integer> serverTodoNoList = allGroupTodoAsyncTask.execute().get();
+        Log.d("serverTodoNoList", serverTodoNoList.toString());
+//        Log.d("serverTodos", serverTodos.toString());
+        for (ServerTodo serverTodo : serverTodos) {
+            //1. 내 일정에 없는게 있으면 추가
+            //2. 없어진 일정인데 내일정에 있으면 해당일정 삭제
+            //3. 일정 정보 업데이트(order 제외하고 전부 update시키기)
+        }
+    }
+
+    @Override
+    public void failGetTodo() {
+        showCustomToast("일정 동기화에 실패하였습니다");
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -98,20 +122,20 @@ public class SplashActivity extends BaseActivity {
                             new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
                 }
 
-                if(toDoWithData.getIsGroup() == 'Y'){
-                    if(toDoWithData.getType() == MEET){
-                        geofenceList.add(getGeofenceMaker().getGeofence(toDoWithData.getLocationMode(), "meet"+(toDoWithData.getTodoNo()),
+                if (toDoWithData.getIsGroup() == 'Y') {
+                    if (toDoWithData.getType() == MEET) {
+                        geofenceList.add(getGeofenceMaker().getGeofence(toDoWithData.getLocationMode(), "meet" + (toDoWithData.getTodoNo()),
                                 new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
                     }
                 }
-                if(toDoWithData.getType() == TIME){ // 시간 정보
+                if (toDoWithData.getType() == TIME) { // 시간 정보
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                     getAlarmMaker().registerAlarm(toDoWithData.getTodoNo(), toDoWithData.getRepeatType(), toDoWithData.getYear(), toDoWithData.getMonth(), toDoWithData.getDay(), toDoWithData.getHour(), toDoWithData.getMinute(), toDoWithData.getTitle(), toDoWithData.getContent(), toDoWithData.getRepeatDayOfWeek());
                 }
             }
 
             if (geofenceList.size() == 0) {
-                if (isKakaoShare){
+                if (isKakaoShare) {
                     Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     intent.putExtra("groupId", mGroupId);
                     intent.putExtra("nickName", nickName);
@@ -129,7 +153,7 @@ public class SplashActivity extends BaseActivity {
             getGeofenceMaker().addGeoFenceList(geofenceList, new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    if (isKakaoShare){
+                    if (isKakaoShare) {
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         intent.putExtra("groupId", mGroupId);
                         intent.putExtra("nickName", nickName);
@@ -146,7 +170,7 @@ public class SplashActivity extends BaseActivity {
             }, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    if (isKakaoShare){
+                    if (isKakaoShare) {
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         intent.putExtra("groupId", mGroupId);
                         intent.putExtra("nickName", nickName);

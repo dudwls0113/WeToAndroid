@@ -28,6 +28,15 @@ public class ToDoWithData implements Serializable {
     private char isImportant;
     private int severTodoNo;
     private int meetRemindTime;
+    private int groupNo;
+
+    public void setGroupNo(int groupNo) {
+        this.groupNo = groupNo;
+    }
+
+    public int getGroupNo() {
+        return groupNo;
+    }
 
     public int getMeetRemindTime() {
         return meetRemindTime;
@@ -291,7 +300,7 @@ public class ToDoWithData implements Serializable {
                 " radius: " + radius + " ssid: " + ssid + " isWiFi: " + isWiFi +
                 " timeSlot: " + timeSlot + " repeatType: " + repeatType + " repeatDayOfWeek: " + repeatDayOfWeek + " repeatDay: " + repeatDay +
                 "date: " + date + " time:" + time + "year: " + year + "month: " + month + "day: " + day + "hour: " + hour + "minute: " + minute +
-                " isGroup: " + String.valueOf(isGroup) + "\n";
+                " isGroup: " + String.valueOf(isGroup) + "\n" + "groupNo: " + groupNo;
     }
 
     public int getTodoDataNo() {
