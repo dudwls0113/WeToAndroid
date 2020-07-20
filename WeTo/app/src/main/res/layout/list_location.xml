@@ -33,7 +33,7 @@
             android:lineSpacingExtra="9sp"
             android:textColor="#38454c"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/noto_sans_kr_bold"
             tools:text="형광펜 사기" />
 
         <LinearLayout
@@ -70,7 +70,7 @@
             tools:text="카테고리"
             android:textColor="@color/colorSearchGray"
             android:textSize="10sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/noto_sans_kr_bold" />
 
         <TextView
             android:id="@+id/list_location_tv_distance"
@@ -82,7 +82,7 @@
             android:lineSpacingExtra="5sp"
             android:textColor="@color/colorSearchGray"
             android:textSize="10sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/noto_sans_kr_bold"
             tools:text="1.2km" />
     </LinearLayout>
 

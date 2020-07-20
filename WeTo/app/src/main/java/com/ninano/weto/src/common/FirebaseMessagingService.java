@@ -1,6 +1,5 @@
 package com.ninano.weto.src.common;
 
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,13 +13,7 @@ import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
-import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.DefaultResponse;
-import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
-import com.ninano.weto.src.map_select.keyword_search.models.AddressResponse;
-import com.ninano.weto.src.map_select.models.MapSelectRetrofitInterface;
-import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,6 +26,7 @@ import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MEET;
 import static com.ninano.weto.src.ApplicationClass.NO_DATA;
+import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.getRetrofit;
@@ -55,25 +49,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
-        // TODO(developer): Handle FCM messages here.
-        Log.d("FCM", "From: " + remoteMessage.getFrom());
-
-        // Check if message contains a data payload.
         Map<String, String> data = remoteMessage.getData();
         if (data.size() > 0) {
-            Log.d("FCM", "Message data payload: " + data);
-
-            // Check if message contains a notification payload.
-            RemoteMessage.Notification notification = remoteMessage.getNotification();
-            if (data.size() > 0) {
-                receiveFcmData(data);
-            }
+            receiveFcmData(data);
         }
     }
 
     private void receiveFcmData(Map<String, String> data) {
-        if(Objects.equals(data.get("type"), "arrive")){
+        if (Objects.equals(data.get("type"), "arrive")) {
             sendNotification(data.get("content"), data.get("title"));
             return;
         }
@@ -154,7 +137,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
-            } else if(type == 66){
+            } else if (type == 66) {
                 ToDo todo = makeGroupTodoObject(title, content, icon, TIME, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, NO_DATA, NO_DATA, NO_DATA, NO_DATA, "", 'N',
                         NO_DATA, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
@@ -175,7 +158,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 toDoData.setMeetRemindTime(meetRemindTime);
                 toDoData.setIsMeet('Y');
                 new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
-            } else if(type == 66){
+            } else if (type == 66) {
                 ToDo todo = makeGroupTodoObject(title, content, icon, TIME, Objects.requireNonNull(isImportant).charAt(0), groupNo);
                 ToDoData toDoData = makeGroupTodoDataObject(type, locationName, NO_DATA, NO_DATA, NO_DATA, NO_DATA, "", 'N',
                         NO_DATA, repeatType, repeatDayOfWeek, repeatDay, date, time, year, month, day, hour, minute, serverTodoNo);
@@ -183,8 +166,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
             ////와이파이랑 시간쪽 로직 추가 필요 (위랑똑같이쓰면댐)
         }
-
-        sendNotification("일정에 초대되었습니다.", title);
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
@@ -214,11 +195,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 getWifiMaker().registerAndUpdateWifi(getApplicationContext(), toDoData.getIsWiFi(), toDoData.getLocationMode(), true);
                 Log.d("와이파이 일정 등록", "");
             } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-//                changeRepeatDayOfWeek();
                 getAlarmMaker().registerAlarm(toDoData.getTodoNo(), toDoData.getRepeatType(), toDoData.getYear(), toDoData.getMonth(), toDoData.getDay(), toDoData.getHour(), toDoData.getMinute(), title, content, toDoData.getRepeatDayOfWeek());
             } else if (toDoData.getIsMeet() == 'Y') { //약속
                 //1. 약속시간 전 알람 셋팅
-
+                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), ONE_DAY, toDoData.getYear(), toDoData.getMonth(), toDoData.getDay(), toDoData.getHour() - toDoData.getMeetRemindTime(), toDoData.getMinute(),
+                        getString(R.string.notification_title_meet_1) + toDoData.getMeetRemindTime() + getString(R.string.notification_title_meet_2), content, "");
                 //2. 약속작송 지오펜스 셋팅(특정시간에만 지오펜스 잡도록)
                 getGeofenceMaker().addGeoFenceOneForGroupTodo("meet" + toDoData.getTodoNo(), toDoData.getLatitude(), toDoData.getLongitude(), AT_ARRIVE, toDoData.getRadius(),
                         new OnSuccessListener() {
@@ -304,7 +285,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 final DefaultResponse defaultResponse = response.body();
                 if (defaultResponse == null) {
                 } else {
-                    Log.d("", defaultResponse.toString());
+                    sendNotification("일정에 초대되었습니다.", title);
                 }
             }
 

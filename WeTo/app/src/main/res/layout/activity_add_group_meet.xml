@@ -20,19 +20,19 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="24dp"
             android:layout_weight="1"
+            android:fontFamily="@font/noto_sans_kr_bold"
             android:lineSpacingExtra="9sp"
             android:text="새로운 약속"
             android:textColor="#38454c"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/add_group_meet_iv_back"
-            android:onClick="customOnClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="29dp"
+            android:onClick="customOnClick"
             android:padding="10dp"
             android:src="@drawable/ic_x" />
     </LinearLayout>
@@ -58,19 +58,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="96dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="26dp"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/add_group_todo_iv_icon"
-                        android:onClick="customOnClick"
-                        android:visibility="gone"
                         android:layout_width="42dp"
                         android:layout_height="48dp"
                         android:layout_marginEnd="21dp"
-                        android:src="@drawable/ic_todo_add_icon" />
+                        android:onClick="customOnClick"
+                        android:src="@drawable/ic_todo_add_icon"
+                        android:visibility="gone" />
 
                     <EditText
                         android:id="@+id/add_group_meet_et_title"
@@ -78,6 +78,7 @@
                         android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_round_edit"
+                        android:fontFamily="@font/noto_sans_kr_medium"
                         android:hint="약속명을 입력하세요."
                         android:lineSpacingExtra="8sp"
                         android:paddingStart="15dp"
@@ -102,21 +103,22 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="날짜 및 시간"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/add_group_meet_layout_hidden_time_date"
-                    android:onClick="customOnClick"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_round_edit"
+                    android:onClick="customOnClick"
                     android:orientation="horizontal">
 
                     <TextView
@@ -126,6 +128,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_medium"
                         android:gravity="center_vertical"
                         android:lineSpacingExtra="6sp"
                         android:text="@string/todo_time_date"
@@ -143,13 +146,13 @@
 
                 <LinearLayout
                     android:id="@+id/add_group_meet_layout_hidden_time_time"
-                    android:onClick="customOnClick"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="30dp"
                     android:background="@drawable/bg_round_edit"
+                    android:onClick="customOnClick"
                     android:orientation="horizontal">
 
                     <TextView
@@ -159,6 +162,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_medium"
                         android:gravity="center_vertical"
                         android:lineSpacingExtra="6sp"
                         android:text="@string/todo_time_time"
@@ -187,11 +191,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="장소"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -207,9 +211,9 @@
                     android:id="@+id/add_group_meet_layout_gps"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
-                    android:layout_marginBottom="30dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="30dp"
                     android:background="@drawable/bg_round_edit"
                     android:onClick="customOnClick"
                     android:orientation="horizontal">
@@ -228,6 +232,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_medium"
                         android:gravity="center_vertical"
                         android:lineSpacingExtra="6sp"
                         android:text="장소를 선택하세요."
@@ -238,57 +243,58 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="41dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:fontFamily="@font/noto_sans_kr_bold"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="#38454c"
                     android:lineSpacingExtra="8sp"
                     android:text="@string/todo_group_add_member"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="24dp"/>
+                    android:textColor="#38454c"
+                    android:textSize="16sp" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/add_group_meet_rv_member"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
                     android:layout_width="match_parent"
                     android:layout_height="33dp"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="30dp" />
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="24dp"-->
-<!--                    android:layout_marginEnd="24dp"-->
-<!--                    android:layout_marginBottom="20dp"-->
-<!--                    android:orientation="horizontal">-->
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginStart="24dp"-->
+                <!--                    android:layout_marginEnd="24dp"-->
+                <!--                    android:layout_marginBottom="20dp"-->
+                <!--                    android:orientation="horizontal">-->
 
-<!--                    <TextView-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center_vertical"-->
-<!--                        android:layout_weight="1"-->
-<!--                        android:lineSpacingExtra="8sp"-->
-<!--                        android:text="멤버 도착시 알림"-->
-<!--                        android:textColor="#38454c"-->
-<!--                        android:textSize="16sp"-->
-<!--                        android:textStyle="bold" />-->
+                <!--                    <TextView-->
+                <!--                        android:layout_width="0dp"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center_vertical"-->
+                <!--                        android:layout_weight="1"-->
+                <!--                        android:lineSpacingExtra="8sp"-->
+                <!--                        android:text="멤버 도착시 알림"-->
+                <!--                        android:textColor="#38454c"-->
+                <!--                        android:textSize="16sp"-->
+                <!--                        android:fontFamily="@font/noto_sans_kr_bold" />-->
 
-<!--                    <Switch-->
-<!--                        android:id="@+id/add_group_todo_switch_improtant"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="41dp"-->
-<!--                        android:layout_gravity="center_vertical"-->
-<!--                        android:checked="false"-->
-<!--                        android:gravity="center_vertical"-->
-<!--                        android:onClick="customOnClick"-->
-<!--                        android:switchMinWidth="0dp"-->
-<!--                        android:textOff=""-->
-<!--                        android:textOn=""-->
-<!--                        android:thumb="@drawable/switch_thumb"-->
-<!--                        android:thumbTextPadding="15dp"-->
-<!--                        android:track="@drawable/switch_track_selector" />-->
-<!--                </LinearLayout>-->
+                <!--                    <Switch-->
+                <!--                        android:id="@+id/add_group_todo_switch_improtant"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="41dp"-->
+                <!--                        android:layout_gravity="center_vertical"-->
+                <!--                        android:checked="false"-->
+                <!--                        android:gravity="center_vertical"-->
+                <!--                        android:onClick="customOnClick"-->
+                <!--                        android:switchMinWidth="0dp"-->
+                <!--                        android:textOff=""-->
+                <!--                        android:textOn=""-->
+                <!--                        android:thumb="@drawable/switch_thumb"-->
+                <!--                        android:thumbTextPadding="15dp"-->
+                <!--                        android:track="@drawable/switch_track_selector" />-->
+                <!--                </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -303,11 +309,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_important"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
                     <Switch
                         android:id="@+id/add_group_todo_switch_improtant"
@@ -330,11 +336,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/noto_sans_kr_bold"
                     android:lineSpacingExtra="8sp"
                     android:text="@string/todo_memo"
                     android:textColor="#38454c"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/add_group_meet_et_memo"
@@ -344,6 +350,7 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="36dp"
                     android:background="@drawable/bg_round_edit"
+                    android:fontFamily="@font/noto_sans_kr_medium"
                     android:gravity="top"
                     android:hint="메모를 입력하세요."
                     android:lineSpacingExtra="6sp"
@@ -366,14 +373,14 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/bg_expand_button"
+                android:fontFamily="@font/noto_sans_kr_bold"
                 android:gravity="center"
                 android:lineSpacingExtra="8sp"
+                android:onClick="customOnClick"
+                android:stateListAnimator="@null"
                 android:text="추가하기"
                 android:textColor="#0809ff"
-                android:textSize="16sp"
-                android:onClick="customOnClick"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"/>
+                android:textSize="16sp" />
         </LinearLayout>
 
     </ScrollView>

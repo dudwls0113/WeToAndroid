@@ -29,7 +29,7 @@
                 android:lineSpacingExtra="9sp"
                 android:text="7월 14일 (화)"
                 android:layout_gravity="center_vertical"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/noto_sans_kr_bold"/>
             <ImageView
                 android:id="@+id/todo_personal_fragment_iv_setting"
                 android:layout_width="wrap_content"
@@ -136,7 +136,7 @@
                         android:textSize="12sp"
                         android:textColor="#0809ff"
                         android:lineSpacingExtra="6sp"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:text="완료된 항목"/>
                 </LinearLayout>
             </LinearLayout>

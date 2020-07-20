@@ -31,7 +31,7 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
     private RequestManager mRequestManager;
     private float mDensity;
 
-    public GroupMemberListAdapter(Context context, ArrayList<GroupMemberData> arrayList, RequestManager requestManager, float density, ItemClickListener itemClickListener){
+    public GroupMemberListAdapter(Context context, ArrayList<GroupMemberData> arrayList, RequestManager requestManager, float density, ItemClickListener itemClickListener) {
         mContext = context;
         mData = arrayList;
         mRequestManager = requestManager;
@@ -39,7 +39,7 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
         mDensity = density;
     }
 
-    public interface ItemClickListener{
+    public interface ItemClickListener {
         void itemClick(int pos);
     }
 
@@ -52,37 +52,32 @@ public class GroupMemberListAdapter extends RecyclerView.Adapter<GroupMemberList
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        if (position==0){
+        if (position == 0) {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mLinearItem.getLayoutParams();
-            params.leftMargin = (int)(24*mDensity);
+            params.leftMargin = (int) (24 * mDensity);
             holder.mLinearItem.setLayoutParams(params);
         } else {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.mLinearItem.getLayoutParams();
             params.leftMargin = 0;
             holder.mLinearItem.setLayoutParams(params);
         }
-        if(mData.get(position).isLast()){
+        if (mData.get(position).isLast()) {
             holder.mTextViewName.setText("추가하기");
             ShapeDrawable oval = new ShapeDrawable(new OvalShape());
             oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
             oval.getPaint().setAntiAlias(true);
-            oval.setPadding((int) (30*mDensity),(int) (30*mDensity),(int) (30*mDensity),(int) (30*mDensity));
+            oval.setPadding((int) (30 * mDensity), (int) (30 * mDensity), (int) (30 * mDensity), (int) (30 * mDensity));
             holder.mImageViewProfile.setBackground(oval);
             holder.mImageViewProfile.setImageResource(R.drawable.ic_group_member_plus);
-        }
-        else {
+        } else {
             holder.mTextViewName.setText(mData.get(position).getName());
-
             RequestOptions sharedOptions =
                     new RequestOptions()
                             .placeholder(R.drawable.img_profile_default)
+                            .circleCrop()
                             .error(R.drawable.img_profile_default)
                             .diskCacheStrategy(DiskCacheStrategy.DATA);
             mRequestManager.load(mData.get(position).getImgUrl()).apply(sharedOptions).into(holder.mImageViewProfile);
-            ShapeDrawable oval = new ShapeDrawable(new OvalShape());
-            oval.getPaint().setColor(Color.parseColor("#f5f6fa"));
-            oval.getPaint().setAntiAlias(true);
-            holder.mImageViewProfile.setBackground(oval);
             holder.mImageViewProfile.setClipToOutline(true);
         }
     }

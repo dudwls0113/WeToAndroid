@@ -170,6 +170,12 @@ public class ToDoGroupFragment extends BaseFragment implements ToDoGroupView {
                 if (isExpandable) {
                     showDoneLayout();
                 }
+                if(todoList.size() == 0){
+                    mLinearExpand.setVisibility(View.GONE);
+                }
+                else{
+                    mLinearExpand.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

@@ -29,7 +29,7 @@
                 android:lineSpacingExtra="9sp"
                 tools:text="가족"
                 android:layout_gravity="center_vertical"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/noto_sans_kr_bold"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
                         android:textSize="12sp"
                         android:textColor="#0809ff"
                         android:lineSpacingExtra="6sp"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:text="완료된 항목"/>
                 </LinearLayout>
             </LinearLayout>

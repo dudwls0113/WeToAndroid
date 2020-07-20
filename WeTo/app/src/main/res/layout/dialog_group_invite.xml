@@ -21,7 +21,7 @@
             android:textColor="#38454c"
             android:lineSpacingExtra="9sp"
             android:text="@string/group_invite_title"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/noto_sans_kr_bold"/>
         <ImageView
             android:id="@+id/dialog_group_invite_iv_back"
             android:layout_width="wrap_content"
@@ -42,6 +42,6 @@
         android:lineSpacingExtra="8sp"
         android:gravity="center"
         android:text="@string/group_invite_button"
-        android:textStyle="bold"/>
+        android:fontFamily="@font/noto_sans_kr_bold"/>
 
 </LinearLayout>

@@ -25,7 +25,7 @@
         android:lineSpacingExtra="9sp"
         android:gravity="center_horizontal"
         android:text="@string/dialog_group_title"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="13dp"/>
     <TextView
@@ -47,7 +47,7 @@
         android:textColor="#38454c"
         android:lineSpacingExtra="8sp"
         android:gravity="center"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/bg_round_group_default"
         android:stateListAnimator="@null"/>

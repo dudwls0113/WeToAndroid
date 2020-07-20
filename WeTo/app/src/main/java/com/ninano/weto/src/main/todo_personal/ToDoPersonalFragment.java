@@ -445,6 +445,12 @@ public class ToDoPersonalFragment extends BaseFragment {
                 if (isExpandable) {
                     showDoneLayout();
                 }
+                if(todoList.size() == 0){
+                    mLInearExpand.setVisibility(View.GONE);
+                }
+                else{
+                    mLInearExpand.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

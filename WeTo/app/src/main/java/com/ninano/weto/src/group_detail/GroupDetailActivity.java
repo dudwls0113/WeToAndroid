@@ -87,7 +87,7 @@ public class GroupDetailActivity extends BaseActivity {
         density = displayMetrics.density;
         mGroupNo = getIntent().getIntExtra("groupId", 0);
         mGroupIcon = getIntent().getIntExtra("groupIcon", -1);
-        members = (ArrayList<Member>)getIntent().getSerializableExtra("members");
+        members = (ArrayList<Member>) getIntent().getSerializableExtra("members");
         init();
         setGroupMemberData(members);
         setDatabase();
@@ -112,18 +112,23 @@ public class GroupDetailActivity extends BaseActivity {
                 if (isExpandable) {
                     showDoneLayout();
                 }
+                if (todoList.size() == 0) {
+                    mLinearExpand.setVisibility(View.GONE);
+                } else {
+                    mLinearExpand.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
 
-    void init(){
+    void init() {
         mRequestManager = Glide.with(mContext);
 
         mRecyclerViewMember = findViewById(R.id.group_detail_rv_member);
-        mGroupMemberListAdapter = new GroupMemberListAdapter(mContext, mMemberData, mRequestManager,density, new GroupMemberListAdapter.ItemClickListener() {
+        mGroupMemberListAdapter = new GroupMemberListAdapter(mContext, mMemberData, mRequestManager, density, new GroupMemberListAdapter.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
-                if (pos==mMemberData.size()-1){
+                if (pos == mMemberData.size() - 1) {
                     GroupInviteDialog groupInviteDialog = new GroupInviteDialog(mContext, mGroupNo);
                     groupInviteDialog.show();
                 }
@@ -136,7 +141,7 @@ public class GroupDetailActivity extends BaseActivity {
         mRecyclerViewMember.setAdapter(mGroupMemberListAdapter);
 
         mRecyclerViewList = findViewById(R.id.group_detail_rv_list);
-        mRecyclerViewList.setLayoutManager(new LinearLayoutManager(mContext){
+        mRecyclerViewList.setLayoutManager(new LinearLayoutManager(mContext) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -168,8 +173,8 @@ public class GroupDetailActivity extends BaseActivity {
         mImageViewDrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isEditMode){
-                    for(int i=0; i<mGroupListData.size(); i++){
+                if (isEditMode) {
+                    for (int i = 0; i < mGroupListData.size(); i++) {
                         mGroupListData.get(i).setEditMode(false);
                     }
                     isEditMode = false;
@@ -187,8 +192,8 @@ public class GroupDetailActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 // drag 여부 분기 나눠야함
-                if (!isEditMode){
-                    for(int i=0; i<mGroupListData.size(); i++){
+                if (!isEditMode) {
+                    for (int i = 0; i < mGroupListData.size(); i++) {
                         mGroupListData.get(i).setEditMode(true);
                     }
                     isEditMode = true;
@@ -197,8 +202,7 @@ public class GroupDetailActivity extends BaseActivity {
                     mImageViewAddAndDragConfirm.setBackgroundResource(R.drawable.bg_round_float_button_blue);
                     mImageViewAddAndDragConfirm.setImageResource(R.drawable.ic_float_plus);
                     mToDoGroupListAdapter.notifyDataSetChanged();
-                }
-                else {
+                } else {
                     GroupToDoAddDialog groupToDoAddDialog = new GroupToDoAddDialog(mContext, new GroupToDoAddDialog.GroupToDoAddListener() {
                         @Override
                         public void todoClick() {
@@ -307,13 +311,13 @@ public class GroupDetailActivity extends BaseActivity {
         anim1.start();
     }
 
-    void setGroupMemberData(ArrayList<Member> members){
+    void setGroupMemberData(ArrayList<Member> members) {
         mMemberData.clear();
 
-        for(int i=0; i<members.size(); i++){
+        for (int i = 0; i < members.size(); i++) {
             mMemberData.add(new GroupMemberData(members.get(i).getUserNo(), members.get(i).getProfileUrl(), members.get(i).getNickName(), false));
         }
-        mMemberData.add(new GroupMemberData(-1,"","",true));
+        mMemberData.add(new GroupMemberData(-1, "", "", true));
 
         mGroupMemberListAdapter.notifyDataSetChanged();
     }

@@ -2,6 +2,7 @@ package com.ninano.weto.src.splash;
 
 import androidx.annotation.NonNull;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,8 +36,6 @@ import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
 
 public class SplashActivity extends BaseActivity {
 
-    private ToDoDao mTodoDao;
-    private AppDatabase mDatabase;
     private Context mContext;
     private boolean isKakaoShare;
     private int mGroupId;
@@ -47,13 +46,9 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mContext = this;
-        mDatabase= AppDatabase.getAppDatabase(getApplicationContext());
+        AppDatabase mDatabase = AppDatabase.getAppDatabase(getApplicationContext());
         boolean isFirst = sSharedPreferences.getBoolean("firstConnect", true);
         if (isFirst){
-//            SharedPreferences.Editor editor = sSharedPreferences.edit();
-//            editor.putBoolean("firstConnect", false);
-//            editor.apply();
-//            getWifiMaker().startJobScheduler(getApplicationContext());
             startActivity(new Intent(SplashActivity.this, TutorialActivity.class));
             finish();
             return;
@@ -80,6 +75,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
+    @SuppressLint("StaticFieldLeak")
     private class SplashAsyncTask extends AsyncTask<Void, Void, List<ToDoWithData>> {
         private ToDoDao mTodoDao;
 
@@ -97,10 +93,11 @@ public class SplashActivity extends BaseActivity {
             super.onPostExecute(toDoWithDataList);
             List<Geofence> geofenceList = new ArrayList<>();
             for (ToDoWithData toDoWithData : toDoWithDataList) {
-                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N' && toDoWithData.getIsGroup() == 'N') {
+                if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     geofenceList.add(getGeofenceMaker().getGeofence(toDoWithData.getLocationMode(), String.valueOf(toDoWithData.getTodoNo()),
                             new Pair<>(toDoWithData.getLatitude(), toDoWithData.getLongitude()), (float) toDoWithData.getRadius()));
                 }
+
                 if(toDoWithData.getIsGroup() == 'Y'){
                     if(toDoWithData.getType() == MEET){
                         geofenceList.add(getGeofenceMaker().getGeofence(toDoWithData.getLocationMode(), "meet"+(toDoWithData.getTodoNo()),

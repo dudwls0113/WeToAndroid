@@ -300,6 +300,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             }
         });
         naverMap.setLocationSource(locationSource);
+
         zoomControlView.setMap(naverMap);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
@@ -309,16 +310,5 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         uiSettings.setLogoMargin((int) (12 * density), (int) (12 * density), 0, 0);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         setDatabase();
-
-        //첫화면의 위치 설
-        Log.d("AAA currentPosition = ", currentPosition + "");
-        Log.d("AAA size()", toDoWithDataArrayList.size() + "");
-//        if (currentPosition < toDoWithDataArrayList.size()) {
-//            CameraUpdate cameraUpdate = CameraUpdate.zoomTo(12);
-//            naverMap.moveCamera(cameraUpdate);
-//            CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(toDoWithDataArrayList.get(currentPosition).getLatitude(), toDoWithDataArrayList.get(currentPosition).getLongitude()))
-//                    .animate(CameraAnimation.Fly);
-//            naverMap.moveCamera(cameraUpdate2);
-//        }
     }
 }

@@ -3,10 +3,14 @@ package com.ninano.weto.src;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -96,6 +100,54 @@ public class BaseActivity extends AppCompatActivity {
 //        }
 //    }
 
+    private float firstPointX = 0;
+    private float firstPointY = 0;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            float distX = Math.abs(ev.getX() - firstPointX);
+            float distY = Math.abs(ev.getY() - firstPointY);
+            if (distX < 8 || distY < 8 || distX > 40 || distY > 40) {
+                View view = getCurrentFocus();
+                if (view instanceof EditText) {
+                    view.clearFocus();
+                    Rect outRect = new Rect();
+                    view.getGlobalVisibleRect(outRect);
+                    if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            } else {
+                View view = getCurrentFocus();
+                if (view instanceof EditText) {
+                    view.clearFocus();
+                }
+            }
+        } else if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            firstPointX = ev.getX();
+            firstPointY = ev.getY();
+        } if (ev.getAction() == MotionEvent.ACTION_MOVE) {
+            float distX = Math.abs(ev.getX() - firstPointX);
+            float distY = Math.abs(ev.getY() - firstPointY);
+            if (distX > 30 || distY > 30) {
+                View view = getCurrentFocus();
+                if (view instanceof EditText) {
+                    view.clearFocus();
+                    Rect outRect = new Rect();
+                    view.getGlobalVisibleRect(outRect);
+                    if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        if (inputMethodManager != null) {
+                            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
     @Override
     public void onStop() {
         super.onStop();

@@ -36,7 +36,7 @@
         android:textSize="21sp"
         android:textColor="#38454c"
         android:lineSpacingExtra="10sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_marginBottom="18dp"/>
 
     <TextView
@@ -63,7 +63,7 @@
         android:lineSpacingExtra="8sp"
         android:gravity="center"
         android:text="카카오톡 로그인하기"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_marginBottom="15dp"
         android:stateListAnimator="@null"/>
 
@@ -78,7 +78,7 @@
         android:textColor="#38454c"
         android:lineSpacingExtra="8sp"
         android:gravity="center"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:text="@string/group_invite_deny"
         android:stateListAnimator="@null"/>
 

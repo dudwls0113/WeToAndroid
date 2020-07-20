@@ -21,7 +21,7 @@
             android:textColor="#38454c"
             android:lineSpacingExtra="9sp"
             android:text="@string/todo_icon_select"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/noto_sans_kr_bold"/>
         <ImageView
             android:id="@+id/dialog_personal_todo_icon_iv_back"
             android:layout_width="wrap_content"

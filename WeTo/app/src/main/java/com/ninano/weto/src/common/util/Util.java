@@ -129,4 +129,12 @@ public class Util {
             notificationManager.notify(1, builder.build());
         }
     }
+
+    public static boolean isNumericString(String str) {
+        if (str == null)
+            return false;
+        return str.matches("-?\\d+");
+    }
+
+
 }

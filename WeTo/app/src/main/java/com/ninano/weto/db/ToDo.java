@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey;
 public class ToDo {
     @PrimaryKey(autoGenerate = true)
     private int todoNo;
-
     private String title;
     private String content;
     private int icon;
@@ -42,19 +41,6 @@ public class ToDo {
     public void setGroupNo(int groupNo) {
         this.groupNo = groupNo;
     }
-//    //그룹용 생성자(ToDo생성자 포함)
-//    public ToDo(String title, String content, int icon, int type, char isImportant, char isGroup, int serverTodoNo, String groupTodoCreator) {
-//        this.title = title;
-//        this.content = content;
-//        this.icon = icon;
-//        this.type = type;
-//        this.status = "ACTIVATE";
-//        this.ordered = 0;
-//        this.isImportant = isImportant;
-//        this.isGroup = isGroup;
-//        this.serverTodoNo = serverTodoNo;
-//        this.groupTodoCreator = groupTodoCreator;
-//    }
 
     //로컬용 생성자
     @Ignore

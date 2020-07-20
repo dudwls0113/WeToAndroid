@@ -23,7 +23,7 @@
             android:text="@string/modify"
             android:textColor="#38454c"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/noto_sans_kr_bold" />
 
         <ImageView
             android:id="@+id/activity_todo_edit_todo_iv_back"
@@ -101,7 +101,7 @@
                         android:text="@string/todo_time"
                         android:textColor="#38454c"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/noto_sans_kr_bold" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_time"
@@ -146,7 +146,7 @@
                             android:text="반복안함"
                             android:textColor="#ffffff"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_day_repeat"
@@ -161,7 +161,7 @@
                             android:text="매일"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_week_repeat"
@@ -176,7 +176,7 @@
                             android:text="매주"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_month_repeat"
@@ -190,7 +190,7 @@
                             android:text="매월"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -241,7 +241,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_on"
                                 android:text="일"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#ffffff"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -255,7 +255,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="월"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -269,7 +269,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="화"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -283,7 +283,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="수"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -297,7 +297,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="목"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -311,7 +311,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="금"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -325,7 +325,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
                                 android:text="토"
-                                android:textStyle="bold"
+                                android:fontFamily="@font/noto_sans_kr_bold"
                                 android:textColor="#657884"
                                 android:textSize="12sp"
                                 android:gravity="center"
@@ -382,7 +382,7 @@
                         android:text="@string/todo_gps"
                         android:textColor="#38454c"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/noto_sans_kr_bold" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_gps"
@@ -463,7 +463,7 @@
                             android:text="도착할 때"
                             android:textColor="#ffffff"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_layout_hidden_gps_start"
@@ -477,7 +477,7 @@
                             android:text="출발할 때"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
 
                         <TextView
@@ -493,7 +493,7 @@
                             android:text="근처에서"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
                     </LinearLayout>
 
                     <!--                    <LinearLayout-->
@@ -544,7 +544,7 @@
                             android:text="@string/activity_todo_add_always"
                             android:textColor="#ffffff"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_morning"
@@ -559,7 +559,7 @@
                             android:text="@string/activity_todo_add_morning"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_evening"
@@ -574,7 +574,7 @@
                             android:text="@string/activity_todo_add_evening"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_night"
@@ -588,7 +588,7 @@
                             android:text="@string/activity_todo_add_night"
                             android:textColor="#657884"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/noto_sans_kr_bold" />
 
                     </LinearLayout>
 
@@ -612,7 +612,7 @@
                         android:text="@string/todo_important"
                         android:textColor="#38454c"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/noto_sans_kr_bold" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_improtant"
@@ -639,7 +639,7 @@
                     android:text="@string/todo_memo"
                     android:textColor="#38454c"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/noto_sans_kr_bold" />
 
                 <EditText
                     android:id="@+id/activity_todo_edit_todo_et_memo"
@@ -678,7 +678,7 @@
                 android:text="수정완료"
                 android:textColor="#0809ff"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/noto_sans_kr_bold" />
         </LinearLayout>
 
     </ScrollView>

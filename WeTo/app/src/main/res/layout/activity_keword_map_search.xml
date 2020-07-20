@@ -46,7 +46,7 @@
                 android:padding="20dp"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/noto_sans_kr_bold" />
 
             <ImageButton
                 android:id="@+id/activity_keyword_map_btn_remove"

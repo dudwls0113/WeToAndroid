@@ -43,7 +43,7 @@
 
     <string name="todo_group_add_member">해당 멤버 선택하기</string>
 
-    <string name="todo_icon_select">아이콘 선택 - 수정하기</string>
+    <string name="todo_icon_select">아이콘 선택</string>
     <string name="select">선택하기</string>
 
 
@@ -77,4 +77,8 @@
     <string name="group_invite_content_login">초대 받으신 그룹에 참여하기 위해\n카카오톡 연동 로그인을 하시길 바랍니다.</string>
     <string name="group_invite_content_invite">초대 받으신 그룹에 참여하기 위해\n‘그룹에 참여하기’로 계속하여 주세요.</string>
     <string name="group_invite_button_invite">그룹에 참여하기</string>
+
+    <string name="notification_title_meet_1">약속시간</string>
+    <string name="notification_title_meet_2">시간 전 입니다!</string>
+
 </resources>

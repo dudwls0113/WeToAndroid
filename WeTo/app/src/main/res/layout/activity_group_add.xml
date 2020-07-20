@@ -29,7 +29,7 @@
         android:text="추가하기"
         android:textColor="#0809ff"
         android:textSize="16sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:stateListAnimator="@null"/>
 
 </LinearLayout>

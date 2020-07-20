@@ -31,7 +31,7 @@
             android:lineSpacingExtra="9sp"
             android:text="Wi-fi"
             android:layout_gravity="center_vertical"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/noto_sans_kr_bold"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wifi_search_rv_list"

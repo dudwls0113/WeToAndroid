@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="312dp"
-    android:layout_height="258dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_round_dialog">
 
     <LinearLayout
@@ -21,11 +21,12 @@
             android:textColor="#38454c"
             android:lineSpacingExtra="9sp"
             android:text="@string/dialog_group_todo_add_title"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/noto_sans_kr_bold"/>
         <ImageView
             android:id="@+id/dialog_group_todo_add_iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:padding="10dp"
             android:src="@drawable/ic_x"/>
     </LinearLayout>
@@ -43,23 +44,23 @@
         android:lineSpacingExtra="8sp"
         android:gravity="center"
         android:text="@string/dialog_group_todo_add_todo"
-        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:stateListAnimator="@null"/>
 
     <Button
         android:id="@+id/dialog_group_todo_add_btn_promise"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@drawable/bg_round_white_gray_button"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="15dp"
-        android:textSize="16sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="8sp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_round_white_gray_button"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:gravity="center"
+        android:lineSpacingExtra="8sp"
+        android:stateListAnimator="@null"
         android:text="@string/dialog_group_todo_add_promise"
-        android:textStyle="bold"
-        android:stateListAnimator="@null"/>
+        android:textColor="#38454c"
+        android:textSize="16sp" />
 
 </LinearLayout>
