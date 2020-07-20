@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
+    android:orientation="vertical"
     tools:context=".src.todo_detail.ToDoDetailActivity">
 
     <ImageView
@@ -30,34 +30,36 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="18dp"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:lineSpacingExtra="10sp"
         android:text="일정제목"
         android:textColor="@color/colorBlack"
-        android:textSize="21sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="21sp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/activity_todo_detail_tv_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:lineSpacingExtra="6sp"
         android:text="@string/todo_detail_category_time"
         android:textColor="@color/colorBlack"
-        android:textSize="14sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/activity_todo_detail_tv_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/noto_sans_kr_medium"
+        android:gravity="center"
         android:lineSpacingExtra="6sp"
         android:text="매일, 아침 8시"
         android:textColor="@color/colorSearchGray"
@@ -68,11 +70,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="21dp"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:lineSpacingExtra="6sp"
         android:text="메모"
         android:textColor="@color/colorBlack"
-        android:textSize="14sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/activity_todo_detail_tv_content"
@@ -80,9 +82,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/noto_sans_kr_medium"
+        android:gravity="center"
         android:lineSpacingExtra="6sp"
         android:text="집dsdsdsd\nㅇㄴㅇㄴㅇㄴㅇ"
-        android:gravity="center"
         android:textColor="@color/colorSearchGray"
         android:textSize="14sp" />
 
@@ -90,6 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
     <Button
         android:id="@+id/add_personal_todo_btn_modify"
         android:layout_width="match_parent"
@@ -99,14 +103,15 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bg_round_back_gray"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:gravity="center"
         android:lineSpacingExtra="8sp"
         android:onClick="customOnClick"
         android:stateListAnimator="@null"
         android:text="수정하기"
         android:textColor="@color/colorBlack"
-        android:textSize="12sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="12sp" />
+
     <Button
         android:id="@+id/add_personal_todo_btn_delete"
         android:layout_width="match_parent"
@@ -116,14 +121,15 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bg_round_back_gray"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:gravity="center"
         android:lineSpacingExtra="8sp"
         android:onClick="customOnClick"
         android:stateListAnimator="@null"
         android:text="삭제하기"
         android:textColor="@color/colorBlack"
-        android:textSize="12sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="12sp" />
+
     <Button
         android:id="@+id/add_personal_todo_btn_done"
         android:layout_width="match_parent"
@@ -133,12 +139,12 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="48dp"
         android:background="@drawable/bg_expand_button"
+        android:fontFamily="@font/noto_sans_kr_bold"
         android:gravity="center"
         android:lineSpacingExtra="8sp"
         android:onClick="customOnClick"
         android:stateListAnimator="@null"
         android:text="완료하기"
         android:textColor="#0809ff"
-        android:textSize="12sp"
-        android:fontFamily="@font/noto_sans_kr_bold" />
+        android:textSize="12sp" />
 </LinearLayout>

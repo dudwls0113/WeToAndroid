@@ -26,6 +26,7 @@
             android:id="@+id/dialog_group_invite_iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:padding="10dp"
             android:src="@drawable/ic_x"/>
     </LinearLayout>

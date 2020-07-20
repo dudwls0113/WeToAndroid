@@ -19,11 +19,11 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="24dp"
             android:layout_weight="1"
+            android:fontFamily="@font/noto_sans_kr_bold"
             android:lineSpacingExtra="9sp"
             android:text="@string/modify"
             android:textColor="#38454c"
-            android:textSize="18sp"
-            android:fontFamily="@font/noto_sans_kr_bold" />
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/activity_todo_edit_todo_iv_back"
@@ -73,6 +73,7 @@
                         android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_round_edit"
+                        android:fontFamily="@font/noto_sans_kr_medium"
                         android:hint="@string/add_todo_name_hint"
                         android:lineSpacingExtra="8sp"
                         android:paddingStart="15dp"
@@ -97,11 +98,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_time"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/noto_sans_kr_bold" />
+                        android:textSize="16sp" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_time"
@@ -140,13 +141,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_on"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="반복안함"
                             android:textColor="#ffffff"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_day_repeat"
@@ -155,13 +156,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="매일"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_week_repeat"
@@ -170,13 +171,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="매주"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_tv_month_repeat"
@@ -184,13 +185,13 @@
                             android:layout_height="33dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="매월"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -198,12 +199,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
                         android:layout_marginBottom="15dp">
+
                         <LinearLayout
                             android:id="@+id/activity_todo_edit_todo_layout_hidden_time_date"
-                            android:onClick="customOnClick"
                             android:layout_width="match_parent"
                             android:layout_height="36dp"
                             android:background="@drawable/bg_round_edit"
+                            android:onClick="customOnClick"
                             android:orientation="horizontal">
 
                             <TextView
@@ -213,6 +215,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="15dp"
                                 android:layout_weight="1"
+                                android:fontFamily="@font/noto_sans_kr_medium"
                                 android:gravity="center_vertical"
                                 android:lineSpacingExtra="6sp"
                                 android:text="@string/todo_time_date"
@@ -227,109 +230,117 @@
                                 android:padding="10dp"
                                 android:src="@drawable/ic_chevron_down" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/activity_todo_edit_todo_layout_hidden_time_date_week_repeat"
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="36dp"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_sun"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_on"
-                                android:text="일"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#ffffff"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="일"
+                                android:textColor="#ffffff"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_mon"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="월"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="월"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_tue"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="화"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="화"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_wed"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="수"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="수"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_thu"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="목"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="목"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_fri"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
+                                android:layout_marginEnd="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="금"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
                                 android:lineSpacingExtra="6sp"
-                                android:layout_marginEnd="7dp"/>
+                                android:onClick="customOnClick"
+                                android:text="금"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/week_repeat_tv_sat"
-                                android:onClick="customOnClick"
                                 android:layout_width="0dp"
                                 android:layout_height="36dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_round_button_off"
-                                android:text="토"
                                 android:fontFamily="@font/noto_sans_kr_bold"
-                                android:textColor="#657884"
-                                android:textSize="12sp"
                                 android:gravity="center"
-                                android:lineSpacingExtra="6sp" />
+                                android:lineSpacingExtra="6sp"
+                                android:onClick="customOnClick"
+                                android:text="토"
+                                android:textColor="#657884"
+                                android:textSize="12sp" />
                         </LinearLayout>
                     </FrameLayout>
 
@@ -349,6 +360,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="15dp"
                             android:layout_weight="1"
+                            android:fontFamily="@font/noto_sans_kr_medium"
                             android:gravity="center_vertical"
                             android:lineSpacingExtra="6sp"
                             android:text="@string/todo_time_time"
@@ -378,11 +390,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_gps"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/noto_sans_kr_bold" />
+                        android:textSize="16sp" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_gps"
@@ -437,6 +449,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
+                            android:fontFamily="@font/noto_sans_kr_medium"
                             android:gravity="center_vertical"
                             android:lineSpacingExtra="6sp"
                             android:text="장소를 선택하세요."
@@ -457,13 +470,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_on"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="도착할 때"
                             android:textColor="#ffffff"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_layout_hidden_gps_start"
@@ -471,13 +484,13 @@
                             android:layout_height="33dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="출발할 때"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
 
                         <TextView
@@ -487,13 +500,13 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="근처에서"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <!--                    <LinearLayout-->
@@ -538,13 +551,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_on"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="@string/activity_todo_add_always"
                             android:textColor="#ffffff"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_morning"
@@ -553,13 +566,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="@string/activity_todo_add_morning"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_evening"
@@ -568,13 +581,13 @@
                             android:layout_marginEnd="12dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="@string/activity_todo_add_evening"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/activity_todo_edit_todo_btn_night"
@@ -582,13 +595,13 @@
                             android:layout_height="33dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_round_button_off"
+                            android:fontFamily="@font/noto_sans_kr_bold"
                             android:gravity="center"
                             android:lineSpacingExtra="6sp"
                             android:onClick="customOnClick"
                             android:text="@string/activity_todo_add_night"
                             android:textColor="#657884"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/noto_sans_kr_bold" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -608,11 +621,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:fontFamily="@font/noto_sans_kr_bold"
                         android:lineSpacingExtra="8sp"
                         android:text="@string/todo_important"
                         android:textColor="#38454c"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/noto_sans_kr_bold" />
+                        android:textSize="16sp" />
 
                     <Switch
                         android:id="@+id/activity_todo_edit_todo_switch_improtant"
@@ -635,11 +648,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/noto_sans_kr_bold"
                     android:lineSpacingExtra="8sp"
                     android:text="@string/todo_memo"
                     android:textColor="#38454c"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/noto_sans_kr_bold" />
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/activity_todo_edit_todo_et_memo"
@@ -649,6 +662,7 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="36dp"
                     android:background="@drawable/bg_round_edit"
+                    android:fontFamily="@font/noto_sans_kr_medium"
                     android:gravity="top"
                     android:hint="메모를 입력하세요."
                     android:lineSpacingExtra="6sp"
@@ -671,14 +685,14 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/bg_expand_button"
+                android:fontFamily="@font/noto_sans_kr_bold"
                 android:gravity="center"
                 android:lineSpacingExtra="8sp"
                 android:onClick="customOnClick"
                 android:stateListAnimator="@null"
                 android:text="수정완료"
                 android:textColor="#0809ff"
-                android:textSize="16sp"
-                android:fontFamily="@font/noto_sans_kr_bold" />
+                android:textSize="16sp" />
         </LinearLayout>
 
     </ScrollView>

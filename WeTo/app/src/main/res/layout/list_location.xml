@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tool="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_location_item"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorBackGray"
     android:orientation="horizontal">
 
@@ -19,21 +18,22 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/list_location_tv_place"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:lineSpacingExtra="9sp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:layout_marginBottom="6dp"
+            android:includeFontPadding="false"
             android:textColor="#38454c"
             android:textSize="16sp"
-            android:fontFamily="@font/noto_sans_kr_bold"
             tools:text="형광펜 사기" />
 
         <LinearLayout
@@ -46,19 +46,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:lineSpacingExtra="5sp"
+                android:fontFamily="@font/noto_sans_kr_medium"
+                android:includeFontPadding="false"
+
                 android:textColor="#d2d9df"
                 android:textSize="10sp"
                 tools:ignore="SmallSp"
                 tools:text="아트박스 대학로점, 내일, 오후 1시" />
         </LinearLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:layout_marginEnd="25dp"
         android:orientation="vertical">
 
@@ -66,25 +69,27 @@
             android:id="@+id/list_location_tv_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            tools:text="카테고리"
+            android:fontFamily="@font/noto_sans_kr_medium"
             android:textColor="@color/colorSearchGray"
             android:textSize="10sp"
-            android:fontFamily="@font/noto_sans_kr_bold" />
+            tools:text="카테고리" />
 
         <TextView
             android:id="@+id/list_location_tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
             android:layout_gravity="end"
-            android:layout_marginTop="5dp"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:gravity="end"
             android:lineSpacingExtra="5sp"
             android:textColor="@color/colorSearchGray"
             android:textSize="10sp"
-            android:fontFamily="@font/noto_sans_kr_bold"
             tools:text="1.2km" />
     </LinearLayout>
 
 
+    <!--    <View-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="1dp"-->
+    <!--        android:background="#e3e7ec" />-->
 </LinearLayout>

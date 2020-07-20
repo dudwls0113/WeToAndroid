@@ -4,105 +4,118 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
+    android:orientation="vertical"
     tools:context=".src.todo_detail.ToDoDetailActivity">
 
     <ImageView
         android:id="@+id/todo_detail_iv_x"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:src="@drawable/ic_x"
-        android:layout_marginEnd="29dp"
-        android:layout_marginTop="24dp"
         android:layout_gravity="end"
-        android:layout_marginBottom="62dp"/>
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="29dp"
+        android:layout_marginBottom="62dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_x" />
+
     <ImageView
         android:id="@+id/todo_detail_iv_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="18dp"/>
+        android:layout_marginBottom="18dp" />
+
     <TextView
         android:id="@+id/todo_detail_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="21sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="10sp"
-        android:gravity="center_horizontal"
-        tools:text="비타민 챙겨먹기"
         android:layout_gravity="center_horizontal"
-        android:fontFamily="@font/noto_sans_kr_bold"/>
+        android:fontFamily="@font/noto_sans_kr_bold"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="10sp"
+        android:textColor="#38454c"
+        android:textSize="21sp"
+        tools:text="비타민 챙겨먹기" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
+
     <TextView
         android:id="@+id/todo_detail_tv_noti_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="6sp"
-        android:gravity="center_horizontal"
-        tools:text="특정 시각에 알리기"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/noto_sans_kr_bold"
-        android:layout_marginBottom="8dp"/>
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#38454c"
+        android:textSize="14sp"
+        tools:text="특정 시각에 알리기" />
+
     <TextView
         android:id="@+id/todo_detail_tv_noti_type_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="14sp"
-        android:textColor="#b0bec5"
-        android:lineSpacingExtra="6sp"
+        android:layout_marginBottom="21dp"
+        android:fontFamily="@font/noto_sans_kr_medium"
         android:gravity="center_horizontal"
-        tools:text="매일, 아침 8시"
-        android:layout_marginBottom="21dp"/>
+        android:lineSpacingExtra="6sp"
+        android:textColor="#b0bec5"
+        android:textSize="14sp"
+        tools:text="매일, 아침 8시" />
+
     <TextView
         android:id="@+id/todo_detail_tv_memo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="14sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="6sp"
-        android:gravity="center_horizontal"
-        android:text="메모"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/noto_sans_kr_bold"
-        android:layout_marginBottom="8dp"/>
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="6sp"
+        android:text="메모"
+        android:textColor="#38454c"
+        android:textSize="14sp" />
+
     <TextView
         android:id="@+id/todo_detail_tv_memo_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="78dp"
         android:layout_marginEnd="78dp"
-        android:textSize="14sp"
-        android:textColor="#b0bec5"
-        android:lineSpacingExtra="6sp"
+        android:fontFamily="@font/noto_sans_kr_medium"
         android:gravity="center_horizontal"
-        tools:text="오메가 3 아침 저녁으로 한 알씩, 마그네슘 아침 저녁으로 두 알씩 먹기"/>
+        android:lineSpacingExtra="6sp"
+        android:textColor="#b0bec5"
+        android:textSize="14sp"
+        tools:text="오메가 3 아침 저녁으로 한 알씩, 마그네슘 아침 저녁으로 두 알씩 먹기" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
+
     <Button
         android:id="@+id/todo_detail_btn_modify"
         android:layout_width="96dp"
         android:layout_height="33dp"
-        android:textSize="12sp"
-        android:textColor="#0809ff"
-        android:lineSpacingExtra="6sp"
-        android:gravity="center"
-        android:text="@string/modify"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/bg_expand_button"
-        android:stateListAnimator="@null"/>
+        android:fontFamily="@font/noto_sans_kr_bold"
+        android:gravity="center"
+        android:lineSpacingExtra="6sp"
+        android:stateListAnimator="@null"
+        android:text="@string/modify"
+        android:textColor="#0809ff"
+        android:textSize="12sp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 </LinearLayout>

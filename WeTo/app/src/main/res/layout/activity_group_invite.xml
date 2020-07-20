@@ -4,52 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
+    android:orientation="vertical"
     tools:context=".src.group_invite.GroupInviteActivity">
 
     <ImageView
         android:id="@+id/group_invite_iv_x"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_x"
+        android:layout_gravity="end"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="29dp"
-        android:padding="10dp"
         android:layout_marginBottom="96dp"
-        android:layout_gravity="end"/>
+        android:padding="10dp"
+        android:src="@drawable/ic_x" />
 
     <ImageView
         android:id="@+id/group_invite_iv_profile"
-        android:scaleType="fitXY"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="36dp"/>
+        android:layout_marginBottom="36dp"
+        android:scaleType="fitXY" />
+
     <TextView
         android:id="@+id/group_invite_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:text="이유미님께서\n그룹에 초대하셨습니다."
-        android:gravity="center"
-        android:textSize="21sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="10sp"
+        android:layout_marginBottom="18dp"
         android:fontFamily="@font/noto_sans_kr_bold"
-        android:layout_marginBottom="18dp"/>
+        android:gravity="center"
+        android:lineSpacingExtra="10sp"
+        android:textColor="#38454c"
+        android:textSize="21sp"
+        tools:text="이유미님께서\n그룹에 초대하셨습니다." />
 
     <TextView
         android:id="@+id/group_invite_tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="6sp"
-        android:gravity="center_horizontal"
-        android:text="초대 받으신 그룹에 참여하기 위해\n카카오톡 연동 로그인을 하시길 바랍니다."
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="48dp"/>
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/noto_sans_kr_medium"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="6sp"
+        android:text="초대 받으신 그룹에 참여하기 위해\n카카오톡 연동 로그인을 하시길 바랍니다."
+        android:textColor="#38454c"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/group_invite_btn_kakao"
@@ -57,15 +59,15 @@
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/bg_expand_button"
-        android:textSize="16sp"
-        android:textColor="#0809ff"
-        android:lineSpacingExtra="8sp"
-        android:gravity="center"
-        android:text="카카오톡 로그인하기"
-        android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_marginBottom="15dp"
-        android:stateListAnimator="@null"/>
+        android:background="@drawable/bg_expand_button"
+        android:fontFamily="@font/noto_sans_kr_bold"
+        android:gravity="center"
+        android:lineSpacingExtra="8sp"
+        android:stateListAnimator="@null"
+        android:text="카카오톡 로그인하기"
+        android:textColor="#0809ff"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/group_invite_btn_deny"
@@ -74,15 +76,13 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/bg_round_confirm_button"
-        android:textSize="16sp"
-        android:textColor="#38454c"
-        android:lineSpacingExtra="8sp"
-        android:gravity="center"
         android:fontFamily="@font/noto_sans_kr_bold"
+        android:gravity="center"
+        android:lineSpacingExtra="8sp"
+        android:stateListAnimator="@null"
         android:text="@string/group_invite_deny"
-        android:stateListAnimator="@null"/>
-
-
+        android:textColor="#38454c"
+        android:textSize="16sp" />
 
 
 </LinearLayout>

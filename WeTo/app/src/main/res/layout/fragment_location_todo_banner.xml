@@ -4,20 +4,20 @@
     android:id="@+id/list_todo_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_round_dialog"
     android:elevation="5dp"
     android:paddingTop="7dp"
-    android:paddingBottom="7dp"
-    android:background="@drawable/bg_round_dialog">
-<!--    android:background="@drawable/bg_round_dialog">-->
+    android:paddingBottom="7dp">
+    <!--    android:background="@drawable/bg_round_dialog">-->
 
 
     <LinearLayout
         android:id="@+id/list_todo_personal_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/colorWhite"
         android:elevation="7dp"
+        android:orientation="horizontal"
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
@@ -42,10 +42,10 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr_bold"
                 android:lineSpacingExtra="9sp"
                 android:textColor="#38454c"
                 android:textSize="18sp"
-                android:fontFamily="@font/noto_sans_kr_bold"
                 tools:text="형광펜 사기" />
 
             <LinearLayout
@@ -63,14 +63,15 @@
 
                 <TextView
                     android:id="@+id/list_todo_personal_tv_subtitle"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/noto_sans_kr_medium"
                     android:gravity="center_vertical"
                     android:lineSpacingExtra="5sp"
+                    android:marqueeRepeatLimit="2"
+                    android:singleLine="true"
                     android:textColor="#d2d9df"
                     android:textSize="10sp"
                     tools:text="아트박스 대학로점, 내일, 오후 1시" />

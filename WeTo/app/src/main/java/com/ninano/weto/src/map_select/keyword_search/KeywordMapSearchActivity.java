@@ -1,10 +1,13 @@
 package com.ninano.weto.src.map_select.keyword_search;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -65,6 +68,7 @@ public class KeywordMapSearchActivity extends BaseActivity implements KeywordMap
             }
         });
         mRecyclerViewResult.setAdapter(mLocationListAdapter);
+
         mEditTextKeyword.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {

@@ -42,7 +42,7 @@
         android:textColor="#38454c"
         android:lineSpacingExtra="8sp"
         android:gravity="center"
-        android:text="@string/group_invite_deny"
+        android:text="닫기"
         android:fontFamily="@font/noto_sans_kr_bold"
         android:layout_marginBottom="15dp"/>
 

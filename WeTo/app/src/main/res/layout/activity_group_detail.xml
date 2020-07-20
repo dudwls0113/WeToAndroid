@@ -93,13 +93,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#f5f6fa"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/group_detail_rv_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginTop="7dp"
                     android:layout_marginBottom="22dp"
-                    android:layout_marginTop="7dp"/>
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
                 <LinearLayout
                     android:id="@+id/group_detail_layout_hidden_done"
                     android:layout_width="match_parent"
