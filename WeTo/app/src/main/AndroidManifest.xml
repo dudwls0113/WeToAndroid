@@ -61,17 +61,17 @@
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".src.map_select.MapSelectActivity" />
 
-        <receiver android:name=".src.common.Alarm.AlarmBroadcastReceiver" />
+        <receiver android:name=".src.common.alarm.AlarmBroadcastReceiver" />
 
         <service
-            android:name=".src.common.Wifi.WifiService"
+            android:name=".src.common.wifi.WifiService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".src.common.Wifi.CellularService"
+            android:name=".src.common.wifi.CellularService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name=".src.common.Geofence.GeofenceBroadcastReceiver"
+            android:name=".src.common.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
         <receiver

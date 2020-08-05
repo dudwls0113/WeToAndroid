@@ -1,4 +1,4 @@
-package com.ninano.weto.src.common.Geofence;
+package com.ninano.weto.src.common.geofence;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -15,7 +15,6 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.ninano.weto.db.ToDoWithData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
-import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.LOITERING_DELAY;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 

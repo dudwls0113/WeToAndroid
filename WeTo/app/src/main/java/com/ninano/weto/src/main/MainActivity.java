@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,12 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Pair;
-import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -34,19 +29,15 @@ import com.ninano.weto.R;
 import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
-import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.custom.NonSwipeViewPager;
-import com.ninano.weto.src.group_detail.GroupDetailActivity;
 import com.ninano.weto.src.group_invite.GroupInviteActivity;
 import com.ninano.weto.src.main.adpater.MainViewPagerAdapter;
 import com.ninano.weto.src.main.interfaces.MainActivityView;
 import com.ninano.weto.src.main.map.MapFragment;
 import com.ninano.weto.src.main.todo_group.ToDoGroupFragment;
-import com.ninano.weto.src.main.todo_group.ToDoGroupService;
 import com.ninano.weto.src.main.todo_personal.ToDoPersonalFragment;
-import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
@@ -54,16 +45,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.List;
 
 import devlight.io.library.ntb.NavigationTabBar;
 
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER;
-import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT;
 import static com.ninano.weto.src.ApplicationClass.fcmToken;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
-import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.common.wifi.WifiMaker.getWifiMaker;
 
 public class MainActivity extends BaseActivity implements AutoPermissionsListener, MainActivityView {
 

@@ -1,7 +1,5 @@
 package com.ninano.weto.src.todo_detail;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,7 +13,6 @@ import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
-import com.ninano.weto.src.ApplicationClass;
 import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
@@ -33,8 +30,8 @@ import static com.ninano.weto.src.ApplicationClass.ONE_DAY;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.geofence.GeofenceMaker.getGeofenceMaker;
 
 public class ToDoDetailActivity extends BaseActivity {
 

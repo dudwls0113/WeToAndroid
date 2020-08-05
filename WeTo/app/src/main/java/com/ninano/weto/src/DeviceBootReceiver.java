@@ -1,39 +1,22 @@
 package com.ninano.weto.src;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
-import com.ninano.weto.src.common.Alarm.AlarmBroadcastReceiver;
-import com.ninano.weto.src.main.MainActivity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
 
 public class DeviceBootReceiver extends BroadcastReceiver {
     @Override

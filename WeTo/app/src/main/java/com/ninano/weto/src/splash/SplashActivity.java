@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,11 +32,9 @@ import static android.content.Intent.ACTION_VIEW;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MEET;
 import static com.ninano.weto.src.ApplicationClass.TIME;
-import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
-import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.geofence.GeofenceMaker.getGeofenceMaker;
 
 public class SplashActivity extends BaseActivity implements SplashActivityView {
 

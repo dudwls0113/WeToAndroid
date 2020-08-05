@@ -1,4 +1,4 @@
-package com.ninano.weto.src.common.Geofence;
+package com.ninano.weto.src.common.geofence;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,14 +9,11 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
-import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.DefaultResponse;
 import com.ninano.weto.src.common.FirebaseRetrofitInterface;
 import com.ninano.weto.src.common.util.Util;
-import com.ninano.weto.src.main.MainActivity;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -26,8 +23,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL;
-import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
-import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.getRetrofit;
 import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
 import static com.ninano.weto.src.common.util.Util.getLocationNotificationContent;

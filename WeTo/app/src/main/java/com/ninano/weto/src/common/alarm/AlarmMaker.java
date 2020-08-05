@@ -1,4 +1,4 @@
-package com.ninano.weto.src.common.Alarm;
+package com.ninano.weto.src.common.alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import com.ninano.weto.src.DeviceBootReceiver;
-import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
 import java.util.Calendar;
 
@@ -22,17 +21,15 @@ public class AlarmMaker {
 
     private static AlarmMaker AlarmMakerInstance = null;
 
-    public static AlarmMaker getAlarmMaker(){
-        if(AlarmMakerInstance==null){
+    public static AlarmMaker getAlarmMaker() {
+        if (AlarmMakerInstance == null) {
             AlarmMakerInstance = new AlarmMaker();
         }
 
         return AlarmMakerInstance;
     }
 
-    private AlarmManager mAlarmManager;
-
-    public void registerAlarm(int mToDoNo, int mRepeatType, int mYear, int mMonth, int mDay, int mHour, int mMinute, String title, String content, String mRepeatDayOfWeek){
+    public void registerAlarm(int mToDoNo, int mRepeatType, int mYear, int mMonth, int mDay, int mHour, int mMinute, String title, String content, String mRepeatDayOfWeek) {
         AlarmManager mAlarmManager = (AlarmManager) getApplicationClassContext().getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -177,16 +174,16 @@ public class AlarmMaker {
         }
     }
 
-    public void removeAlarm( int todoNo){
+    public void removeAlarm(int todoNo) {
         AlarmManager mAlarmManager = (AlarmManager) getApplicationClassContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationClassContext(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationClassContext(), todoNo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if(pendingIntent!=null){
+        if (pendingIntent != null) {
             if (mAlarmManager != null) {
-                try{
+                try {
                     mAlarmManager.cancel(pendingIntent);
                     System.out.println("cancel, " + todoNo);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

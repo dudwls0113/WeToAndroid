@@ -1,10 +1,5 @@
-package com.ninano.weto.src.common.Wifi;
+package com.ninano.weto.src.common.wifi;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -13,28 +8,18 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
-
-import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
-import com.ninano.weto.src.main.MainActivity;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
-import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
 import static com.ninano.weto.src.common.util.Util.compareTimeSlot;
-import static com.ninano.weto.src.common.util.Util.getLocationNotificationContent;
 import static com.ninano.weto.src.common.util.Util.getWifiNotificationContent;
 import static com.ninano.weto.src.common.util.Util.sendNotification;
 

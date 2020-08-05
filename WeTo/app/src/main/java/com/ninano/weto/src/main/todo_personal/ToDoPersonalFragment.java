@@ -27,7 +27,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
-import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseFragment;
 import com.ninano.weto.src.main.todo_personal.adpater.ToDoPersonalItemTouchHelperCallback;
@@ -46,8 +45,8 @@ import java.util.Locale;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.TIME;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.geofence.GeofenceMaker.getGeofenceMaker;
 
 
 public class ToDoPersonalFragment extends BaseFragment {

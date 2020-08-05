@@ -1,4 +1,4 @@
-package com.ninano.weto.src.common.Alarm;
+package com.ninano.weto.src.common.alarm;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 

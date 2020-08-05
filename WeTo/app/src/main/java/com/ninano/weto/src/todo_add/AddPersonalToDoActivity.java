@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,20 +17,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
-import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
-import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,25 +37,21 @@ import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.db.ToDoWithData;
 import com.ninano.weto.src.BaseActivity;
-import com.ninano.weto.src.main.MainActivity;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
 import com.ninano.weto.src.todo_add.adpater.FavoritePlaceAdapter;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.ninano.weto.src.ApplicationClass.ALL_DAY;
 import static com.ninano.weto.src.ApplicationClass.ALWAYS;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
-import static com.ninano.weto.src.ApplicationClass.DAYREPEAT;
 import static com.ninano.weto.src.ApplicationClass.DAY_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
@@ -83,9 +72,9 @@ import static com.ninano.weto.src.ApplicationClass.NIGHT;
 import static com.ninano.weto.src.ApplicationClass.TIME_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.YEAR_FORMAT;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
-import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.wifi.WifiMaker.getWifiMaker;
 import static com.ninano.weto.src.main.MainActivity.FINISH_INTERVAL_TIME;
 
 public class AddPersonalToDoActivity extends BaseActivity {

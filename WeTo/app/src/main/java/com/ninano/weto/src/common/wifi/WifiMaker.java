@@ -1,4 +1,4 @@
-package com.ninano.weto.src.common.Wifi;
+package com.ninano.weto.src.common.wifi;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -11,10 +11,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.ninano.weto.R;
 import com.ninano.weto.db.AppDatabase;
 import com.ninano.weto.db.ToDoDao;
-import com.ninano.weto.src.todo_add.AddPersonalToDoActivity;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import static android.content.Context.MODE_PRIVATE;
 import static com.ninano.weto.src.ApplicationClass.AT_ARRIVE;
 import static com.ninano.weto.src.ApplicationClass.AT_START;
-import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 
 public class WifiMaker {
 

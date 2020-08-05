@@ -48,7 +48,7 @@ import com.ninano.weto.src.BaseActivity;
 import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
-import com.ninano.weto.src.common.Geofence.GeofenceBroadcastReceiver;
+import com.ninano.weto.src.common.geofence.GeofenceBroadcastReceiver;
 import com.ninano.weto.src.todo_add.adpater.AddGroupToDoMemberAdapter;
 //import com.ninano.weto.src.todo_add.adpater.LIkeLocationListAdapter;
 import com.ninano.weto.src.todo_add.adpater.FavoritePlaceAdapter;
@@ -89,9 +89,9 @@ import static com.ninano.weto.src.ApplicationClass.TIME_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.WEEK_DAY;
 import static com.ninano.weto.src.ApplicationClass.YEAR_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.sSharedPreferences;
-import static com.ninano.weto.src.common.Alarm.AlarmMaker.getAlarmMaker;
-import static com.ninano.weto.src.common.Geofence.GeofenceMaker.getGeofenceMaker;
-import static com.ninano.weto.src.common.Wifi.WifiMaker.getWifiMaker;
+import static com.ninano.weto.src.common.alarm.AlarmMaker.getAlarmMaker;
+import static com.ninano.weto.src.common.geofence.GeofenceMaker.getGeofenceMaker;
+import static com.ninano.weto.src.common.wifi.WifiMaker.getWifiMaker;
 import static com.ninano.weto.src.main.MainActivity.FINISH_INTERVAL_TIME;
 
 public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoView {

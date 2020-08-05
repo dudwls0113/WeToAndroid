@@ -3,15 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_todo_personal_item"
     android:layout_width="match_parent"
-    android:background="@color/colorGroup6"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp">
 
     <ImageView
         android:id="@+id/list_todo_personal_iv_icon"
-        android:layout_width="42dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:src="@color/colorGroup6"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="21dp" />
 
@@ -27,12 +25,10 @@
         <TextView
             android:id="@+id/list_todo_personal_tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
-            android:layout_weight="1"
             android:fontFamily="@font/noto_sans_kr_bold"
             android:includeFontPadding="false"
-            android:lineSpacingExtra="9sp"
             android:textColor="#38454c"
             android:textSize="18sp"
             tools:text="형광펜 사기" />
