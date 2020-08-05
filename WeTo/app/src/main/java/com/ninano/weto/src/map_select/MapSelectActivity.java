@@ -116,11 +116,9 @@ public class MapSelectActivity extends BaseActivity implements OnMapReadyCallbac
         mapView.getMapAsync(this);
         mapSelectService = new MapSelectService(this);
         zoomControlView = findViewById(R.id.zoom);
-        locationSource =
-                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         mLayoutFavoriteOther.setVisibility(View.GONE);
         mLayoutFavoriteOther.setVisibility(View.GONE);
-
     }
 
     private void setSelectedLocation() {

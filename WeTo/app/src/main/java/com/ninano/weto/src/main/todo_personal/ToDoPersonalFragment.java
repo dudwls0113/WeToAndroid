@@ -174,13 +174,13 @@ public class ToDoPersonalFragment extends BaseFragment {
 
             @Override
             public void doneClick(int pos) {
-                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos));
+                new UpdateDoneAsyncTask().execute(mTodoList.get(pos));
             }
 
             @Override
             public void swipeDelete(int pos) {
                 mDeletePosition = pos;
-                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mTodoList.get(pos));
+                new DeleteToDoAsyncTask().execute(mTodoList.get(pos));
             }
         });
 
@@ -214,7 +214,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                 if (!isEditMode) {
                     for (int i = 0; i < mTodoList.size(); i++) {
                         mTodoList.get(i).setEditMode(true);
-                        new UpdateOrderAsyncTask(mDatabase.todoDao()).execute(i, mTodoList.get(i).getTodoNo());
+                        new UpdateOrderAsyncTask().execute(i, mTodoList.get(i).getTodoNo());
                     }
                     isEditMode = true;
                     mImageViewDrag.setVisibility(View.VISIBLE);
@@ -262,13 +262,13 @@ public class ToDoPersonalFragment extends BaseFragment {
 
             @Override
             public void doneClick(int pos) {
-                new UpdateActivateAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos));
+                new UpdateActivateAsyncTask().execute(mDoneTodoList.get(pos));
             }
 
             @Override
             public void swipeDelete(int pos) {
                 mDeletePosition = pos;
-                new DeleteToDoAsyncTask(mDatabase.todoDao()).execute(mDoneTodoList.get(pos));
+                new DeleteToDoAsyncTask().execute(mDoneTodoList.get(pos));
             }
         });
 
@@ -301,11 +301,7 @@ public class ToDoPersonalFragment extends BaseFragment {
     }
 
     private class DeleteToDoAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
-
-        private ToDoDao mTodoDao;
-
-        DeleteToDoAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
+        DeleteToDoAsyncTask() {
         }
 
         @Override
@@ -339,12 +335,8 @@ public class ToDoPersonalFragment extends BaseFragment {
 
     private class UpdateDoneAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
-        private ToDoDao mTodoDao;
-
-        UpdateDoneAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
+        UpdateDoneAsyncTask() {
         }
-
 
         @Override
         protected ToDoWithData doInBackground(ToDoWithData... toDoWithData) {
@@ -365,10 +357,7 @@ public class ToDoPersonalFragment extends BaseFragment {
 
     private class UpdateActivateAsyncTask extends AsyncTask<ToDoWithData, Void, ToDoWithData> {
 
-        private ToDoDao mTodoDao;
-
-        UpdateActivateAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
+        UpdateActivateAsyncTask() {
         }
 
 
@@ -394,7 +383,7 @@ public class ToDoPersonalFragment extends BaseFragment {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 showCustomToast(mContext, getString(R.string.cant_geofence));
-                                new UpdateDoneAsyncTask(mDatabase.todoDao()).execute(toDoWithData);
+                                new UpdateDoneAsyncTask().execute(toDoWithData);
                                 Log.e("지오펜스 등록 실패", e.toString());
                             }
                         });
@@ -407,10 +396,7 @@ public class ToDoPersonalFragment extends BaseFragment {
 
     private class UpdateOrderAsyncTask extends AsyncTask<Integer, Void, Void> {
 
-        private ToDoDao mTodoDao;
-
-        UpdateOrderAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
+        UpdateOrderAsyncTask() {
         }
 
         @Override

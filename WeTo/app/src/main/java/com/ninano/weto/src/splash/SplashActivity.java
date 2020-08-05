@@ -83,13 +83,32 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     public void successGetTodo(ArrayList<ServerTodo> serverTodos) throws InterruptedException, ExecutionException {
         AllGroupTodoAsyncTask allGroupTodoAsyncTask = new AllGroupTodoAsyncTask(mDatabase.todoDao());
-        List<Integer> serverTodoNoList = allGroupTodoAsyncTask.execute().get();
-        Log.d("serverTodoNoList", serverTodoNoList.toString());
+        List<Integer> inDBserverTodoNoList = allGroupTodoAsyncTask.execute().get();
+        Log.d("serverTodoNoList", inDBserverTodoNoList.toString());
 //        Log.d("serverTodos", serverTodos.toString());
         for (ServerTodo serverTodo : serverTodos) {
             //1. 내 일정에 없는게 있으면 추가
-            //2. 없어진 일정인데 내일정에 있으면 해당일정 삭제
+            //2. 없어진 일정인데 내일정에 있으면 해당일정 삭제 -> 서버에서 가져온 리스트에는 없는데 db에는 들어잇는 경우 (어캐잡지?)
             //3. 일정 정보 업데이트(order 제외하고 전부 update시키기)
+
+            if(inDBserverTodoNoList.contains(serverTodo.getTodoNo())){
+                //3. 일정 정보 업데이트(order 제외하고 전부 update시키기)
+
+            }
+            else{
+                //1. 내 일정에 없는게 있으면 추가
+            }
+        }
+        for (Integer serverTodoNo : inDBserverTodoNoList) {
+            //2. 없어진 일정인데 내일정에 있으면 해당일정 삭제 -> 서버에서 가져온 리스트에는 없는데 db에는 들어잇는 경우
+            // -> api response를 int만해서 따로줌
+//            if(!serverTodos.contains(??)){
+
+
+//            }
+//            else{
+//                1. 내 일정에 없는게 있으면 추가
+//            }
         }
     }
 
