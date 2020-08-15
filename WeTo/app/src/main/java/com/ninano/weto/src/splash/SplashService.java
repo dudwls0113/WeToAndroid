@@ -43,9 +43,7 @@ public class SplashService {
                 } else if (serverTodoResponse.getCode() == 100) {
                     try {
                         mSplashActivityView.successGetTodo(serverTodoResponse.getResult());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 } else {

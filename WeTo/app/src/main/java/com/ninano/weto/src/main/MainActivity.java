@@ -148,22 +148,6 @@ public class MainActivity extends BaseActivity implements AutoPermissionsListene
         Log.d("MainActivity", "fcm업데이트 실패");
     }
 
-
-    //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private static class InsertAsyncTask extends AsyncTask<Object, Void, Void> {
-        private ToDoDao mTodoDao;
-
-        InsertAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
-        }
-
-        @Override
-        protected Void doInBackground(Object... toDos) {
-            mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            return null;
-        }
-    }
-
     void init() {
         mMapFragment = new MapFragment();
         mToDoPersonalFragment = new ToDoPersonalFragment();

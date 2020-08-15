@@ -16,6 +16,7 @@ import retrofit2.Response;
 
 import static com.ninano.weto.src.ApplicationClass.GPS_LADIUS;
 
+import static com.ninano.weto.src.ApplicationClass.GROUP_TODO_MAKE_FROM_FCM;
 import static com.ninano.weto.src.ApplicationClass.getApplicationClassContext;
 import static com.ninano.weto.src.ApplicationClass.getRetrofit;
 import static com.ninano.weto.src.common.util.Util.sendNotification;
@@ -110,35 +111,56 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 minute = Integer.parseInt(data.get("minute"));
             }
 
-            GroupTodoMaker groupTodoMaker = new GroupTodoMaker(getApplicationContext(), title, content, isImportant, locationName, isWiFi, ssid,
+            GroupTodoMaker groupTodoMaker = new GroupTodoMaker(GROUP_TODO_MAKE_FROM_FCM, getApplicationContext(), title, content, isImportant, locationName, isWiFi, ssid,
                     repeatDayOfWeek, date, time, icon, type, serverTodoNo, groupNo, locationMode,
                     timeSlot, repeatDay, year, month, day, hour, minute, repeatType, meetRemindTime,
                     latitude, longitude, new GroupTodoMaker.GroupTodoMakerCallBack() {
                 @Override
-                public void groupTodoMakeSuccess(int serverTodoNo) {
+                public void groupTodoMakeSuccess() {
+
+                }
+
+                @Override
+                public void groupTodoMakeFail(String message) {
+
+                }
+
+                @Override
+                public void groupTodoMakeSuccessFromFCM(int serverTodoNo) {
                     todoRegisterSuccess(serverTodoNo);
                 }
 
                 @Override
-                public void groupTodoMakeFail() {
-
+                public void groupTodoUpdateSuccessFromFCM(int serverTodoNo) {
+                    todoRegisterSuccess(serverTodoNo);
                 }
+
             });
             groupTodoMaker.makeGroupTodo();
 
         } catch (NumberFormatException numberFormatException) {
-            GroupTodoMaker groupTodoMaker = new GroupTodoMaker(getApplicationContext(), title, content, isImportant, locationName, isWiFi, ssid,
+            GroupTodoMaker groupTodoMaker = new GroupTodoMaker(GROUP_TODO_MAKE_FROM_FCM, getApplicationContext(), title, content, isImportant, locationName, isWiFi, ssid,
                     repeatDayOfWeek, date, time, icon, type, serverTodoNo, groupNo, locationMode,
                     timeSlot, repeatDay, year, month, day, hour, minute, repeatType, meetRemindTime,
                     latitude, longitude, new GroupTodoMaker.GroupTodoMakerCallBack() {
                 @Override
-                public void groupTodoMakeSuccess(int serverTodoNo) {
+                public void groupTodoMakeSuccess() {
+
+                }
+
+                @Override
+                public void groupTodoMakeFail(String message) {
+
+                }
+
+                @Override
+                public void groupTodoMakeSuccessFromFCM(int serverTodoNo) {
                     todoRegisterSuccess(serverTodoNo);
                 }
 
                 @Override
-                public void groupTodoMakeFail() {
-
+                public void groupTodoUpdateSuccessFromFCM(int serverTodoNo) {
+                    todoRegisterSuccess(serverTodoNo);
                 }
             });
             groupTodoMaker.makeGroupTodo();

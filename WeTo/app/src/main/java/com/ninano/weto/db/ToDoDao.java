@@ -8,6 +8,8 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.ninano.weto.src.common.models.ServerTodoWithTodoNo;
+
 import java.util.Date;
 import java.util.List;
 
@@ -96,6 +98,29 @@ public abstract class ToDoDao {
     @Query("SELECT ToDoData.severTodoNo FROM ToDo INNER JOIN ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.isGroup = 89 ORDER BY ToDoData.severTodoNo")
     public abstract List<Integer> getAllGroupTodo();
 
+    //serverTodoNo 중복 검사
+    @Query("SELECT ToDoData.severTodoNo, TodoData.todoNo FROM ToDoData WHERE ToDoData.severTodoNo = :serverTodoNo")
+    public abstract List<ServerTodoWithTodoNo> checkServerTodoNo(int serverTodoNo);
+
+    //일정 업데이트(그룹 Todo 용)
+    @Query("UPDATE ToDo SET title = :title, content = :content, type = :type, isImportant = :isImportant" +
+            " WHERE todoNo = :todoNo AND status = 'ACTIVATE'")
+    public abstract void updateTodoByServer(int todoNo, String title, String content, int type, int isImportant);
+
+    //일정 업데이트(그룹 TodoData 용)
+    @Query("UPDATE ToDoData SET locationName = :locationName, latitude = :latitude, longitude = :longitude, locationMode = :locationMode," +
+            " radius = :radius, ssid = :ssid, isWiFi = :isWiFi, timeSlot = :timeSlot, repeatType = :repeatType, repeatDayOfWeek = :repeatDayOfWeek, repeatDay = :repeatDay, " +
+            " date = :date,  time = :time,  year = :year,  month = :month, day = :day, hour = :hour, minute = :minute, minute = :minute, meetRemindTime = :meetRemindTime WHERE severTodoNo = :severTodoNo")
+    public abstract void updateTodoDataByServer(String locationName, double latitude, double longitude, int locationMode, int radius, String ssid, char isWiFi, int timeSlot, int repeatType, String repeatDayOfWeek, int repeatDay, String date, String time
+            , int year, int month, int day, int hour, int minute, int meetRemindTime, int severTodoNo);
+
+    //일정 정보 업데이트 (덮어쓰기)
+    @Transaction
+    public void updateGroupTodo(ToDo todo, ToDoData toDoData, int todNo, int serverTodoNo) {
+        updateTodoByServer(todNo, todo.getTitle(), todo.getContent(), todo.getType(), todo.getIsImportant());
+        updateTodoDataByServer(toDoData.getLocationName(), toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(), toDoData.getSsid(), toDoData.getIsWiFi(), toDoData.getTimeSlot(), toDoData.getRepeatType(), toDoData.getRepeatDayOfWeek(), toDoData.getRepeatDay(), toDoData.getDate(), toDoData.getTime()
+                , toDoData.getYear(), toDoData.getMonth(), toDoData.getDay(), toDoData.getHour(), toDoData.getMinute(), toDoData.getMeetRemindTime(), serverTodoNo);
+    }
     //종료된 일정조회
 //    @Query("SELECT todoNo, latitude, longitude, locationMode, radius FROM  ToDoData WHERE Todo.todoNo =  ToDoData.todoNo AND Todo.status = 'DONE' ORDER BY Todo.ordered")
 //    public abstract LiveData<List<ToDoData>> getGpsTodo();
@@ -113,12 +138,6 @@ public abstract class ToDoDao {
         update(todo);
         updateTodoData(toDoData);
     }
-
-//    @Transaction
-//    public void deleteTodo(ToDo todo, ToDoData toDoData) {
-//        delete(todo);
-//        deleteTodoData(toDoData);
-//    }
 
     @Insert
     abstract long insert(ToDo todo);

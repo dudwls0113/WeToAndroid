@@ -216,7 +216,7 @@ public class ToDoDetailActivity extends BaseActivity {
         @Override
         protected void onPostExecute(ToDoWithData toDoWithData) {
             super.onPostExecute(toDoWithData);
-            if (toDoWithData.getType()==LOCATION && toDoWithData.getIsWiFi() == 'N'){
+            if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                 getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
             } else if (toDoWithData.getType() == TIME) {
                 getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
@@ -247,16 +247,14 @@ public class ToDoDetailActivity extends BaseActivity {
 //                mTodoList.remove(mDeletePosition);
                 if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
-                }
-                else if (toDoWithData.getType() == TIME) {
+                } else if (toDoWithData.getType() == TIME) {
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                 }
 //                mToDoPersonalListAdapter.notifyItemRemoved(mDeletePosition);
             } else if (toDoWithData.getStatus().equals("DONE")) { // DONE 리스트
                 if (toDoWithData.getType() == LOCATION && toDoWithData.getIsWiFi() == 'N') {
                     getGeofenceMaker().removeGeofence(String.valueOf(toDoWithData.getTodoNo()));
-                }
-                else if (toDoWithData.getType() == TIME) {
+                } else if (toDoWithData.getType() == TIME) {
                     getAlarmMaker().removeAlarm(toDoWithData.getTodoNo());
                 }
             }

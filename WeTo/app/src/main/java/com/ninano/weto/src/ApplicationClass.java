@@ -89,6 +89,9 @@ public class ApplicationClass extends Application {
     public static final int SCHOOL_SELECT_MODE = 700;      //매달반복
     public static final int OTHER_SELECT_MODE = 800;      //매달반복
 
+    public static final int GROUP_TODO_MAKE_FROM_LOCAL = 10;      //로컬 그룹일정 등록
+    public static final int GROUP_TODO_MAKE_FROM_FCM = 20;      //fcm받아서 그룹일정 등록
+
     public static String fcmToken = "";
 
     private static ApplicationClass applicationClass;

@@ -20,7 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context, AppDatabase.class, "weto-db")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+//                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build();
 
         }

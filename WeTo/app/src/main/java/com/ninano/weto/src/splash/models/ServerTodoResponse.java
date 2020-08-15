@@ -6,14 +6,23 @@ import java.util.ArrayList;
 
 public class ServerTodoResponse {
 
+    public class TodoArrayResponse {
+        @SerializedName("add")
+        ArrayList<ServerTodo> addList;
+
+        public ArrayList<ServerTodo> getAddList() {
+            return addList;
+        }
+    }
+
     @SerializedName("code")
     int code;
     @SerializedName("message")
     String message;
     @SerializedName("result")
-    ArrayList<ServerTodo> result;
+    TodoArrayResponse result;
 
-    public ArrayList<ServerTodo> getResult() {
+    public TodoArrayResponse getResult() {
         return result;
     }
 

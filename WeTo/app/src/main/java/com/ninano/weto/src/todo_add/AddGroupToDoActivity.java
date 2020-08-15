@@ -45,6 +45,7 @@ import com.ninano.weto.db.ToDo;
 import com.ninano.weto.db.ToDoDao;
 import com.ninano.weto.db.ToDoData;
 import com.ninano.weto.src.BaseActivity;
+import com.ninano.weto.src.common.group.GroupTodoMaker;
 import com.ninano.weto.src.main.todo_group.models.Member;
 import com.ninano.weto.src.map_select.MapSelectActivity;
 import com.ninano.weto.src.map_select.keyword_search.models.LocationResponse;
@@ -73,6 +74,7 @@ import static com.ninano.weto.src.ApplicationClass.AT_START;
 import static com.ninano.weto.src.ApplicationClass.COMPANY_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.DAY_FORMAT;
 import static com.ninano.weto.src.ApplicationClass.EVENING;
+import static com.ninano.weto.src.ApplicationClass.GROUP_TODO_MAKE_FROM_LOCAL;
 import static com.ninano.weto.src.ApplicationClass.HOME_SELECT_MODE;
 import static com.ninano.weto.src.ApplicationClass.LOCATION;
 import static com.ninano.weto.src.ApplicationClass.MINUTE_FORMAT;
@@ -429,19 +431,32 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     }
 
     private void insertToRoomDB() {
-        ToDo todo = makeTodoObject();
-        todo.setGroupNo(mGroupNo);
-        ToDoData toDoData = makeTodoDataObject();
-        toDoData.setSeverTodoNo(mServerTodoNo);
-        switch (mLocationMode) {
-            case NONE:
-                break;
-            case TIME:
-                break;
-            case LOCATION:
-                break;
-        }
-        new InsertAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
+        GroupTodoMaker groupTodoMaker = new GroupTodoMaker(GROUP_TODO_MAKE_FROM_LOCAL, getApplicationContext(), mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mImportantMode + "",
+                mTextViewLocation.getText().toString(), mWifiMode + "", mWifiBssid,
+                mRepeatDayOfWeek, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mGroupIcon, mTodoCategory, mServerTodoNo, mGroupNo, mLocationMode,
+                mLocationTime, mRepeatDay, mYear, mMonth, mDay, mHour, mMinute, mRepeatType, -1,
+                latitude, longitude, new GroupTodoMaker.GroupTodoMakerCallBack() {
+            @Override
+            public void groupTodoMakeSuccess() {
+                finish();
+            }
+
+            @Override
+            public void groupTodoMakeFail(String message) {
+                showCustomToast(message);
+            }
+
+            @Override
+            public void groupTodoMakeSuccessFromFCM(int serverTodoNo) {
+                //x
+            }
+
+            @Override
+            public void groupTodoUpdateSuccessFromFCM(int serverTodoNo) {
+                //x
+            }
+        });
+        groupTodoMaker.makeGroupTodo();
     }
 
     private void postToDoTime(int groupNo, String title, String content, int icon, int type, ArrayList<AddGroupToDoMemberData> friendList, char isImportant,
@@ -466,77 +481,6 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
     @Override
     public void validateFailure(String message) {
         showCustomToast(message != null ? message : getString(R.string.network_error));
-    }
-
-    //비동기처리                                   //넘겨줄객체, 중간에 처리할 데이터, 결과물(return)
-    private class InsertAsyncTask extends AsyncTask<Object, Void, ToDoData> {
-        private ToDoDao mTodoDao;
-
-        InsertAsyncTask(ToDoDao mTodoDao) {
-            this.mTodoDao = mTodoDao;
-        }
-
-        @Override
-        protected ToDoData doInBackground(Object... toDos) {
-            mToDoNo = mTodoDao.insertTodo((ToDo) toDos[0], (ToDoData) toDos[1]);
-            Log.d("추가된 todoNo", " = " + mToDoNo);
-            return (ToDoData) toDos[1];
-        }
-
-        @Override
-        protected void onPostExecute(final ToDoData toDoData) {
-            super.onPostExecute(toDoData);
-            if (toDoData == null) {
-                return;
-            }
-
-            if (toDoData.getIsWiFi() == 'Y') {//와이파이
-                getWifiMaker().registerAndUpdateWifi(mContext, mWifiMode, mLocationMode, mWifiConnected);
-                Log.d("와이파이 일정 등록", mWifiMode + " " + mLocationMode + " " + mWifiConnected);
-                finish();
-            } else if (toDoData.getLongitude() == NO_DATA && toDoData.getRepeatType() != NO_DATA) {//시간일정
-//                changeRepeatDayOfWeek();
-                getAlarmMaker().registerAlarm(toDoData.getTodoNo(), mRepeatType, mYear, mMonth, mDay, mHour, mMinute, mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mRepeatDayOfWeek);
-                finish();
-            } else if (toDoData.getRepeatType() == NO_DATA && toDoData.getLongitude() != NO_DATA) {//위치일정
-                getGeofenceMaker().addGeoFenceOne(mToDoNo, toDoData.getLatitude(), toDoData.getLongitude(), toDoData.getLocationMode(), toDoData.getRadius(),
-                        new OnSuccessListener() {
-                            @Override
-                            public void onSuccess(Object o) {
-                                showCustomToast("할 일이 추가되었습니다");
-                                finish();
-                            }
-                        },
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                showCustomToast(getString(R.string.cant_geofence));
-                                new DeleteToDoAsyncTask().execute(toDoData.getTodoNo(), toDoData.getTodoDataNo());
-                                Log.e("지오펜스 등록 실패", e.toString());
-                                //지오펜스 실패하면 db에사도 지워줘야함
-                            }
-                        });
-            }
-        }
-    }
-
-    private class DeleteToDoAsyncTask extends AsyncTask<Integer, Void, Void> {
-        DeleteToDoAsyncTask() {
-        }
-
-        @Override
-        protected Void doInBackground(Integer... todoNo) {
-            mDatabase.todoDao().deleteToDo(todoNo[0]);
-            mDatabase.todoDao().deleteToDoData(todoNo[1]);
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            showCustomToast("디비 삭제 성공");
-        }
     }
 
     private void showTimeLayout() {
@@ -925,7 +869,7 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
 
         TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
-            public void onTimeSelect(Date date, View v) {//选中事件回调
+            public void onTimeSelect(Date date, View v) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
                 mYear = Integer.parseInt(YEAR_FORMAT.format(date));
@@ -1255,30 +1199,5 @@ public class AddGroupToDoActivity extends BaseActivity implements AddGroupToDoVi
             }
         }
     }
-
-    private ToDo makeTodoObject() {
-        ToDo todo = new ToDo(mEditTextTitle.getText().toString(), mEditTextMemo.getText().toString(), mGroupIcon, mTodoCategory, mImportantMode, 'Y');
-//        todo.setTodoNo(mToDoNo);
-        todo.setGroupNo(mGroupNo);
-        return todo;
-    }
-
-    private ToDoData makeTodoDataObject() {
-
-        if (mTodoCategory == LOCATION) {
-            return new ToDoData(mTextViewLocation.getText().toString(),
-                    latitude, longitude, mLocationMode, mLadius,
-                    mWifiBssid, mWifiMode, mLocationTime, NO_DATA, "", NO_DATA, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
-        } else if (mTodoCategory == TIME) {
-            return new ToDoData(mTextViewLocation.getText().toString(),
-                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
-                    "", 'N', NO_DATA, mRepeatType, mRepeatDayOfWeek, mRepeatDay, mTextViewDate.getText().toString(), mTextViewTime.getText().toString(), mYear, mMonth, mDay, mHour, mMinute);
-        } else {
-            return new ToDoData(mTextViewLocation.getText().toString(),
-                    NO_DATA, NO_DATA, NO_DATA, NO_DATA,
-                    "", 'N', NO_DATA, NO_DATA, "", NO_DATA, "", "", NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA);
-        }
-    }
-
 
 }

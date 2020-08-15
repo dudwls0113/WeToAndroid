@@ -39,6 +39,10 @@ public class ServerTodo {
     int timeSlot;
     @SerializedName("repeatType")
     int repeatType;
+    @SerializedName("repeatDayOfWeek")
+    String repeatDayOfWeek;
+    @SerializedName("repeatDay")
+    int repeatDay;
     @SerializedName("date")
     String date;
     @SerializedName("time")
@@ -159,4 +163,13 @@ public class ServerTodo {
     public int getMeetRemindTime() {
         return meetRemindTime;
     }
+
+    public String getRepeatDayOfWeek() {
+        return repeatDayOfWeek;
+    }
+
+    public int getRepeatDay() {
+        return repeatDay;
+    }
 }
+

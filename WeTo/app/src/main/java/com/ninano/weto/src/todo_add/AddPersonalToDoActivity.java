@@ -534,7 +534,6 @@ public class AddPersonalToDoActivity extends BaseActivity {
         todo.setTodoNo(mToDoNo);
         toDoData.setTodoNo(mToDoNo);
         toDoData.setTodoDataNo(mToDoDataNo);
-        System.out.println("넘버: " + mToDoNo + ", " + mToDoDataNo + ", " + todo.getTitle());
         new UpdateAsyncTask(mDatabase.todoDao()).execute(todo, toDoData);
     }
 
